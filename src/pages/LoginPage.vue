@@ -1,59 +1,90 @@
 <template>
-  <div>
-    <h1>Login</h1>
-
-    <form @submit="onSubmit">
-      <div>
-        <label for="email">Email</label>
-        <Field id="email" name="email" type="email" />
-        <ErrorMessage name="email" as="p" />
+  <div class="card flex justify-center">
+    <Form
+      v-slot="$form"
+      :resolver
+      :initialValues
+      @submit="onSubmit"
+      class="flex flex-col gap-4 w-full sm:w-56"
+    >
+      <div class="flex flex-col gap-1">
+        <InputText
+          name="email"
+          type="email"
+          placeholder="Correo electrónico"
+          fluid
+        />
+        <Message
+          v-if="$form.email?.invalid"
+          severity="error"
+          size="small"
+          variant="simple"
+        >
+          {{ $form.email.error?.message }}
+        </Message>
       </div>
-
-      <div>
-        <label for="password">Password</label>
-        <Field id="password" name="password" type="password" />
-        <ErrorMessage name="password" as="p" />
+      <div class="flex flex-col gap-1">
+        <Password
+          name="password"
+          type="password"
+          placeholder="Contraseña"
+          :feedback="false"
+          toggleMask
+          fluid
+        />
+        <Message
+          v-if="$form.password?.invalid"
+          severity="error"
+          size="small"
+          variant="simple"
+        >
+          {{ $form.password.error?.message }}
+        </Message>
       </div>
-
-      <button type="submit" :disabled="isSubmitting">
-        {{ isSubmitting ? "Ingresando..." : "Iniciar sesión" }}
-      </button>
-    </form>
-
-    <p v-if="error">{{ error }}</p>
+      <Button type="submit" severity="secondary" label="Iniciar sesión" />
+    </Form>
   </div>
 </template>
 
 <script setup lang="ts">
 import { ref } from "vue";
+import { useToast } from "primevue/usetoast";
+import { authResolver } from "@/resolvers/auth.resolver";
 import { useRouter } from "vue-router";
-import { Field, ErrorMessage, useForm } from "vee-validate";
-import { isAxiosError } from "axios";
 import { useAuthStore } from "@/stores/auth.store";
-import { loginSchema } from "@/schemas/auth.schema";
-import type { LoginPayload } from "@/types/auth";
+import type { FormSubmitEvent } from "@primevue/forms";
+import { isAxiosError } from "axios";
 
+const toast = useToast();
 const router = useRouter();
 const authStore = useAuthStore();
 
-const error = ref("");
+const initialValues = ref({ email: "", password: "" });
+const resolver = ref(authResolver);
 
-const { handleSubmit, isSubmitting } = useForm<LoginPayload>({
-  validationSchema: loginSchema,
-  initialValues: { email: "", password: "" },
-});
+const onSubmit = async (form: FormSubmitEvent) => {
+  const {
+    valid,
+    values: { email, password },
+  } = form;
 
-const onSubmit = handleSubmit(async (values) => {
-  try {
-    error.value = "";
+  if (valid) {
+    try {
+      await authStore.login({ email, password });
 
-    await authStore.login(values);
+      router.push("/");
+    } catch (err) {
+      const message = isAxiosError(err)
+        ? err.response?.data?.message || err.message
+        : "Ocurrió un error inesperado";
 
-    router.push("/");
-  } catch (err) {
-    if (isAxiosError(err))
-      error.value = err.response?.data?.message || "Ocurrió un error";
-    else error.value = "Ocurrió un error inesperado";
+      toast.add({
+        severity: "error",
+        summary: "Error",
+        detail: message,
+        life: 3000,
+      });
+    }
   }
-});
+};
 </script>

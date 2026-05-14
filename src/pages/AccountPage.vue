@@ -1,120 +1,163 @@
 <template>
-  <div>
-    <AppNavbar />
-
-    <h1>Mi Cuenta</h1>
-
-    <form v-if="authStore.user" @submit="onSubmit">
-      <div>
-        <label for="firstName"> Nombre </label>
-        <Field id="firstName" name="firstName" type="text" />
-        <ErrorMessage name="firstName" as="p" />
+  <AppNavbar />
+  <div class="card flex justify-center">
+    <Form
+      v-slot="$form"
+      :resolver
+      :initialValues
+      @submit="onSubmit"
+      class="flex flex-col gap-4 w-full sm:w-56"
+    >
+      <div class="flex flex-col gap-1">
+        <InputText name="firstName" type="text" placeholder="Nombres" fluid />
+        <Message
+          v-if="$form.firstName?.invalid"
+          severity="error"
+          size="small"
+          variant="simple"
+        >
+          {{ $form.firstName.error?.message }}
+        </Message>
       </div>
-
-      <div>
-        <label for="lastName"> Apellido </label>
-        <Field id="lastName" name="lastName" type="text" />
-        <ErrorMessage name="lastName" as="p" />
+      <div class="flex flex-col gap-1">
+        <InputText name="lastName" type="text" placeholder="Apellidos" fluid />
+        <Message
+          v-if="$form.lastName?.invalid"
+          severity="error"
+          size="small"
+          variant="simple"
+        >
+          {{ $form.lastName.error?.message }}
+        </Message>
       </div>
-
-      <div>
-        <label for="email"> Email </label>
-        <Field id="email" name="email" type="email" />
-        <ErrorMessage name="email" as="p" />
+      <div class="flex flex-col gap-1">
+        <InputText
+          name="email"
+          type="email"
+          placeholder="Correo electrónico"
+          fluid
+        />
+        <Message
+          v-if="$form.email?.invalid"
+          severity="error"
+          size="small"
+          variant="simple"
+        >
+          {{ $form.email.error?.message }}
+        </Message>
       </div>
-
-      <div>
-        <label for="password"> Nueva contraseña </label>
-        <Field id="password" name="password" type="password" />
-        <ErrorMessage name="password" as="p" />
+      <div class="flex flex-col gap-1">
+        <Password
+          name="password"
+          type="password"
+          placeholder="Nueva contraseña"
+          :feedback="false"
+          toggleMask
+          fluid
+        />
+        <Message
+          v-if="$form.password?.invalid"
+          severity="error"
+          size="small"
+          variant="simple"
+        >
+          {{ $form.password.error?.message }}
+        </Message>
       </div>
-
-      <div>
-        <label for="passwordConfirmation"> Confirmar contraseña </label>
-
-        <Field
-          id="passwordConfirmation"
+      <div class="flex flex-col gap-1">
+        <Password
           name="passwordConfirmation"
           type="password"
+          placeholder="Confirmar contraseña"
+          :feedback="false"
+          toggleMask
+          fluid
         />
-
-        <ErrorMessage name="passwordConfirmation" as="p" />
+        <Message
+          v-if="$form.passwordConfirmation?.invalid"
+          severity="error"
+          size="small"
+          variant="simple"
+        >
+          {{ $form.passwordConfirmation.error?.message }}
+        </Message>
       </div>
-
-      <button type="submit" :disabled="isSubmitting">
-        {{ isSubmitting ? "Guardando..." : "Guardar cambios" }}
-      </button>
-    </form>
-
-    <p v-if="success">{{ success }}</p>
-
-    <p v-if="error">{{ error }}</p>
+      <Button type="submit" severity="secondary" label="Guardar" />
+    </Form>
   </div>
 </template>
 
 <script setup lang="ts">
 import { ref, watch } from "vue";
-import { Field, ErrorMessage, useForm } from "vee-validate";
 import { isAxiosError } from "axios";
 import AppNavbar from "@/components/AppNavbar.vue";
 import { useAuthStore } from "@/stores/auth.store";
 import { usersService } from "@/services/users.service";
-import { updateUserSchema } from "@/schemas/user.schema";
-import type { AccountForm } from "@/types/user";
+import { userResolver } from "@/resolvers/user.resolver";
+import { useToast } from "primevue";
+import type { FormSubmitEvent } from "@primevue/forms";
 
+const toast = useToast();
 const authStore = useAuthStore();
 
-const success = ref("");
-const error = ref("");
-
-const { handleSubmit, isSubmitting, setValues } = useForm<AccountForm>({
-  validationSchema: updateUserSchema,
-  initialValues: {
-    firstName: "",
-    lastName: "",
-    email: "",
-    password: undefined,
-    passwordConfirmation: undefined,
-  },
+const initialValues = ref({
+  firstName: "",
+  lastName: "",
+  email: "",
+  password: undefined,
+  passwordConfirmation: undefined,
 });
+
+const resolver = ref(userResolver);
 
 watch(
   () => authStore.user,
   (user) => {
     if (!user) return;
-
-    setValues({
-      ...user,
-      password: undefined,
-      passwordConfirmation: undefined,
-    });
+    initialValues.value = { ...initialValues.value, ...user };
   },
   {
     immediate: true,
   },
 );
 
-const onSubmit = handleSubmit(async (values) => {
+const onSubmit = async (form: FormSubmitEvent) => {
   if (!authStore.user) return;
 
-  try {
-    success.value = "";
-    error.value = "";
+  const {
+    valid,
+    values: { firstName, lastName, email, password },
+  } = form;
 
-    const updatedUser = await usersService.update(authStore.user.id, {
-      firstName: values.firstName,
-      lastName: values.lastName,
-      email: values.email,
-      password: values.password || undefined,
-    });
+  if (valid) {
+    try {
+      const updatedUser = await usersService.update(authStore.user.id, {
+        firstName,
+        lastName,
+        email,
+        password,
+      });
 
-    authStore.user = updatedUser;
+      authStore.user = updatedUser;
 
-    success.value = "Datos actualizados correctamente";
-  } catch (err) {
-    if (isAxiosError(err))
-      error.value = err.response?.data?.message || "Ocurrió un error";
-    else error.value = "Ocurrió un error inesperado";
+      toast.add({
+        severity: "success",
+        summary: "Éxito",
+        detail: "Datos actualizados correctamente",
+        life: 3000,
+      });
+    } catch (err) {
+      const message = isAxiosError(err)
+        ? err.response?.data?.message || err.message
+        : "Ocurrió un error inesperado";
+
+      toast.add({
+        severity: "error",
+        summary: "Error",
+        detail: message,
+        life: 3000,
+      });
+    }
   }
-});
+};
 </script>
