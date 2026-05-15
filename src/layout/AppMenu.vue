@@ -21,6 +21,11 @@ const model = ref([
         icon: "pi pi-fw pi-id-card",
         to: "/account",
       },
+      {
+        label: "Cambiar contraseña",
+        icon: "pi pi-fw pi-key",
+        to: "/account/password",
+      },
     ],
   },
 ]);

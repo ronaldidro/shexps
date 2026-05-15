@@ -1,7 +1,4 @@
 import { createRouter, createWebHistory } from "vue-router";
-import DashboardPage from "@/pages/DashboardPage.vue";
-import AccountPage from "@/pages/AccountPage.vue";
-import LoginPage from "@/pages/LoginPage.vue";
 import AppLayout from "@/layout/AppLayout.vue";
 import { useAuthStore } from "@/stores/auth.store";
 
@@ -9,7 +6,7 @@ const routes = [
   {
     path: "/login",
     name: "login",
-    component: LoginPage,
+    component: () => import("@/pages/LoginPage.vue"),
     meta: { requiresAuth: false },
   },
   {
@@ -19,13 +16,19 @@ const routes = [
       {
         path: "/",
         name: "dashboard",
-        component: DashboardPage,
+        component: () => import("@/pages/DashboardPage.vue"),
         meta: { requiresAuth: true },
       },
       {
         path: "/account",
         name: "account",
-        component: AccountPage,
+        component: () => import("@/pages/account/AccountPage.vue"),
+        meta: { requiresAuth: true },
+      },
+      {
+        path: "/account/password",
+        name: "password",
+        component: () => import("@/pages/account/PasswordPage.vue"),
         meta: { requiresAuth: true },
       },
     ],

@@ -7,12 +7,8 @@ export interface User {
 }
 
 export interface UpdateUserPayload {
-  firstName: string;
-  lastName: string;
-  email: string;
+  firstName?: string;
+  lastName?: string;
+  email?: string;
   password?: string;
-}
-
-export interface AccountForm extends UpdateUserPayload {
-  passwordConfirmation?: string;
 }

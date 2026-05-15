@@ -20,7 +20,6 @@
         <Message
           v-if="$form.firstName?.invalid"
           severity="error"
-          size="small"
           variant="simple"
         >
           {{ $form.firstName.error?.message }}
@@ -37,7 +36,6 @@
         <Message
           v-if="$form.lastName?.invalid"
           severity="error"
-          size="small"
           variant="simple"
         >
           {{ $form.lastName.error?.message }}
@@ -51,51 +49,8 @@
           placeholder="Ingresa tu correo"
           fluid
         />
-        <Message
-          v-if="$form.email?.invalid"
-          severity="error"
-          size="small"
-          variant="simple"
-        >
+        <Message v-if="$form.email?.invalid" severity="error" variant="simple">
           {{ $form.email.error?.message }}
-        </Message>
-      </div>
-      <div class="flex flex-col gap-2">
-        <label for="lastName">Nueva contraseña</label>
-        <Password
-          name="password"
-          type="password"
-          placeholder="Ingresa nueva contraseña"
-          :feedback="false"
-          toggleMask
-          fluid
-        />
-        <Message
-          v-if="$form.password?.invalid"
-          severity="error"
-          size="small"
-          variant="simple"
-        >
-          {{ $form.password.error?.message }}
-        </Message>
-      </div>
-      <div class="flex flex-col gap-2">
-        <label for="lastName">Confirmar contraseña</label>
-        <Password
-          name="passwordConfirmation"
-          type="password"
-          placeholder="Confirma tu contraseña"
-          :feedback="false"
-          toggleMask
-          fluid
-        />
-        <Message
-          v-if="$form.passwordConfirmation?.invalid"
-          severity="error"
-          size="small"
-          variant="simple"
-        >
-          {{ $form.passwordConfirmation.error?.message }}
         </Message>
       </div>
       <Button type="submit" label="Guardar" />
@@ -106,8 +61,8 @@
 <script setup lang="ts">
 import { onMounted, ref } from "vue";
 import { isAxiosError } from "axios";
-import { usersService } from "@/services/users.service";
 import { authService } from "@/services/auth.service";
+import { usersService } from "@/services/users.service";
 import { userResolver } from "@/resolvers/user.resolver";
 import { useToast } from "primevue";
 import type { FormSubmitEvent } from "@primevue/forms";
@@ -122,16 +77,8 @@ const formRef = ref();
 onMounted(async () => {
   const user = await authService.me();
   currentUser.value = user;
-  setFormValues(user);
+  formRef.value?.setValues(user);
 });
-
-const setFormValues = (user: User) => {
-  formRef.value?.setValues({
-    ...user,
-    password: undefined,
-    passwordConfirmation: undefined,
-  });
-};
 
 const onSubmit = async (form: FormSubmitEvent) => {
   if (!currentUser.value) return;
@@ -150,12 +97,10 @@ const onSubmit = async (form: FormSubmitEvent) => {
       });
 
       currentUser.value = updatedUser;
-      setFormValues(updatedUser);
 
       toast.add({
         severity: "success",
-        summary: "Éxito",
-        detail: "Datos actualizados correctamente",
+        summary: "Datos actualizados correctamente",
         life: 3000,
       });
     } catch (err) {
