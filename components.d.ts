@@ -12,6 +12,7 @@ export {}
 declare module 'vue' {
   export interface GlobalComponents {
     AppNavbar: typeof import('./src/components/AppNavbar.vue')['default']
+    Breadcrumb: typeof import('primevue/breadcrumb')['default']
     Button: typeof import('primevue/button')['default']
     FloatingConfigurator: typeof import('./src/components/FloatingConfigurator.vue')['default']
     FloatLabel: typeof import('primevue/floatlabel')['default']
