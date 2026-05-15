@@ -2,6 +2,7 @@ import { createRouter, createWebHistory } from "vue-router";
 import DashboardPage from "@/pages/DashboardPage.vue";
 import AccountPage from "@/pages/AccountPage.vue";
 import LoginPage from "@/pages/LoginPage.vue";
+import AppLayout from "@/layout/AppLayout.vue";
 
 const routes = [
   {
@@ -12,15 +13,21 @@ const routes = [
   },
   {
     path: "/",
-    name: "dashboard",
-    component: DashboardPage,
-    meta: { requiresAuth: true },
-  },
-  {
-    path: "/account",
-    name: "account",
-    component: AccountPage,
-    meta: { requiresAuth: true },
+    component: AppLayout,
+    children: [
+      {
+        path: "/",
+        name: "dashboard",
+        component: DashboardPage,
+        meta: { requiresAuth: true },
+      },
+      {
+        path: "/account",
+        name: "account",
+        component: AccountPage,
+        meta: { requiresAuth: true },
+      },
+    ],
   },
   {
     path: "/:pathMatch(.*)*",

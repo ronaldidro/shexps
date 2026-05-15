@@ -18,8 +18,8 @@ const presetOptions = ref(Object.keys(presets));
 
 const menuMode = ref(layoutConfig.menuMode);
 const menuModeOptions = ref([
-  { label: "Static", value: "static" },
-  { label: "Overlay", value: "overlay" },
+  { label: "Fijo", value: "static" },
+  { label: "Sobrepuesto", value: "overlay" },
 ]);
 
 const primaryColors = ref([
@@ -553,7 +553,7 @@ function onPresetChange() {
   >
     <div class="flex flex-col gap-4">
       <div>
-        <span class="text-sm text-muted-color font-semibold">Primary</span>
+        <span class="text-sm text-muted-color font-semibold">Color</span>
         <div class="pt-2 flex gap-2 flex-wrap justify-between">
           <button
             v-for="primaryColor of primaryColors"
@@ -572,7 +572,7 @@ function onPresetChange() {
         </div>
       </div>
       <div>
-        <span class="text-sm text-muted-color font-semibold">Surface</span>
+        <span class="text-sm text-muted-color font-semibold">Superficie</span>
         <div class="pt-2 flex gap-2 flex-wrap justify-between">
           <button
             v-for="surface of surfaces"
@@ -595,7 +595,7 @@ function onPresetChange() {
         </div>
       </div>
       <div class="flex flex-col gap-2">
-        <span class="text-sm text-muted-color font-semibold">Presets</span>
+        <span class="text-sm text-muted-color font-semibold">Tema</span>
         <SelectButton
           v-model="preset"
           @change="onPresetChange"
@@ -604,7 +604,7 @@ function onPresetChange() {
         />
       </div>
       <div class="flex flex-col gap-2">
-        <span class="text-sm text-muted-color font-semibold">Menu Mode</span>
+        <span class="text-sm text-muted-color font-semibold">Menu</span>
         <SelectButton
           v-model="menuMode"
           @change="changeMenuMode"

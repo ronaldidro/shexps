@@ -1,6 +1,5 @@
 <template>
   <div>
-    <AppNavbar />
     <h1>Dashboard</h1>
     <div v-if="authStore.user">
       <p>
@@ -13,7 +12,6 @@
 </template>
 
 <script setup lang="ts">
-import AppNavbar from "@/components/AppNavbar.vue";
 import { useAuthStore } from "@/stores/auth.store";
 
 const authStore = useAuthStore();

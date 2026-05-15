@@ -1,5 +1,4 @@
 <template>
-  <AppNavbar />
   <div class="card flex justify-center">
     <Form
       v-slot="$form"
@@ -90,7 +89,6 @@
 <script setup lang="ts">
 import { ref, watch } from "vue";
 import { isAxiosError } from "axios";
-import AppNavbar from "@/components/AppNavbar.vue";
 import { useAuthStore } from "@/stores/auth.store";
 import { usersService } from "@/services/users.service";
 import { userResolver } from "@/resolvers/user.resolver";
