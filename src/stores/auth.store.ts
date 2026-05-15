@@ -2,34 +2,25 @@ import { defineStore } from "pinia";
 import { ref } from "vue";
 import { authService } from "@/services/auth.service";
 import type { LoginPayload } from "@/types/auth";
-import type { User } from "@/types/user";
-import { clearAuthSession } from "@/utils/auth";
+import router from "@/router";
 
-export const useAuthStore = defineStore("auth", () => {
-  const user = ref<User | null>(null);
-  const token = ref<string | null>(localStorage.getItem("access_token"));
+export const useAuthStore = defineStore(
+  "auth",
+  () => {
+    const token = ref<string | null>(null);
 
-  const login = async (payload: LoginPayload) => {
-    const response = await authService.signIn(payload);
+    const login = async (payload: LoginPayload) => {
+      const response = await authService.signIn(payload);
+      token.value = response.accessToken;
+      router.push("/");
+    };
 
-    token.value = response.accessToken;
+    const logout = () => {
+      token.value = null;
+      router.push("/login");
+    };
 
-    localStorage.setItem("access_token", response.accessToken);
-
-    await fetchUser();
-  };
-
-  const fetchUser = async () => {
-    const me = await authService.me();
-    user.value = me;
-  };
-
-  const logout = () => {
-    user.value = null;
-    token.value = null;
-
-    clearAuthSession();
-  };
-
-  return { user, token, login, fetchUser, logout };
-});
+    return { token, login, logout };
+  },
+  { persist: true },
+);

@@ -3,6 +3,7 @@ import DashboardPage from "@/pages/DashboardPage.vue";
 import AccountPage from "@/pages/AccountPage.vue";
 import LoginPage from "@/pages/LoginPage.vue";
 import AppLayout from "@/layout/AppLayout.vue";
+import { useAuthStore } from "@/stores/auth.store";
 
 const routes = [
   {
@@ -41,12 +42,12 @@ const router = createRouter({
 });
 
 router.beforeEach((to) => {
-  const token = localStorage.getItem("access_token");
+  const authStore = useAuthStore();
   const requiresAuth = to.meta.requiresAuth;
 
-  if (requiresAuth && !token) return "/login";
+  if (requiresAuth && !authStore.token) return "/login";
 
-  if (to.path === "/login" && token) return "/";
+  if (to.path === "/login" && authStore.token) return "/";
 });
 
 export default router;

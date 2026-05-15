@@ -16,6 +16,7 @@
     "@primevue/forms": "^4.5.5",
     "axios": "^1.16.0",
     "pinia": "^3.0.4",
+    "pinia-plugin-persistedstate": "^4.7.1",
     "primeicons": "^7.0.0",
     "primevue": "^4.5.5",
     "tailwindcss-primeui": "^0.6.1",

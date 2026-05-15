@@ -1,4 +1,5 @@
-import { clearAuthSession } from "@/utils/auth";
+import router from "@/router";
+import { useAuthStore } from "@/stores/auth.store";
 import axios from "axios";
 
 const api = axios.create({
@@ -7,9 +8,10 @@ const api = axios.create({
 });
 
 api.interceptors.request.use((config) => {
-  const token = localStorage.getItem("access_token");
+  const authStore = useAuthStore();
 
-  if (token) config.headers.Authorization = `Bearer ${token}`;
+  if (authStore.token)
+    config.headers.Authorization = `Bearer ${authStore.token}`;
 
   return config;
 });
@@ -22,7 +24,7 @@ api.interceptors.response.use(
     const requestUrl = error.config?.url;
     const isLoginRequest = requestUrl?.includes("/auth/sign-in");
 
-    if (status === 401 && !isLoginRequest) clearAuthSession();
+    if (status === 401 && !isLoginRequest) router.push("/login");
 
     return Promise.reject(error);
   },
