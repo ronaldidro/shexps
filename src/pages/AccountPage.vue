@@ -1,14 +1,22 @@
 <template>
-  <div class="card flex justify-center">
+  <AppBreadcrumb :items="[{ label: 'Mi cuenta' }, { label: 'Información' }]" />
+  <div class="card">
     <Form
+      ref="formRef"
       v-slot="$form"
-      :resolver
-      :initialValues
+      :resolver="userResolver"
       @submit="onSubmit"
-      class="flex flex-col gap-4 w-full sm:w-56"
+      class="flex flex-col gap-4 w-full md:max-w-xs"
     >
-      <div class="flex flex-col gap-1">
-        <InputText name="firstName" type="text" placeholder="Nombres" fluid />
+      <div class="flex flex-col gap-2">
+        <label for="firstName">Nombres</label>
+        <InputText
+          id="firstName"
+          name="firstName"
+          type="text"
+          placeholder="Ingresa tus nombres"
+          fluid
+        />
         <Message
           v-if="$form.firstName?.invalid"
           severity="error"
@@ -18,8 +26,14 @@
           {{ $form.firstName.error?.message }}
         </Message>
       </div>
-      <div class="flex flex-col gap-1">
-        <InputText name="lastName" type="text" placeholder="Apellidos" fluid />
+      <div class="flex flex-col gap-2">
+        <label for="lastName">Apellidos</label>
+        <InputText
+          name="lastName"
+          type="text"
+          placeholder="Ingresa tus apellidos"
+          fluid
+        />
         <Message
           v-if="$form.lastName?.invalid"
           severity="error"
@@ -29,11 +43,12 @@
           {{ $form.lastName.error?.message }}
         </Message>
       </div>
-      <div class="flex flex-col gap-1">
+      <div class="flex flex-col gap-2">
+        <label for="lastName">Correo electrónico</label>
         <InputText
           name="email"
           type="email"
-          placeholder="Correo electrónico"
+          placeholder="Ingresa tu correo"
           fluid
         />
         <Message
@@ -45,11 +60,12 @@
           {{ $form.email.error?.message }}
         </Message>
       </div>
-      <div class="flex flex-col gap-1">
+      <div class="flex flex-col gap-2">
+        <label for="lastName">Nueva contraseña</label>
         <Password
           name="password"
           type="password"
-          placeholder="Nueva contraseña"
+          placeholder="Ingresa nueva contraseña"
           :feedback="false"
           toggleMask
           fluid
@@ -63,11 +79,12 @@
           {{ $form.password.error?.message }}
         </Message>
       </div>
-      <div class="flex flex-col gap-1">
+      <div class="flex flex-col gap-2">
+        <label for="lastName">Confirmar contraseña</label>
         <Password
           name="passwordConfirmation"
           type="password"
-          placeholder="Confirmar contraseña"
+          placeholder="Confirma tu contraseña"
           :feedback="false"
           toggleMask
           fluid
@@ -81,62 +98,59 @@
           {{ $form.passwordConfirmation.error?.message }}
         </Message>
       </div>
-      <Button type="submit" severity="secondary" label="Guardar" />
+      <Button type="submit" label="Guardar" />
     </Form>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, watch } from "vue";
+import { onMounted, ref } from "vue";
 import { isAxiosError } from "axios";
-import { useAuthStore } from "@/stores/auth.store";
 import { usersService } from "@/services/users.service";
+import { authService } from "@/services/auth.service";
 import { userResolver } from "@/resolvers/user.resolver";
 import { useToast } from "primevue";
 import type { FormSubmitEvent } from "@primevue/forms";
+import AppBreadcrumb from "@/layout/AppBreadcrumb.vue";
+import type { User } from "@/types/user";
 
 const toast = useToast();
-const authStore = useAuthStore();
 
-const initialValues = ref({
-  firstName: "",
-  lastName: "",
-  email: "",
-  password: undefined,
-  passwordConfirmation: undefined,
+const currentUser = ref<User | null>(null);
+const formRef = ref();
+
+onMounted(async () => {
+  const user = await authService.me();
+  currentUser.value = user;
+  setFormValues(user);
 });
 
-const resolver = ref(userResolver);
-
-watch(
-  () => authStore.user,
-  (user) => {
-    if (!user) return;
-    initialValues.value = { ...initialValues.value, ...user };
-  },
-  {
-    immediate: true,
-  },
-);
+const setFormValues = (user: User) => {
+  formRef.value?.setValues({
+    ...user,
+    password: undefined,
+    passwordConfirmation: undefined,
+  });
+};
 
 const onSubmit = async (form: FormSubmitEvent) => {
-  if (!authStore.user) return;
+  if (!currentUser.value) return;
 
-  const {
-    valid,
-    values: { firstName, lastName, email, password },
-  } = form;
+  if (form.valid) {
+    const {
+      values: { firstName, lastName, email, password },
+    } = form;
 
-  if (valid) {
     try {
-      const updatedUser = await usersService.update(authStore.user.id, {
+      const updatedUser = await usersService.update(currentUser.value.id, {
         firstName,
         lastName,
         email,
         password,
       });
 
-      authStore.user = updatedUser;
+      currentUser.value = updatedUser;
+      setFormValues(updatedUser);
 
       toast.add({
         severity: "success",

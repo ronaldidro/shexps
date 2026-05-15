@@ -69,32 +69,36 @@
             @submit="onSubmit"
             class="flex flex-col gap-4"
           >
-            <div class="flex flex-col gap-1">
-              <FloatLabel variant="on">
-                <InputText id="email" name="email" type="email" fluid />
-                <label for="email">Correo electrónico</label>
-              </FloatLabel>
+            <div class="flex flex-col gap-2">
+              <label for="email" class="font-medium">
+                Correo electrónico
+              </label>
+              <InputText
+                id="email"
+                name="email"
+                type="email"
+                placeholder="Ingresa tu correo"
+                fluid
+              />
               <Message
                 v-if="$form.email?.invalid"
                 severity="error"
-                size="small"
                 variant="simple"
               >
                 {{ $form.email.error?.message }}
               </Message>
             </div>
-            <div class="flex flex-col gap-1">
-              <FloatLabel variant="on">
-                <Password
-                  id="password"
-                  name="password"
-                  type="password"
-                  :feedback="false"
-                  toggleMask
-                  fluid
-                />
-                <label for="password">Contraseña</label>
-              </FloatLabel>
+            <div class="flex flex-col gap-2">
+              <label for="password" class="font-medium"> Contraseña </label>
+              <Password
+                id="password"
+                name="password"
+                type="password"
+                placeholder="Ingresa tu contraseña"
+                :feedback="false"
+                toggleMask
+                fluid
+              />
               <Message
                 v-if="$form.password?.invalid"
                 severity="error"
@@ -104,7 +108,7 @@
                 {{ $form.password.error?.message }}
               </Message>
             </div>
-            <Button type="submit" severity="secondary" label="Iniciar sesión" />
+            <Button type="submit" label="Iniciar sesión" />
           </Form>
         </div>
       </div>
