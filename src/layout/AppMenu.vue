@@ -4,17 +4,39 @@ import AppMenuItem from "./AppMenuItem.vue";
 
 const model = ref([
   {
-    label: "Panel",
+    label: "Movimientos",
     items: [
       {
         label: "Resumen",
         icon: "pi pi-fw pi-chart-line",
         to: "/",
       },
+      {
+        label: "Gastos",
+        icon: "pi pi-fw pi-dollar",
+      },
+      {
+        label: "Deudas",
+        icon: "pi pi-fw pi-money-bill",
+      },
+      {
+        label: "Pagos",
+        icon: "pi pi-fw pi-wallet",
+      },
     ],
   },
   {
-    label: "Mi cuenta",
+    label: "Configuración",
+    items: [
+      {
+        label: "Grupos",
+        icon: "pi pi-fw pi-address-book",
+        to: "/groups",
+      },
+    ],
+  },
+  {
+    label: "Perfil",
     items: [
       {
         label: "Información",
