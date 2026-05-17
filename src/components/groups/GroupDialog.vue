@@ -32,10 +32,9 @@
           <MultiSelect
             name="members"
             :options="users"
-            optionLabel="firstName"
+            optionLabel="fullName"
             optionValue="id"
-            display="chip"
-            filter
+            :showToggleAll="false"
             placeholder="Selecciona miembros"
           />
           <Message
@@ -47,10 +46,12 @@
           </Message>
         </div>
       </div>
-      <div class="flex justify-end">
-        <Button label="Cancelar" icon="pi pi-times" text @click="close" />
-        <Button label="Guardar" type="submit" icon="pi pi-check" />
-      </div>
+      <Button
+        label="Guardar"
+        type="submit"
+        icon="pi pi-check"
+        class="ml-auto"
+      />
     </Form>
   </Dialog>
 </template>

@@ -1,12 +1,12 @@
 <template>
   <AppBreadcrumb :items />
-  <div class="card">
+  <div class="card md:max-w-sm">
     <Form
       ref="formRef"
       v-slot="$form"
       :resolver="groupResolver"
       @submit="onSubmit"
-      class="flex flex-col gap-4 w-full md:max-w-xs"
+      class="flex flex-col gap-4"
     >
       <div class="flex flex-col gap-2">
         <label for="name">Nombre</label>
@@ -27,10 +27,9 @@
           <MultiSelect
             name="members"
             :options="users"
-            optionLabel="firstName"
+            optionLabel="fullName"
             optionValue="id"
-            display="chip"
-            filter
+            :showToggleAll="false"
             placeholder="Selecciona miembros"
           />
           <Message
@@ -42,7 +41,12 @@
           </Message>
         </div>
       </div>
-      <Button type="submit" label="Guardar" />
+      <Button
+        type="submit"
+        label="Guardar"
+        icon="pi pi-check"
+        class="ml-auto"
+      />
     </Form>
   </div>
 </template>
