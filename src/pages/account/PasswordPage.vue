@@ -4,7 +4,6 @@
   />
   <div class="card md:max-w-sm">
     <Form
-      ref="formRef"
       v-slot="$form"
       :resolver="passwordResolver"
       @submit="onSubmit"
@@ -60,7 +59,6 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, ref } from "vue";
 import AppBreadcrumb from "@/layout/AppBreadcrumb.vue";
 import { passwordResolver } from "@/resolvers/password.resolver";
 import { authService } from "@/services/auth.service";
@@ -68,25 +66,17 @@ import { usersService } from "@/services/users.service";
 import type { FormSubmitEvent } from "@primevue/forms";
 import { isAxiosError } from "axios";
 import { useToast } from "primevue";
-import type { User } from "@/types/user";
 
 const toast = useToast();
 
-const currentUser = ref<User | null>(null);
-
-onMounted(async () => {
-  const user = await authService.me();
-  currentUser.value = user;
-});
-
 const onSubmit = async (form: FormSubmitEvent) => {
-  if (!currentUser.value) return;
-
   if (form.valid) {
     try {
-      await usersService.update(currentUser.value.id, {
-        password: form.values.password,
-      });
+      const user = await authService.me();
+
+      await usersService.update(user.id, { password: form.values.password });
+
+      form.reset();
 
       toast.add({
         severity: "success",
@@ -108,5 +98,3 @@ const onSubmit = async (form: FormSubmitEvent) => {
   }
 };
 </script>
-
-<style lang="scss" scoped></style>

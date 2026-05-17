@@ -2,9 +2,10 @@
   <AppBreadcrumb :items="[{ label: 'Mi cuenta' }, { label: 'Información' }]" />
   <div class="card md:max-w-sm">
     <Form
-      ref="formRef"
+      v-if="currentUser"
       v-slot="$form"
       :resolver="userResolver"
+      :initialValues="currentUser"
       @submit="onSubmit"
       class="flex flex-col gap-4"
     >
@@ -77,12 +78,6 @@ import type { User } from "@/types/user";
 const toast = useToast();
 
 const currentUser = ref<User | null>(null);
-const formRef = ref();
-
-onMounted(async () => {
-  currentUser.value = await authService.me();
-  formRef.value?.setValues(currentUser.value);
-});
 
 const onSubmit = async (form: FormSubmitEvent) => {
   if (!currentUser.value) return;
@@ -121,4 +116,6 @@ const onSubmit = async (form: FormSubmitEvent) => {
     }
   }
 };
+
+onMounted(async () => (currentUser.value = await authService.me()));
 </script>

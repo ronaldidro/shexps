@@ -64,8 +64,8 @@
           </div>
           <Form
             v-slot="$form"
-            :resolver
-            :initialValues
+            :resolver="authResolver"
+            :initialValues="{ email: '', password: '' }"
             @submit="onSubmit"
             class="flex flex-col gap-4"
           >
@@ -117,7 +117,6 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from "vue";
 import { useToast } from "primevue/usetoast";
 import { authResolver } from "@/resolvers/auth.resolver";
 import { useRouter } from "vue-router";
@@ -129,9 +128,6 @@ import FloatingConfigurator from "@/components/FloatingConfigurator.vue";
 const toast = useToast();
 const router = useRouter();
 const authStore = useAuthStore();
-
-const initialValues = ref({ email: "", password: "" });
-const resolver = ref(authResolver);
 
 const onSubmit = async (form: FormSubmitEvent) => {
   if (form.valid) {

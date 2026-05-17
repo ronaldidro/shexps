@@ -50,13 +50,14 @@ import { usersService } from "@/services/users.service";
 import type { User } from "@/types/user";
 import type { FormSubmitEvent } from "@primevue/forms";
 
-interface Props {
-  initialValues?: { name: string; members: string[] };
-}
-
-withDefaults(defineProps<Props>(), {
-  initialValues: () => ({ name: "", members: [] }),
-});
+withDefaults(
+  defineProps<{
+    initialValues?: { name: string; members: string[] };
+  }>(),
+  {
+    initialValues: () => ({ name: "", members: [] }),
+  },
+);
 
 const emit = defineEmits<{ (e: "submit", form: FormSubmitEvent): void }>();
 
