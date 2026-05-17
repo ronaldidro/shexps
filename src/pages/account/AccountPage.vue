@@ -1,5 +1,5 @@
 <template>
-  <AppBreadcrumb :items="[{ label: 'Mi cuenta' }, { label: 'Información' }]" />
+  <AppBreadcrumb :items="[{ label: 'Perfil' }, { label: 'Información' }]" />
   <div class="card md:max-w-sm">
     <Form
       v-if="currentUser"

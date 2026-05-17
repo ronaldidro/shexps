@@ -1,6 +1,6 @@
 <template>
   <AppBreadcrumb
-    :items="[{ label: 'Mi cuenta' }, { label: 'Cambiar contraseña' }]"
+    :items="[{ label: 'Perfil' }, { label: 'Cambiar contraseña' }]"
   />
   <div class="card md:max-w-sm">
     <Form
