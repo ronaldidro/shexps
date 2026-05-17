@@ -23,6 +23,7 @@ declare module 'vue' {
     FloatLabel: typeof import('primevue/floatlabel')['default']
     Form: typeof import('@primevue/forms/form')['default']
     GroupDialog: typeof import('./src/components/groups/GroupDialog.vue')['default']
+    GroupForm: typeof import('./src/components/groups/GroupForm.vue')['default']
     IconField: typeof import('primevue/iconfield')['default']
     InputIcon: typeof import('primevue/inputicon')['default']
     InputText: typeof import('primevue/inputtext')['default']

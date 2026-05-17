@@ -1,87 +1,38 @@
 <template>
   <AppBreadcrumb :items />
   <div class="card md:max-w-sm">
-    <Form
-      ref="formRef"
-      v-slot="$form"
-      :resolver="groupResolver"
+    <GroupForm
+      v-if="group"
+      :initialValues="{ name: group.name, members }"
       @submit="onSubmit"
-      class="flex flex-col gap-4"
-    >
-      <div class="flex flex-col gap-2">
-        <label for="name">Nombre</label>
-        <InputText
-          id="name"
-          name="name"
-          type="text"
-          placeholder="Nombre del grupo"
-          fluid
-        />
-        <Message v-if="$form.name?.invalid" severity="error" variant="simple">
-          {{ $form.name.error?.message }}
-        </Message>
-      </div>
-      <div class="flex flex-col gap-2">
-        <label for="name">Miembros</label>
-        <div class="flex flex-col gap-2">
-          <MultiSelect
-            name="members"
-            :options="users"
-            optionLabel="fullName"
-            optionValue="id"
-            :showToggleAll="false"
-            placeholder="Selecciona miembros"
-          />
-          <Message
-            v-if="$form.members?.invalid"
-            severity="error"
-            variant="simple"
-          >
-            {{ $form.members.error?.message }}
-          </Message>
-        </div>
-      </div>
-      <Button
-        type="submit"
-        label="Guardar"
-        icon="pi pi-check"
-        class="ml-auto"
-      />
-    </Form>
+    />
   </div>
 </template>
 
 <script setup lang="ts">
-import { onMounted, ref } from "vue";
+import { computed, onMounted, ref } from "vue";
 import AppBreadcrumb from "@/layout/AppBreadcrumb.vue";
 import type { Group } from "@/types/group";
-import type { User } from "@/types/user";
 import { groupsService } from "@/services/groups.service";
-import { usersService } from "@/services/users.service";
 import { useRoute } from "vue-router";
-import { Form, type FormSubmitEvent } from "@primevue/forms";
-import { groupResolver } from "@/resolvers/group.resolver";
+import type { FormSubmitEvent } from "@primevue/forms";
 import { useToast } from "primevue";
 import { isAxiosError } from "axios";
 import router from "@/router";
+import GroupForm from "@/components/groups/GroupForm.vue";
 
 const route = useRoute();
 const toast = useToast();
 
-const formRef = ref();
 const group = ref<Group | null>(null);
-const users = ref<User[]>([]);
 const items = ref([
   { label: "Configuración" },
   { label: "Grupos", route: "/groups" },
 ]);
 
-onMounted(async () => {
-  group.value = await groupsService.get(route.params.id as string);
-  users.value = await usersService.getAll();
-  items.value = [...items.value, { label: group.value.name }];
-  const members = group.value.memberships.map((member) => member.user.id);
-  formRef.value?.setValues({ ...group.value, members });
+const members = computed(() => {
+  if (!group.value) return [];
+  return group.value.memberships.map((membership) => membership.user.id);
 });
 
 const onSubmit = async (form: FormSubmitEvent) => {
@@ -115,4 +66,9 @@ const onSubmit = async (form: FormSubmitEvent) => {
     }
   }
 };
+
+onMounted(async () => {
+  group.value = await groupsService.get(route.params.id as string);
+  items.value = [...items.value, { label: group.value.name }];
+});
 </script>
