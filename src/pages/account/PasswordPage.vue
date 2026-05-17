@@ -8,7 +8,7 @@
       v-slot="$form"
       :resolver="passwordResolver"
       @submit="onSubmit"
-      class="flex flex-col gap-4 w-full"
+      class="flex flex-col gap-4"
     >
       <div class="flex flex-col gap-2">
         <label for="lastName">Nueva contraseña</label>
@@ -49,7 +49,12 @@
           {{ $form.passwordConfirmation.error?.message }}
         </Message>
       </div>
-      <Button type="submit" label="Guardar" />
+      <Button
+        type="submit"
+        label="Guardar"
+        class="ml-auto"
+        icon="pi pi-check"
+      />
     </Form>
   </div>
 </template>

@@ -6,7 +6,7 @@
       v-slot="$form"
       :resolver="userResolver"
       @submit="onSubmit"
-      class="flex flex-col gap-4 w-full"
+      class="flex flex-col gap-4"
     >
       <div class="flex flex-col gap-2">
         <label for="firstName">Nombres</label>
@@ -53,7 +53,12 @@
           {{ $form.email.error?.message }}
         </Message>
       </div>
-      <Button type="submit" label="Guardar" />
+      <Button
+        type="submit"
+        label="Guardar"
+        icon="pi pi-check"
+        class="ml-auto"
+      />
     </Form>
   </div>
 </template>
