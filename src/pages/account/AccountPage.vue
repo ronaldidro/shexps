@@ -75,9 +75,8 @@ const currentUser = ref<User | null>(null);
 const formRef = ref();
 
 onMounted(async () => {
-  const user = await authService.me();
-  currentUser.value = user;
-  formRef.value?.setValues(user);
+  currentUser.value = await authService.me();
+  formRef.value?.setValues(currentUser.value);
 });
 
 const onSubmit = async (form: FormSubmitEvent) => {
