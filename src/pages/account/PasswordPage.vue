@@ -2,13 +2,13 @@
   <AppBreadcrumb
     :items="[{ label: 'Mi cuenta' }, { label: 'Cambiar contraseña' }]"
   />
-  <div class="card">
+  <div class="card md:max-w-sm">
     <Form
       ref="formRef"
       v-slot="$form"
       :resolver="passwordResolver"
       @submit="onSubmit"
-      class="flex flex-col gap-4 w-full md:max-w-xs"
+      class="flex flex-col gap-4 w-full"
     >
       <div class="flex flex-col gap-2">
         <label for="lastName">Nueva contraseña</label>
