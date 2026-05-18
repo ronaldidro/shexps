@@ -136,9 +136,9 @@ const onSubmit = async (form: FormSubmitEvent) => {
         values: { email, password },
       } = form;
 
-      await authStore.login({ email, password });
+      await authStore.signIn({ email, password });
 
-      router.push("/");
+      router.push({ name: "dashboard" });
     } catch (err) {
       const message = isAxiosError(err)
         ? err.response?.data?.message || err.message

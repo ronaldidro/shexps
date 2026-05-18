@@ -1,10 +1,10 @@
 import type { User } from "@/types/user";
-import type { LoginPayload, LoginResponse } from "@/types/auth";
+import type { SignInPayload, SignInResponse } from "@/types/auth";
 import api from "./axios";
 
 export const authService = {
-  async signIn(payload: LoginPayload) {
-    const { data } = await api.post<LoginResponse>("/auth/sign-in", payload);
+  async signIn(payload: SignInPayload) {
+    const { data } = await api.post<SignInResponse>("/auth/sign-in", payload);
     return data;
   },
 

@@ -1,8 +1,8 @@
-export interface LoginPayload {
+export interface SignInPayload {
   email: string;
   password: string;
 }
 
-export interface LoginResponse {
+export interface SignInResponse {
   accessToken: string;
 }

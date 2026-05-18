@@ -22,9 +22,9 @@ api.interceptors.response.use(
   (error) => {
     const status = error.response?.status;
     const requestUrl = error.config?.url;
-    const isLoginRequest = requestUrl?.includes("/auth/sign-in");
+    const isSignInRequest = requestUrl?.includes("/sign-in");
 
-    if (status === 401 && !isLoginRequest) router.push("/login");
+    if (status === 401 && !isSignInRequest) router.push({ name: "sign-in" });
 
     return Promise.reject(error);
   },

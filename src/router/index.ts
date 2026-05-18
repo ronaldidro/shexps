@@ -4,9 +4,9 @@ import { useAuthStore } from "@/stores/auth.store";
 
 const routes = [
   {
-    path: "/login",
-    name: "login",
-    component: () => import("@/pages/LoginPage.vue"),
+    path: "/sign-in",
+    name: "sign-in",
+    component: () => import("@/pages/SignInPage.vue"),
     meta: { requiresAuth: false },
   },
   {
@@ -66,9 +66,9 @@ router.beforeEach((to) => {
   const authStore = useAuthStore();
   const requiresAuth = to.meta.requiresAuth;
 
-  if (requiresAuth && !authStore.token) return "/login";
+  if (requiresAuth && !authStore.token) return "/sign-in";
 
-  if (to.path === "/login" && authStore.token) return "/";
+  if (to.path === "/sign-in" && authStore.token) return "/";
 });
 
 export default router;

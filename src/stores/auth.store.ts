@@ -1,7 +1,7 @@
 import { defineStore } from "pinia";
 import { ref } from "vue";
 import { authService } from "@/services/auth.service";
-import type { LoginPayload } from "@/types/auth";
+import type { SignInPayload } from "@/types/auth";
 import router from "@/router";
 
 export const useAuthStore = defineStore(
@@ -9,18 +9,18 @@ export const useAuthStore = defineStore(
   () => {
     const token = ref<string | null>(null);
 
-    const login = async (payload: LoginPayload) => {
+    const signIn = async (payload: SignInPayload) => {
       const response = await authService.signIn(payload);
       token.value = response.accessToken;
-      router.push("/");
+      router.push({ name: "dashboard" });
     };
 
     const logout = () => {
       token.value = null;
-      router.push("/login");
+      router.push({ name: "sign-in" });
     };
 
-    return { token, login, logout };
+    return { token, signIn, logout };
   },
   { persist: true },
 );
