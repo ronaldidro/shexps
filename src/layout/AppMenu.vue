@@ -14,6 +14,7 @@ const model = ref([
       {
         label: "Gastos",
         icon: "pi pi-fw pi-dollar",
+        to: "/expenses",
       },
       {
         label: "Deudas",

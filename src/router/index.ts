@@ -20,15 +20,9 @@ const routes = [
         meta: { requiresAuth: true },
       },
       {
-        path: "account",
-        name: "account",
-        component: () => import("@/pages/account/AccountPage.vue"),
-        meta: { requiresAuth: true },
-      },
-      {
-        path: "account/password",
-        name: "password",
-        component: () => import("@/pages/account/PasswordPage.vue"),
+        path: "expenses",
+        name: "expenses",
+        component: () => import("@/pages/ExpensesPage.vue"),
         meta: { requiresAuth: true },
       },
       {
@@ -41,6 +35,18 @@ const routes = [
         path: "groups/:id",
         name: "group",
         component: () => import("@/pages/groups/GroupPage.vue"),
+        meta: { requiresAuth: true },
+      },
+      {
+        path: "account",
+        name: "account",
+        component: () => import("@/pages/account/AccountPage.vue"),
+        meta: { requiresAuth: true },
+      },
+      {
+        path: "account/password",
+        name: "password",
+        component: () => import("@/pages/account/PasswordPage.vue"),
         meta: { requiresAuth: true },
       },
     ],
