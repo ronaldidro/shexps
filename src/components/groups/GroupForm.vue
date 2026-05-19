@@ -20,7 +20,7 @@
       </Message>
     </div>
     <div class="flex flex-col gap-2">
-      <label for="name">Miembros</label>
+      <label for="members">Miembros</label>
       <div class="flex flex-col gap-2">
         <MultiSelect
           name="members"

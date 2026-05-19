@@ -10,7 +10,7 @@
       class="flex flex-col gap-4"
     >
       <div class="flex flex-col gap-2">
-        <label for="lastName">Nueva contraseña</label>
+        <label for="password">Nueva contraseña</label>
         <Password
           name="password"
           type="password"
@@ -31,7 +31,7 @@
         </template>
       </div>
       <div class="flex flex-col gap-2">
-        <label for="lastName">Confirmar contraseña</label>
+        <label for="passwordConfirmation">Confirmar contraseña</label>
         <Password
           name="passwordConfirmation"
           type="password"

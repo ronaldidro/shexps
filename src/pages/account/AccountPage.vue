@@ -43,7 +43,7 @@
         </Message>
       </div>
       <div class="flex flex-col gap-2">
-        <label for="lastName">Correo electrónico</label>
+        <label for="email">Correo electrónico</label>
         <InputText
           name="email"
           type="email"
