@@ -21,6 +21,7 @@ declare module 'vue' {
     DeleteDialog: typeof import('./src/components/DeleteDialog.vue')['default']
     Dialog: typeof import('primevue/dialog')['default']
     Drawer: typeof import('primevue/drawer')['default']
+    ExpenseDrawer: typeof import('./src/components/expenses/ExpenseDrawer.vue')['default']
     FloatingConfigurator: typeof import('./src/components/FloatingConfigurator.vue')['default']
     FloatLabel: typeof import('primevue/floatlabel')['default']
     Form: typeof import('@primevue/forms/form')['default']

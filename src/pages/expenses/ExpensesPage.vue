@@ -57,7 +57,7 @@
         </div>
       </template>
     </DataView>
-    <ViewExpense v-model:visible="showDrawer" :id="selectedId" />
+    <ExpenseDrawer v-model:visible="showDrawer" :id="selectedId" />
   </div>
 </template>
 
@@ -67,7 +67,7 @@ import { expensesService } from "@/services/expenses.service";
 import type { Expense } from "@/types/expense";
 import type { PaginatedData } from "@/types/pagination";
 import AppBreadcrumb from "@/layout/AppBreadcrumb.vue";
-import ViewExpense from "@/components/expenses/ViewExpense.vue";
+import ExpenseDrawer from "@/components/expenses/ExpenseDrawer.vue";
 import { useConfirm, useToast } from "primevue";
 import { isAxiosError } from "axios";
 import router from "@/router";
