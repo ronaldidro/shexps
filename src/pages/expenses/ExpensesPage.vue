@@ -10,7 +10,11 @@
       </IconField>
     </template>
     <template #end>
-      <Button label="Nuevo" icon="pi pi-plus" @click="router.push({name: 'new-expense'})" />
+      <Button
+        label="Nuevo"
+        icon="pi pi-plus"
+        @click="router.push({ name: 'new-expense' })"
+      />
     </template>
   </Toolbar>
   <div class="card p-1!">
