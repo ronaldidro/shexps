@@ -22,7 +22,13 @@ const routes = [
       {
         path: "expenses",
         name: "expenses",
-        component: () => import("@/pages/ExpensesPage.vue"),
+        component: () => import("@/pages/expenses/ExpensesPage.vue"),
+        meta: { requiresAuth: true },
+      },
+      {
+        path: "expenses/new",
+        name: "new-expense",
+        component: () => import("@/pages/expenses/ExpensePage.vue"),
         meta: { requiresAuth: true },
       },
       {

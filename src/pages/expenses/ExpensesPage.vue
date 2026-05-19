@@ -10,7 +10,7 @@
       </IconField>
     </template>
     <template #end>
-      <Button label="Nuevo" icon="pi pi-plus" @click="" />
+      <Button label="Nuevo" icon="pi pi-plus" @click="router.push({name: 'new-expense'})" />
     </template>
   </Toolbar>
   <div class="card p-1!">
@@ -66,6 +66,7 @@ import AppBreadcrumb from "@/layout/AppBreadcrumb.vue";
 import ViewExpense from "@/components/expenses/ViewExpense.vue";
 import { useConfirm, useToast } from "primevue";
 import { isAxiosError } from "axios";
+import router from "@/router";
 
 const expenses = ref<PaginatedData<Expense>>();
 const selectedId = ref<string | null>(null);
