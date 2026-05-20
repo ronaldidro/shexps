@@ -6,6 +6,6 @@ export const groupResolver = zodResolver(
     name: z.string().min(1, "Nombre es requerido"),
     members: z
       .array(z.string().uuid("Miembro inválido"))
-      .min(1, "Debe seleccionar al menos un miembro"),
+      .min(1, "Debes seleccionar al menos un miembro"),
   }),
 );

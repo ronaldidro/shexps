@@ -20,7 +20,7 @@
           {{ item.name }}
         </p>
         <div class="flex gap-3">
-          <Button asChild v-slot="slotProps" rounded outlined>
+          <Button asChild v-slot="slotProps" rounded>
             <RouterLink
               :class="slotProps.class"
               :to="{ name: 'group', params: { id: item.id } }"
@@ -29,10 +29,9 @@
             </RouterLink>
           </Button>
           <Button
-            icon="pi pi-trash"
+            icon="pi pi-times"
             severity="danger"
             rounded
-            outlined
             @click="openConfirmDialog(item.id)"
           />
         </div>

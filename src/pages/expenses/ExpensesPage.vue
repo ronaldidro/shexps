@@ -39,17 +39,11 @@
               </span>
             </div>
             <div class="flex gap-3">
+              <Button icon="pi pi-eye" rounded @click="openDrawer(item.id)" />
               <Button
-                icon="pi pi-eye"
-                rounded
-                outlined
-                @click="openDrawer(item.id)"
-              />
-              <Button
-                icon="pi pi-trash"
+                icon="pi pi-times"
                 severity="danger"
                 rounded
-                outlined
                 @click="openConfirmDialog(item.id)"
               />
             </div>
