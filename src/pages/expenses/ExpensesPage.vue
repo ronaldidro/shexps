@@ -29,7 +29,7 @@
               <p
                 class="font-medium text-surface-500 dark:text-surface-400 text-sm"
               >
-                {{ item.createdAt }}
+                {{ item.expensedAt }}
               </p>
               <span class="text-xl font-semibold">S/{{ item.amount }}</span>
               <span
@@ -51,8 +51,8 @@
         </div>
       </template>
     </DataView>
-    <ExpenseDrawer v-model:visible="showDrawer" :id="selectedId" />
   </div>
+  <ExpenseDrawer v-model:visible="showDrawer" :id="selectedId" />
 </template>
 
 <script setup lang="ts">

@@ -93,7 +93,7 @@ const handleCreate = async (form: FormSubmitEvent) => {
 
     toast.add({
       severity: "success",
-      summary: "Grupo creado correctamente",
+      summary: "Grupo registrado correctamente",
       life: 3000,
     });
   } catch (err) {

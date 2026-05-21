@@ -17,7 +17,7 @@
           {{ expense.description }}
         </span>
         <p class="font-medium text-surface-500 dark:text-surface-400 text-sm">
-          {{ expense.createdAt }}
+          {{ expense.expensedAt }}
         </p>
       </div>
       <span class="text-2xl font-semibold">S/{{ expense.amount }}</span>
@@ -59,7 +59,6 @@ watch(
   () => props.visible,
   async (isVisible) => {
     if (!isVisible || !props.id) return;
-
     expense.value = await expensesService.get(props.id);
   },
 );

@@ -1,3 +1,4 @@
+import type { Group } from "./group";
 import type { User } from "./user";
 
 interface ExpenseDetail {
@@ -10,7 +11,19 @@ export interface Expense {
   id: string;
   description: string;
   amount: string;
-  createdAt: string;
+  expensedAt: string;
   user: User;
+  group: Group;
   details: ExpenseDetail[];
+}
+
+export interface ExpensePayload {
+  group: string;
+  expensedAt: string;
+  description: string;
+  amount: number;
+  details: {
+    user: string;
+    amount: number;
+  }[];
 }

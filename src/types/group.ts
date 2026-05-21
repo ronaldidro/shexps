@@ -1,9 +1,6 @@
+import type { Membership } from "./membership";
 import type { User } from "./user";
 
-interface Membership {
-  id: string;
-  user: User;
-}
 export interface Group {
   id: string;
   name: string;
