@@ -28,3 +28,13 @@ export interface ExpensePayload {
     amount: number;
   }[];
 }
+
+export interface ExpenseSummary {
+  user: string;
+  total: number;
+  amount: number;
+  debtors: {
+    fullName: string;
+    amount: number;
+  }[];
+}
