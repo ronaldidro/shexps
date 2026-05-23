@@ -8,8 +8,8 @@ import ConfirmationService from "primevue/confirmationservice";
 import App from "./App.vue";
 import piniaPluginPersistedstate from "pinia-plugin-persistedstate";
 
-import "@/assets/tailwind.css";
-import "@/assets/styles.scss";
+import "./assets/tailwind.css";
+import "./assets/styles.scss";
 
 const app = createApp(App);
 const pinia = createPinia();
