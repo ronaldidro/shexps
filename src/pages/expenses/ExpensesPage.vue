@@ -35,7 +35,7 @@
               </p>
               <span class="text-xl font-semibold">S/{{ item.amount }}</span>
               <span
-                class="font-medium text-surface-500 dark:text-surface-400 text-lg"
+                class="font-medium text-surface-500 dark:text-surface-400 text-lg line-clamp-1"
               >
                 {{ item.description }}
               </span>

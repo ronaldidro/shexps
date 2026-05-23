@@ -42,7 +42,13 @@
         name="description"
         v-slot="{ field, errorMessage }"
       >
-        <InputText v-bind="field" placeholder="Describe el gasto" fluid />
+        <Textarea
+          v-bind="field"
+          placeholder="Describe el gasto"
+          :autoResize="true"
+          rows="3"
+          fluid
+        />
         <Message v-if="errorMessage" severity="error" variant="simple">
           {{ errorMessage }}
         </Message>
