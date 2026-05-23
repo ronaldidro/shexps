@@ -18,6 +18,7 @@ export const expenseSchema = toTypedSchema(
         z.literal(null),
       ])
       .refine((val) => val !== null, { message: "Monto total es requerido" }),
+    splitted: z.boolean(),
     details: z
       .array(
         z.object({
@@ -30,7 +31,7 @@ export const expenseSchema = toTypedSchema(
             .refine((val) => val !== null, { message: "Monto es requerido" }),
         }),
       )
-      .min(1, "Debes agregar al menos un miembro")
+      .min(1, "Debes agregar al menos un detalle")
       .superRefine((details, ctx) => {
         const users = new Set();
         details.forEach((detail, index) => {

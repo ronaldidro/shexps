@@ -10,6 +10,7 @@
           optionLabel="name"
           optionValue="id"
           placeholder="Selecciona grupo"
+          fluid
         />
         <Message v-if="errorMessage" severity="error" variant="simple">
           {{ errorMessage }}
@@ -26,7 +27,7 @@
           :maxDate="new Date()"
           showIcon
           showButtonBar
-          placeholder="Selecciona la fecha"
+          placeholder="Selecciona fecha"
           fluid
         />
         <Message v-if="errorMessage" severity="error" variant="simple">
@@ -47,24 +48,36 @@
         </Message>
       </Field>
     </div>
-    <div class="flex flex-col gap-2">
-      <label for="amount">Monto total</label>
-      <Field id="amount" name="amount" v-slot="{ field, errorMessage }">
-        <InputGroup>
-          <InputGroupAddon>S/</InputGroupAddon>
-          <InputNumber
+    <div class="flex items-center justify-between">
+      <div class="flex items-center gap-2">
+        <Field id="splitted" name="splitted" v-slot="{ field }">
+          <ToggleSwitch
             :modelValue="field.value"
             @update:modelValue="field.onChange"
-            :maxFractionDigits="2"
-            placeholder="Ingresa el monto total"
-            fluid
           />
-        </InputGroup>
-        <Message v-if="errorMessage" severity="error" variant="simple">
-          {{ errorMessage }}
-        </Message>
-      </Field>
+        </Field>
+        <label for="splitted">Dividir entre todos</label>
+      </div>
+      <div class="flex flex-col gap-2 max-w-30">
+        <label for="amount">Monto total</label>
+        <Field id="amount" name="amount" v-slot="{ field, errorMessage }">
+          <InputGroup>
+            <InputGroupAddon>S/</InputGroupAddon>
+            <InputNumber
+              :modelValue="field.value"
+              @input="field.onChange($event.value)"
+              :maxFractionDigits="2"
+              placeholder="Total"
+              fluid
+            />
+          </InputGroup>
+          <Message v-if="errorMessage" severity="error" variant="simple">
+            {{ errorMessage }}
+          </Message>
+        </Field>
+      </div>
     </div>
+    <hr class="my-0!" />
     <div class="flex flex-col gap-2">
       <ExpenseDetail :members :errors />
     </div>
@@ -78,20 +91,21 @@ import { Field, useForm } from "vee-validate";
 import { expenseSchema } from "@/schemas/expense.schema";
 import type { Group } from "@/types/group";
 import type { User } from "@/types/user";
+import type { ExpensePayload } from "@/types/expense";
 import { groupsService } from "@/services/groups.service";
 import { membershipsService } from "@/services/memberships.service";
-import type { ExpensePayload } from "@/types/expense";
 import ExpenseDetail from "./ExpenseDetail.vue";
 
 const emit = defineEmits<{ (e: "submit", payload: ExpensePayload): void }>();
 
-const { handleSubmit, errors, values } = useForm({
+const { handleSubmit, errors, values, setFieldValue } = useForm({
   validationSchema: expenseSchema,
   initialValues: {
     group: "",
     expensedAt: "",
     description: "",
     amount: null,
+    splitted: false,
     details: [{ user: "", amount: null }],
   },
 });
@@ -100,6 +114,29 @@ const groups = ref<Group[]>([]);
 const members = ref<User[]>([]);
 
 const onSubmit = handleSubmit((values) => emit("submit", values));
+
+const splitAmount = () => {
+  if (!values.details?.length) return;
+
+  let amount;
+
+  if (!values.amount) {
+    amount = null;
+  } else {
+    const membersCount = values.details.length;
+    const divisor = values.splitted ? membersCount + 1 : membersCount;
+    amount = Number((values.amount / divisor).toFixed(2));
+  }
+
+  values.details.forEach((_, index) =>
+    setFieldValue(`details[${index}].amount`, amount as never),
+  );
+};
+
+watch(
+  [() => values.amount, () => values.splitted, () => values.details?.length],
+  splitAmount,
+);
 
 watch(
   () => values.group,

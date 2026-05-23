@@ -20,11 +20,13 @@
   <div class="card p-1!">
     <DataView v-if="expenses" :value="expenses.data">
       <template #list="slotProps">
-        <div v-for="(item, index) in slotProps.items" :key="index">
-          <div
-            class="flex justify-between p-6"
-            :class="{ 'border-t border-surface': index !== 0 }"
-          >
+        <div
+          v-for="(item, index) in slotProps.items"
+          :key="index"
+          class="mx-6 py-6"
+          :class="{ 'border-t border-surface': index !== 0 }"
+        >
+          <div class="flex justify-between">
             <div class="flex flex-col">
               <p
                 class="font-medium text-surface-500 dark:text-surface-400 text-sm"
@@ -47,6 +49,14 @@
                 @click="openConfirmDialog(item.id)"
               />
             </div>
+          </div>
+          <div class="flex gap-2 mt-2">
+            <Tag
+              v-for="detail of item.details"
+              :key="detail.id"
+              :value="detail.user.fullName"
+              severity="info"
+            />
           </div>
         </div>
       </template>

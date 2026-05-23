@@ -8,7 +8,7 @@
     style="height: auto"
   >
     <div class="flex justify-between">
-      <Tag severity="info" value="Gasto" />
+      <Tag severity="contrast" value="Gasto" />
       <Tag :value="expense.group.name" />
     </div>
     <div class="flex justify-between items-center pt-5">

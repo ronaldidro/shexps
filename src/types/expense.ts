@@ -22,6 +22,7 @@ export interface ExpensePayload {
   expensedAt: string;
   description: string;
   amount: number;
+  splitted: boolean;
   details: {
     user: string;
     amount: number;

@@ -1,5 +1,5 @@
 <template>
-  <div class="flex items-center justify-between">
+  <div class="flex items-center justify-between mb-2">
     <span>Detalle</span>
     <Button
       type="button"
@@ -9,7 +9,6 @@
       @click="push({ user: '', amount: null })"
     />
   </div>
-  <hr class="my-2!" />
   <div
     v-for="(detail, index) in fields"
     :key="detail.key"
@@ -46,8 +45,10 @@
           <InputNumber
             :modelValue="field.value"
             @update:modelValue="field.onChange"
-            :maxFractionDigits="2"
+            :minFractionDigits="2"
+            locale="en-US"
             placeholder="Monto"
+            disabled
             fluid
           />
         </InputGroup>
