@@ -20,10 +20,6 @@ const model = ref([
         label: "Deudas",
         icon: "pi pi-fw pi-money-bill",
       },
-      {
-        label: "Pagos",
-        icon: "pi pi-fw pi-wallet",
-      },
     ],
   },
   {
