@@ -108,7 +108,7 @@
                 {{ $form.password.error?.message }}
               </Message>
             </div>
-            <Button type="submit" label="Iniciar sesión" />
+            <Button type="submit" label="Iniciar sesión" :loading />
           </Form>
         </div>
       </div>
@@ -117,6 +117,7 @@
 </template>
 
 <script setup lang="ts">
+import { ref } from "vue";
 import { useToast } from "primevue/usetoast";
 import { authResolver } from "@/resolvers/auth.resolver";
 import { useRouter } from "vue-router";
@@ -129,8 +130,12 @@ const toast = useToast();
 const router = useRouter();
 const authStore = useAuthStore();
 
+const loading = ref(false);
+
 const onSubmit = async (form: FormSubmitEvent) => {
   if (form.valid) {
+    loading.value = true;
+
     try {
       const {
         values: { email, password },
@@ -150,6 +155,8 @@ const onSubmit = async (form: FormSubmitEvent) => {
         detail: message,
         life: 3000,
       });
+    } finally {
+      loading.value = false;
     }
   }
 };

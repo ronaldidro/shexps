@@ -59,6 +59,7 @@
         label="Guardar"
         icon="pi pi-check"
         class="ml-auto"
+        :loading
       />
     </Form>
   </div>
@@ -78,11 +79,14 @@ import type { User } from "@/types/user";
 const toast = useToast();
 
 const currentUser = ref<User | null>(null);
+const loading = ref(false);
 
 const onSubmit = async (form: FormSubmitEvent) => {
   if (!currentUser.value) return;
 
   if (form.valid) {
+    loading.value = true;
+
     const {
       values: { firstName, lastName, email, password },
     } = form;
@@ -113,6 +117,8 @@ const onSubmit = async (form: FormSubmitEvent) => {
         detail: message,
         life: 3000,
       });
+    } finally {
+      loading.value = false;
     }
   }
 };

@@ -53,12 +53,14 @@
         label="Guardar"
         class="ml-auto"
         icon="pi pi-check"
+        :loading
       />
     </Form>
   </div>
 </template>
 
 <script setup lang="ts">
+import { ref } from "vue";
 import AppBreadcrumb from "@/layout/AppBreadcrumb.vue";
 import { passwordResolver } from "@/resolvers/password.resolver";
 import { authService } from "@/services/auth.service";
@@ -69,8 +71,12 @@ import { useToast } from "primevue";
 
 const toast = useToast();
 
+const loading = ref(false);
+
 const onSubmit = async (form: FormSubmitEvent) => {
   if (form.valid) {
+    loading.value = true;
+
     try {
       const user = await authService.me();
 
@@ -94,6 +100,8 @@ const onSubmit = async (form: FormSubmitEvent) => {
         detail: message,
         life: 3000,
       });
+    } finally {
+      loading.value = false;
     }
   }
 };

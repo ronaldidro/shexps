@@ -81,7 +81,13 @@
     <div class="flex flex-col gap-2">
       <ExpenseDetail :members :errors />
     </div>
-    <Button type="submit" label="Guardar" icon="pi pi-check" class="ml-auto" />
+    <Button
+      type="submit"
+      label="Guardar"
+      icon="pi pi-check"
+      class="ml-auto"
+      :loading="isSubmitting"
+    />
   </form>
 </template>
 
@@ -98,7 +104,7 @@ import ExpenseDetail from "./ExpenseDetail.vue";
 
 const emit = defineEmits<{ (e: "submit", payload: ExpensePayload): void }>();
 
-const { handleSubmit, errors, values, setFieldValue } = useForm({
+const { handleSubmit, errors, values, setFieldValue, isSubmitting } = useForm({
   validationSchema: expenseSchema,
   initialValues: {
     group: "",
