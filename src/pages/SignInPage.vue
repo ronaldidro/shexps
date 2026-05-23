@@ -56,7 +56,7 @@
             <div
               class="text-surface-900 dark:text-surface-0 text-3xl font-medium mb-4"
             >
-              Bienvenido a SHEXPS
+              Bienvenido a Splitty
             </div>
             <span class="text-muted-color font-medium">
               Inicia sesión para continuar

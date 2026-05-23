@@ -46,7 +46,7 @@ const { toggleMenu, toggleDarkMode, isDarkTheme } = useLayout();
             />
           </g>
         </svg>
-        <span>SHEXPS</span>
+        <span>Splitty</span>
       </router-link>
     </div>
     <div class="layout-topbar-actions">

@@ -2,7 +2,7 @@
 
 <template>
   <div class="layout-footer">
-    SHEXPS by
+    Splitty by
     <a
       href="https://ronaldidro.github.io/developerFolio"
       target="_blank"
