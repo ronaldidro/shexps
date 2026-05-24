@@ -3,12 +3,15 @@
     v-if="expense"
     :visible="visible"
     @update:visible="close"
-    header="Detalle"
+    header="Gasto"
     position="bottom"
     style="height: auto"
   >
     <div class="flex justify-between">
-      <Tag severity="contrast" value="Gasto" />
+      <Tag
+        severity="contrast"
+        :value="expense.splitted ? 'Total' : 'Parcial'"
+      />
       <Tag :value="expense.group.name" />
     </div>
     <div class="flex justify-between items-center pt-5">
@@ -23,7 +26,7 @@
       <span class="text-2xl font-semibold">S/{{ expense.amount }}</span>
     </div>
     <hr />
-    <Tag severity="warn" value="Deudores" />
+    <Tag severity="warn" value="Detalle" />
     <ul class="pt-5">
       <li
         v-for="detail in expense.details"

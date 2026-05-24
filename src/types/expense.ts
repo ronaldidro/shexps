@@ -12,6 +12,7 @@ export interface Expense {
   description: string;
   amount: string;
   expensedAt: string;
+  splitted: boolean;
   user: User;
   group: Group;
   details: Pick<ExpenseDetail, "id" | "amount" | "user">[];
