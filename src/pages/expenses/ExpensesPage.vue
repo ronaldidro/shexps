@@ -18,70 +18,83 @@
     </template>
   </Toolbar>
   <div class="card p-1!">
-    <DataView v-if="expenses" :value="expenses.data">
-      <template #list="slotProps">
-        <div
-          v-for="(item, index) in slotProps.items"
-          :key="index"
-          class="mx-6 py-6"
-          :class="{ 'border-t border-surface': index !== 0 }"
-        >
-          <div class="flex justify-between">
-            <div class="flex flex-col">
-              <p
-                class="font-medium text-surface-500 dark:text-surface-400 text-sm"
-              >
-                {{ item.expensedAt }}
-              </p>
-              <span class="text-xl font-semibold">S/{{ item.amount }}</span>
-              <span
-                class="font-medium text-surface-500 dark:text-surface-400 text-lg line-clamp-1"
-              >
-                {{ item.description }}
-              </span>
-            </div>
-            <div class="flex gap-3">
-              <Button icon="pi pi-eye" rounded @click="openDrawer(item.id)" />
-              <Button
-                icon="pi pi-times"
-                severity="danger"
-                rounded
-                @click="openConfirmDialog(item.id)"
-              />
-            </div>
+    <div ref="el" class="overflow-y-auto h-dvh">
+      <div
+        v-for="(expense, index) in expenses"
+        :key="expense.id"
+        class="mx-6 py-6"
+        :class="{ 'border-t border-surface': index !== 0 }"
+      >
+        <div class="flex justify-between">
+          <div class="flex flex-col">
+            <p
+              class="font-medium text-surface-500 dark:text-surface-400 text-sm"
+            >
+              {{ expense.expensedAt }}
+            </p>
+            <span class="text-xl font-semibold">S/{{ expense.amount }}</span>
+            <span
+              class="font-medium text-surface-500 dark:text-surface-400 text-lg line-clamp-1"
+            >
+              {{ expense.description }}
+            </span>
           </div>
-          <div class="flex gap-2 mt-2">
-            <Tag
-              v-for="detail of item.details"
-              :key="detail.id"
-              :value="detail.user.fullName"
-              severity="info"
+          <div class="flex gap-3">
+            <Button icon="pi pi-eye" rounded @click="openDrawer(expense.id)" />
+            <Button
+              icon="pi pi-times"
+              severity="danger"
+              rounded
+              @click="openConfirmDialog(expense.id)"
             />
           </div>
         </div>
-      </template>
-    </DataView>
+        <div class="flex gap-2 mt-2">
+          <Tag
+            v-for="detail of expense.details"
+            :key="detail.id"
+            :value="detail.user.fullName"
+            severity="info"
+          />
+        </div>
+      </div>
+      <p v-show="loading" class="text-center py-4">
+        <i class="pi pi-spin pi-spinner" />
+        Cargando...
+      </p>
+    </div>
   </div>
   <ExpenseDrawer v-model:visible="showDrawer" :id="selectedId" />
 </template>
 
 <script setup lang="ts">
-import { onMounted, ref } from "vue";
+import { ref, useTemplateRef } from "vue";
 import { expensesService } from "@/services/expenses.service";
 import type { Expense } from "@/types/expense";
-import type { PaginatedData } from "@/types/pagination";
 import AppBreadcrumb from "@/layout/AppBreadcrumb.vue";
 import ExpenseDrawer from "@/components/expenses/ExpenseDrawer.vue";
+import { useScrollPagination } from "@/composables/useScrollPagination";
 import { useConfirm, useToast } from "primevue";
 import { isAxiosError } from "axios";
 import router from "@/router";
 
-const expenses = ref<PaginatedData<Expense>>();
+const el = useTemplateRef("el");
+
 const selectedId = ref<string | null>(null);
 const showDrawer = ref(false);
 
 const confirm = useConfirm();
 const toast = useToast();
+
+const {
+  items: expenses,
+  loading,
+  reload,
+} = useScrollPagination<Expense>({
+  el,
+  limit: 10,
+  fetcher: expensesService.getAll,
+});
 
 const openDrawer = (id: string) => {
   selectedId.value = id;
@@ -119,7 +132,7 @@ const handleDelete = async (id: string) => {
       life: 3000,
     });
 
-    expenses.value = await expensesService.getAll();
+    await reload();
   } catch (err) {
     const message = isAxiosError(err)
       ? err.response?.data?.message || err.message
@@ -133,6 +146,4 @@ const handleDelete = async (id: string) => {
     });
   }
 };
-
-onMounted(async () => (expenses.value = await expensesService.getAll()));
 </script>
