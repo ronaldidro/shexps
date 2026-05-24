@@ -1,10 +1,23 @@
 import api from "./axios";
-import type { Expense, ExpensePayload, ExpenseSummary } from "@/types/expense";
+import type {
+  Expense,
+  ExpenseDetail,
+  ExpensePayload,
+  ExpenseSummary,
+} from "@/types/expense";
 import type { PaginatedData } from "@/types/pagination";
 
 export const expensesService = {
   async getAll() {
     const { data } = await api.get<PaginatedData<Expense>>("/expenses");
+    return data;
+  },
+
+  async getDetails(params: {}) {
+    const { data } = await api.get<PaginatedData<ExpenseDetail>>(
+      "/expenses/details",
+      { params },
+    );
     return data;
   },
 
