@@ -6,3 +6,8 @@ export interface PaginatedData<T> {
     lastPage: number;
   };
 }
+
+export interface PaginationParams {
+  page: number;
+  limit: number;
+}

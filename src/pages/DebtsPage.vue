@@ -50,61 +50,32 @@
         <i class="pi pi-spin pi-spinner" />
         Cargando...
       </p>
-      <p v-show="!hasMore" class="text-center py-4">No hay más registros</p>
     </div>
   </div>
   <ExpenseDrawer v-model:visible="showDrawer" :id="selectedId" />
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, useTemplateRef } from "vue";
-import { useInfiniteScroll } from "@vueuse/core";
+import { ref, useTemplateRef } from "vue";
 import AppBreadcrumb from "@/layout/AppBreadcrumb.vue";
 import { expensesService } from "@/services/expenses.service";
 import type { ExpenseDetail } from "@/types/expense";
 import ExpenseDrawer from "@/components/expenses/ExpenseDrawer.vue";
+import { useScrollPagination } from "@/composables/useScrollPagination";
 
 const el = useTemplateRef("el");
 
-const details = ref<ExpenseDetail[]>([]);
-
-const page = ref(1);
-const loading = ref(false);
-const hasMore = ref(true);
-
 const selectedId = ref<string | null>(null);
 const showDrawer = ref(false);
+
+const { items: details, loading } = useScrollPagination<ExpenseDetail>({
+  el,
+  limit: 10,
+  fetcher: expensesService.getDetails,
+});
 
 const openDrawer = (id: string) => {
   selectedId.value = id;
   showDrawer.value = true;
 };
-
-const loadPage = async () => {
-  if (loading.value || !hasMore.value) return;
-
-  loading.value = true;
-
-  try {
-    const response = await expensesService.getDetails({
-      page: page.value,
-      limit: 5,
-    });
-
-    details.value.push(...response.data);
-
-    hasMore.value = response.meta.page < response.meta.lastPage;
-
-    page.value++;
-  } finally {
-    loading.value = false;
-  }
-};
-
-onMounted(loadPage);
-
-useInfiniteScroll(el, loadPage, {
-  distance: 10,
-  canLoadMore: () => hasMore.value && !loading.value,
-});
 </script>
