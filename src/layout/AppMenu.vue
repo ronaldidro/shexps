@@ -19,6 +19,7 @@ const model = ref([
       {
         label: "Deudas",
         icon: "pi pi-fw pi-money-bill",
+        to: "/debts",
       },
     ],
   },
@@ -30,18 +31,13 @@ const model = ref([
         icon: "pi pi-fw pi-address-book",
         to: "/groups",
       },
-    ],
-  },
-  {
-    label: "Perfil",
-    items: [
       {
-        label: "Información",
+        label: "Perfil",
         icon: "pi pi-fw pi-id-card",
         to: "/account",
       },
       {
-        label: "Cambiar contraseña",
+        label: "Contraseña",
         icon: "pi pi-fw pi-key",
         to: "/account/password",
       },
