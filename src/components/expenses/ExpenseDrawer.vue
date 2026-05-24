@@ -25,6 +25,12 @@
       </div>
       <span class="text-2xl font-semibold">S/{{ expense.amount }}</span>
     </div>
+    <div v-if="expense.splitted" class="flex justify-between pt-5">
+      <span class="text-lg">{{ expense.user.fullName }}</span>
+      <span class="text-lg font-semibold">
+        S/{{ expense.details[0].amount }}
+      </span>
+    </div>
     <hr />
     <Tag severity="warn" value="Detalle" />
     <ul class="pt-5">
