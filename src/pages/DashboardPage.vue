@@ -21,6 +21,18 @@
           <span class="font-medium">{{ summary.user }}</span>
           <Chip :label="`S/${summary.amount}`" />
         </div>
+        <div class="flex justify-between">
+          <Button asChild v-slot="slotProps" rounded>
+            <RouterLink :class="slotProps.class" :to="{ name: 'new-expense' }">
+              <i class="pi pi-plus" /> Nuevo
+            </RouterLink>
+          </Button>
+          <Button asChild v-slot="slotProps" rounded>
+            <RouterLink :class="slotProps.class" :to="{ name: 'expenses' }">
+              <i class="pi pi-eye" /> Ver
+            </RouterLink>
+          </Button>
+        </div>
       </div>
       <div v-if="summary.debtors.length" class="card mb-0! flex flex-col gap-4">
         <div class="flex items-center justify-between">
@@ -56,6 +68,13 @@
         </div>
         <div class="text-surface-900 dark:text-surface-0 font-medium text-xl">
           S/{{ summary.debts }} en total
+        </div>
+        <div class="flex justify-end">
+          <Button asChild v-slot="slotProps" rounded>
+            <RouterLink :class="slotProps.class" :to="{ name: 'debts' }">
+              <i class="pi pi-eye" /> Ver
+            </RouterLink>
+          </Button>
         </div>
       </div>
       <div
