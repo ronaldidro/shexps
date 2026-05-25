@@ -30,12 +30,16 @@ export interface ExpensePayload {
   }[];
 }
 
+interface ExpenseSummaryDetail {
+  fullName: string;
+  amount: number;
+}
+
 export interface ExpenseSummary {
   user: string;
-  total: number;
+  expenses: number;
   amount: number;
-  debtors: {
-    fullName: string;
-    amount: number;
-  }[];
+  debts: number;
+  debtors: ExpenseSummaryDetail[];
+  creditors: ExpenseSummaryDetail[];
 }

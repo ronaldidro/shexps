@@ -18,7 +18,7 @@ const model = ref([
       },
       {
         label: "Deudas",
-        icon: "pi pi-fw pi-money-bill",
+        icon: "pi pi-fw pi-wallet",
         to: "/debts",
       },
     ],

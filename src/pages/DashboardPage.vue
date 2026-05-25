@@ -1,7 +1,7 @@
 <template>
   <AppBreadcrumb :items="[{ label: 'Movimientos' }, { label: 'Resumen' }]" />
   <div v-if="summary">
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">      
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
       <div class="card mb-0! flex flex-col gap-4">
         <div class="flex items-center justify-between">
           <span class="block text-muted-color font-medium text-xl">
@@ -15,9 +15,9 @@
           </div>
         </div>
         <div class="text-surface-900 dark:text-surface-0 font-medium text-xl">
-          S/{{ summary.total }} en total
+          S/{{ summary.expenses }} en total
         </div>
-        <div class="flex items-center justify-between"">
+        <div class="flex items-center justify-between">
           <span class="font-medium">{{ summary.user }}</span>
           <Chip :label="`S/${summary.amount}`" />
         </div>
@@ -25,15 +25,15 @@
       <div class="card mb-0! flex flex-col gap-4">
         <div class="flex items-center justify-between">
           <span class="block text-muted-color font-medium text-xl">
-            Deudores
+            Te deben
           </span>
           <div
             class="flex items-center justify-center bg-cyan-100 dark:bg-cyan-400/10 rounded-border"
             style="width: 2.5rem; height: 2.5rem"
           >
-            <i class="pi pi-users text-cyan-500 text-xl!"></i>
+            <i class="pi pi-money-bill text-cyan-500 text-xl!"></i>
           </div>
-        </div>          
+        </div>
         <div
           v-for="debtor in summary.debtors"
           class="flex items-center justify-between"
@@ -42,7 +42,43 @@
           <Chip :label="`S/${debtor.amount}`" />
         </div>
       </div>
-    </div>    
+      <div class="card mb-0! flex flex-col gap-4">
+        <div class="flex items-center justify-between">
+          <span class="block text-muted-color font-medium text-xl">
+            Deudas
+          </span>
+          <div
+            class="flex items-center justify-center bg-blue-100 dark:bg-blue-400/10 rounded-border"
+            style="width: 2.5rem; height: 2.5rem"
+          >
+            <i class="pi pi-wallet text-blue-500 text-xl!"></i>
+          </div>
+        </div>
+        <div class="text-surface-900 dark:text-surface-0 font-medium text-xl">
+          S/{{ summary.debts }} en total
+        </div>
+      </div>
+      <div class="card mb-0! flex flex-col gap-4">
+        <div class="flex items-center justify-between">
+          <span class="block text-muted-color font-medium text-xl">
+            Le debes
+          </span>
+          <div
+            class="flex items-center justify-center bg-purple-100 dark:bg-purple-400/10 rounded-border"
+            style="width: 2.5rem; height: 2.5rem"
+          >
+            <i class="pi pi-credit-card text-purple-500 text-xl!"></i>
+          </div>
+        </div>
+        <div
+          v-for="creditor in summary.creditors"
+          class="flex items-center justify-between"
+        >
+          <span class="font-medium">{{ creditor.fullName }}</span>
+          <Chip :label="`S/${creditor.amount}`" />
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -54,7 +90,5 @@ import { expensesService } from "@/services/expenses.service";
 
 const summary = ref<ExpenseSummary>();
 
-onMounted(async () => {
-  summary.value = await expensesService.getSummary();
-});
+onMounted(async () => (summary.value = await expensesService.getSummary()));
 </script>
