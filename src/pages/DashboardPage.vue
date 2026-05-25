@@ -17,12 +17,12 @@
         <div class="text-surface-900 dark:text-surface-0 font-medium text-xl">
           S/{{ summary.expenses }} en total
         </div>
-        <div class="flex items-center justify-between">
+        <div v-if="summary.amount" class="flex items-center justify-between">
           <span class="font-medium">{{ summary.user }}</span>
           <Chip :label="`S/${summary.amount}`" />
         </div>
       </div>
-      <div class="card mb-0! flex flex-col gap-4">
+      <div v-if="summary.debtors.length" class="card mb-0! flex flex-col gap-4">
         <div class="flex items-center justify-between">
           <span class="block text-muted-color font-medium text-xl">
             Te deben
@@ -58,7 +58,10 @@
           S/{{ summary.debts }} en total
         </div>
       </div>
-      <div class="card mb-0! flex flex-col gap-4">
+      <div
+        v-if="summary.creditors.length"
+        class="card mb-0! flex flex-col gap-4"
+      >
         <div class="flex items-center justify-between">
           <span class="block text-muted-color font-medium text-xl">
             Le debes
