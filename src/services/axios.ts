@@ -1,6 +1,6 @@
 import router from "@/router";
 import { useAuthStore } from "@/stores/auth.store";
-import axios from "axios";
+import axios, { isAxiosError } from "axios";
 
 const api = axios.create({
   baseURL: import.meta.env.VITE_API_URL,
@@ -29,5 +29,10 @@ api.interceptors.response.use(
     return Promise.reject(error);
   },
 );
+
+export const getErrorMessage = (error: unknown) =>
+  isAxiosError(error)
+    ? error.response?.data?.message || error.message
+    : "Ocurrió un error inesperado";
 
 export default api;

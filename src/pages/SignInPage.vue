@@ -123,8 +123,8 @@ import { authResolver } from "@/resolvers/auth.resolver";
 import { useRouter } from "vue-router";
 import { useAuthStore } from "@/stores/auth.store";
 import type { FormSubmitEvent } from "@primevue/forms";
-import { isAxiosError } from "axios";
 import FloatingConfigurator from "@/components/FloatingConfigurator.vue";
+import { getErrorMessage } from "@/services/axios";
 
 const toast = useToast();
 const router = useRouter();
@@ -145,14 +145,10 @@ const onSubmit = async (form: FormSubmitEvent) => {
 
       router.push({ name: "dashboard" });
     } catch (err) {
-      const message = isAxiosError(err)
-        ? err.response?.data?.message || err.message
-        : "Ocurrió un error inesperado";
-
       toast.add({
         severity: "error",
         summary: "Error",
-        detail: message,
+        detail: getErrorMessage(err),
         life: 3000,
       });
     } finally {
