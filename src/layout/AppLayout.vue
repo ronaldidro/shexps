@@ -35,12 +35,16 @@ onErrorCaptured(({ message }) => {
     <AppSidebar />
     <div class="layout-main-container">
       <div class="layout-main">
-        <Suspense>
-          <router-view />
-          <template #fallback>
-            <CardSkeleton />
+        <RouterView v-slot="{ Component }">
+          <template v-if="Component">
+            <Suspense>
+              <component :is="Component" />
+              <template #fallback>
+                <CardSkeleton />
+              </template>
+            </Suspense>
           </template>
-        </Suspense>
+        </RouterView>
       </div>
       <AppFooter />
     </div>
