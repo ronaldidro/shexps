@@ -1,9 +1,11 @@
 <script setup>
 import { useLayout } from "@/layout/composables/layout";
-import { computed } from "vue";
+import { computed, onErrorCaptured, reactive, ref } from "vue";
 import AppFooter from "./AppFooter.vue";
 import AppSidebar from "./AppSidebar.vue";
 import AppTopbar from "./AppTopbar.vue";
+import ErrorPage from "@/pages/ErrorPage.vue";
+import CardSkeleton from "@/components/CardSkeleton.vue";
 
 const { layoutConfig, layoutState, hideMobileMenu } = useLayout();
 
@@ -16,20 +18,34 @@ const containerClass = computed(() => {
     "layout-static-inactive": layoutState.staticMenuInactive,
   };
 });
+
+const error = reactive({ exists: false, message: "" });
+
+onErrorCaptured(({ message }) => {
+  error.exists = true;
+  error.message = message;
+  return false;
+});
 </script>
 
 <template>
-  <div class="layout-wrapper" :class="containerClass">
+  <ErrorPage v-if="error.exists" :message="error.message" />
+  <div v-else class="layout-wrapper" :class="containerClass">
     <AppTopbar />
     <AppSidebar />
     <div class="layout-main-container">
       <div class="layout-main">
-        <router-view />
+        <Suspense>
+          <router-view />
+          <template #fallback>
+            <CardSkeleton />
+          </template>
+        </Suspense>
       </div>
       <AppFooter />
     </div>
     <div class="layout-mask animate-fadein" @click="hideMobileMenu" />
     <ScrollTop />
+    <Toast />
   </div>
-  <Toast />
 </template>
