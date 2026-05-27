@@ -98,7 +98,7 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, ref, watch } from "vue";
+import { ref, watch } from "vue";
 import { Field, useForm } from "vee-validate";
 import { expenseSchema } from "@/schemas/expense.schema";
 import type { Group } from "@/types/group";
@@ -122,7 +122,7 @@ const { handleSubmit, errors, values, setFieldValue, isSubmitting } = useForm({
   },
 });
 
-const groups = ref<Group[]>([]);
+const groups = ref<Group[]>(await groupsService.getAll());
 const members = ref<User[]>([]);
 
 const onSubmit = handleSubmit((values) => emit("submit", values));
@@ -159,6 +159,4 @@ watch(
     members.value = memberships.map((memberships) => memberships.user);
   },
 );
-
-onMounted(async () => (groups.value = await groupsService.getAll()));
 </script>
