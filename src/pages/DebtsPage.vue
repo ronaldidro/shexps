@@ -68,7 +68,7 @@ const el = useTemplateRef("el");
 const selectedId = ref<string | null>(null);
 const showDrawer = ref(false);
 
-const { items: details, loading } = useScrollPagination<ExpenseDetail>({
+const { items: details, loading } = await useScrollPagination<ExpenseDetail>({
   el,
   limit: 10,
   fetcher: expensesService.getDetails,

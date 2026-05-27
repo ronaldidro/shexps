@@ -1,4 +1,4 @@
-import { ref, onMounted, type Ref } from "vue";
+import { ref, type Ref } from "vue";
 import { useInfiniteScroll } from "@vueuse/core";
 import type { PaginatedData, PaginationParams } from "@/types/pagination";
 
@@ -9,7 +9,7 @@ interface ScrollPaginationOptions<T> {
   fetcher: (params: PaginationParams) => Promise<PaginatedData<T>>;
 }
 
-export function useScrollPagination<T>({
+export async function useScrollPagination<T>({
   el,
   fetcher,
   limit = 10,
@@ -49,12 +49,12 @@ export function useScrollPagination<T>({
     await loadPage();
   };
 
-  onMounted(loadPage);
+  await loadPage();
 
   useInfiniteScroll(el, loadPage, {
     distance,
     canLoadMore: () => hasMore.value && !loading.value,
-  });
+  }); 
 
   return {
     items,

@@ -90,7 +90,7 @@ const {
   items: expenses,
   loading,
   reload,
-} = useScrollPagination<Expense>({
+} = await useScrollPagination<Expense>({
   el,
   limit: 10,
   fetcher: expensesService.getAll,
