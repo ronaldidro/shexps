@@ -1,4 +1,4 @@
-import api from "./axios";
+import api, { getErrorMessage } from "./axios";
 import type {
   Expense,
   ExpenseDetail,
@@ -24,8 +24,12 @@ export const expensesService = {
   },
 
   async getSummary() {
-    const { data } = await api.get<ExpenseSummary>("/expenses/summary");
-    return data;
+    try {
+      const response = await api.get<ExpenseSummary>("/expenses/summary");
+      return response.data;
+    } catch (error) {
+      throw new Error(getErrorMessage(error));
+    }
   },
 
   async get(id: string) {

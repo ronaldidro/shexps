@@ -105,12 +105,10 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, ref } from "vue";
+import { reactive } from "vue";
 import AppBreadcrumb from "@/layout/AppBreadcrumb.vue";
 import type { ExpenseSummary } from "@/types/expense";
 import { expensesService } from "@/services/expenses.service";
 
-const summary = ref<ExpenseSummary>();
-
-onMounted(async () => (summary.value = await expensesService.getSummary()));
+const summary = reactive<ExpenseSummary>(await expensesService.getSummary());
 </script>
