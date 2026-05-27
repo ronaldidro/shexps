@@ -15,8 +15,8 @@
 import AppBreadcrumb from "@/layout/AppBreadcrumb.vue";
 import ExpenseForm from "@/components/expenses/ExpenseForm.vue";
 import { expensesService } from "@/services/expenses.service";
+import { getErrorMessage } from "@/services/axios";
 import type { ExpensePayload } from "@/types/expense";
-import { isAxiosError } from "axios";
 import { useToast } from "primevue";
 import router from "@/router";
 
@@ -34,14 +34,10 @@ const onSubmit = async (payload: ExpensePayload) => {
 
     router.push({ name: "expenses" });
   } catch (err) {
-    const message = isAxiosError(err)
-      ? err.response?.data?.message || err.message
-      : "Ocurrió un error inesperado";
-
     toast.add({
       severity: "error",
       summary: "Error",
-      detail: message,
+      detail: getErrorMessage(err),
       life: 3000,
     });
   }

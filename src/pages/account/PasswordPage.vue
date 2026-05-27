@@ -65,8 +65,8 @@ import AppBreadcrumb from "@/layout/AppBreadcrumb.vue";
 import { passwordResolver } from "@/resolvers/password.resolver";
 import { authService } from "@/services/auth.service";
 import { usersService } from "@/services/users.service";
+import { getErrorMessage } from "@/services/axios";
 import type { FormSubmitEvent } from "@primevue/forms";
-import { isAxiosError } from "axios";
 import { useToast } from "primevue";
 
 const toast = useToast();
@@ -90,14 +90,10 @@ const onSubmit = async (form: FormSubmitEvent) => {
         life: 3000,
       });
     } catch (err) {
-      const message = isAxiosError(err)
-        ? err.response?.data?.message || err.message
-        : "Ocurrió un error inesperado";
-
       toast.add({
         severity: "error",
         summary: "Error",
-        detail: message,
+        detail: getErrorMessage(err),
         life: 3000,
       });
     } finally {

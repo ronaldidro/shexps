@@ -70,12 +70,12 @@
 <script setup lang="ts">
 import { ref, useTemplateRef } from "vue";
 import { expensesService } from "@/services/expenses.service";
+import { getErrorMessage } from "@/services/axios";
 import type { Expense } from "@/types/expense";
 import AppBreadcrumb from "@/layout/AppBreadcrumb.vue";
 import ExpenseDrawer from "@/components/expenses/ExpenseDrawer.vue";
 import { useScrollPagination } from "@/composables/useScrollPagination";
 import { useConfirm, useToast } from "primevue";
-import { isAxiosError } from "axios";
 import router from "@/router";
 
 const el = useTemplateRef("el");
@@ -134,14 +134,10 @@ const handleDelete = async (id: string) => {
 
     await reload();
   } catch (err) {
-    const message = isAxiosError(err)
-      ? err.response?.data?.message || err.message
-      : "Ocurrió un error inesperado";
-
     toast.add({
       severity: "error",
       summary: "Error",
-      detail: message,
+      detail: getErrorMessage(err),
       life: 3000,
     });
   }
