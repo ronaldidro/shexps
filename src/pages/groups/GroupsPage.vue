@@ -44,16 +44,16 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, ref } from "vue";
+import { ref } from "vue";
 import GroupDialog from "@/components/groups/GroupDialog.vue";
 import AppBreadcrumb from "@/layout/AppBreadcrumb.vue";
 import { groupsService } from "@/services/groups.service";
 import type { Group } from "@/types/group";
 import type { FormSubmitEvent } from "@primevue/forms";
-import { isAxiosError } from "axios";
 import { useConfirm, useToast } from "primevue";
+import { getErrorMessage } from "@/services/axios";
 
-const groups = ref<Group[]>([]);
+const groups = ref<Group[]>(await groupsService.getAll());
 const showDialog = ref(false);
 
 const confirm = useConfirm();
@@ -97,14 +97,10 @@ const handleCreate = async (form: FormSubmitEvent) => {
       life: 3000,
     });
   } catch (err) {
-    const message = isAxiosError(err)
-      ? err.response?.data?.message || err.message
-      : "Ocurrió un error inesperado";
-
     toast.add({
       severity: "error",
       summary: "Error",
-      detail: message,
+      detail: getErrorMessage(err),
       life: 3000,
     });
   }
@@ -122,20 +118,12 @@ const handleDelete = async (id: string) => {
 
     groups.value = await groupsService.getAll();
   } catch (err) {
-    const message = isAxiosError(err)
-      ? err.response?.data?.message || err.message
-      : "Ocurrió un error inesperado";
-
     toast.add({
       severity: "error",
       summary: "Error",
-      detail: message,
+      detail: getErrorMessage(err),
       life: 3000,
     });
   }
 };
-
-onMounted(async () => {
-  groups.value = await groupsService.getAll();
-});
 </script>

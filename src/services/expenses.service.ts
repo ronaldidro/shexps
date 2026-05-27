@@ -1,4 +1,4 @@
-import api, { getErrorMessage } from "./axios";
+import api, { getErrorMessage } from "@/services/axios";
 import type {
   Expense,
   ExpenseDetail,

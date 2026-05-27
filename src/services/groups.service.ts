@@ -1,15 +1,23 @@
 import type { Group, GroupPayload } from "@/types/group";
-import api from "./axios";
+import api, { getErrorMessage } from "@/services/axios";
 
 export const groupsService = {
   async getAll() {
-    const { data } = await api.get<Group[]>("/groups");
-    return data;
+    try {
+      const response = await api.get<Group[]>("/groups");
+      return response.data;
+    } catch (error) {
+      throw new Error(getErrorMessage(error));
+    }
   },
 
   async get(id: string) {
-    const { data } = await api.get<Group>(`/groups/${id}`);
-    return data;
+    try {
+      const response = await api.get<Group>(`/groups/${id}`);
+      return response.data;
+    } catch (error) {
+      throw new Error(getErrorMessage(error));
+    }
   },
 
   async create(payload: GroupPayload) {

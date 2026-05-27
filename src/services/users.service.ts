@@ -1,10 +1,14 @@
-import api from "./axios";
+import api, { getErrorMessage } from "@/services/axios";
 import type { User, UpdateUserPayload } from "@/types/user";
 
 export const usersService = {
   async getAll() {
-    const { data } = await api.get<User[]>("/users");
-    return data;
+    try {
+      const response = await api.get<User[]>("/users");
+      return response.data;
+    } catch (error) {
+      throw new Error(getErrorMessage(error));
+    }
   },
 
   async update(id: string, payload: UpdateUserPayload) {

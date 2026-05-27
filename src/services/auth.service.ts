@@ -1,6 +1,6 @@
 import type { User } from "@/types/user";
 import type { SignInPayload, SignInResponse } from "@/types/auth";
-import api from "./axios";
+import api, { getErrorMessage } from "@/services/axios";
 
 export const authService = {
   async signIn(payload: SignInPayload) {
@@ -9,7 +9,11 @@ export const authService = {
   },
 
   async me() {
-    const { data } = await api.get<User>("/auth/me");
-    return data;
+    try {
+      const response = await api.get<User>("/auth/me");
+      return response.data;
+    } catch (error) {
+      throw new Error(getErrorMessage(error));
+    }
   },
 };

@@ -44,7 +44,7 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, ref } from "vue";
+import { ref } from "vue";
 import { groupResolver } from "@/resolvers/group.resolver";
 import { usersService } from "@/services/users.service";
 import type { User } from "@/types/user";
@@ -63,7 +63,5 @@ const emit = defineEmits<{ (e: "submit", form: FormSubmitEvent): void }>();
 
 const submit = (form: FormSubmitEvent) => emit("submit", form);
 
-const users = ref<User[]>([]);
-
-onMounted(async () => (users.value = await usersService.getAll()));
+const users = ref<User[]>(await usersService.getAll());
 </script>

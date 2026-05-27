@@ -66,8 +66,7 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, ref } from "vue";
-import { isAxiosError } from "axios";
+import { ref } from "vue";
 import { authService } from "@/services/auth.service";
 import { usersService } from "@/services/users.service";
 import { userResolver } from "@/resolvers/user.resolver";
@@ -75,10 +74,11 @@ import { useToast } from "primevue";
 import type { FormSubmitEvent } from "@primevue/forms";
 import AppBreadcrumb from "@/layout/AppBreadcrumb.vue";
 import type { User } from "@/types/user";
+import { getErrorMessage } from "@/services/axios";
 
 const toast = useToast();
 
-const currentUser = ref<User | null>(null);
+const currentUser = ref<User | null>(await authService.me());
 const loading = ref(false);
 
 const onSubmit = async (form: FormSubmitEvent) => {
@@ -107,14 +107,10 @@ const onSubmit = async (form: FormSubmitEvent) => {
         life: 3000,
       });
     } catch (err) {
-      const message = isAxiosError(err)
-        ? err.response?.data?.message || err.message
-        : "Ocurrió un error inesperado";
-
       toast.add({
         severity: "error",
         summary: "Error",
-        detail: message,
+        detail: getErrorMessage(err),
         life: 3000,
       });
     } finally {
@@ -122,6 +118,4 @@ const onSubmit = async (form: FormSubmitEvent) => {
     }
   }
 };
-
-onMounted(async () => (currentUser.value = await authService.me()));
 </script>
