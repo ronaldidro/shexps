@@ -42,7 +42,7 @@
         </div>
         <Tag
           :value="detail.expense.user.fullName"
-          severity="info"
+          severity="warn"
           class="mt-2"
         />
       </div>

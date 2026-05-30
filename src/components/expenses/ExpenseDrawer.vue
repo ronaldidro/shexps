@@ -19,7 +19,7 @@
         <span class="font-medium text-xl">
           {{ expense.description }}
         </span>
-        <p class="font-medium text-surface-500 dark:text-surface-400 text-sm">
+        <p class="font-medium text-surface-500 dark:text-surface-400">
           {{ expense.expensedAt }}
         </p>
       </div>

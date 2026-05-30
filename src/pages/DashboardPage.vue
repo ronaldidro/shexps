@@ -22,12 +22,12 @@
           <Chip :label="`S/${summary.amount}`" />
         </div>
         <div class="flex justify-between">
-          <Button asChild v-slot="slotProps" rounded>
+          <Button asChild v-slot="slotProps" text>
             <RouterLink :class="slotProps.class" :to="{ name: 'new-expense' }">
               <i class="pi pi-plus" /> Nuevo
             </RouterLink>
           </Button>
-          <Button asChild v-slot="slotProps" rounded>
+          <Button asChild v-slot="slotProps" text>
             <RouterLink :class="slotProps.class" :to="{ name: 'expenses' }">
               <i class="pi pi-eye" /> Ver
             </RouterLink>
@@ -70,7 +70,7 @@
           S/{{ summary.debts }} en total
         </div>
         <div class="flex justify-end">
-          <Button asChild v-slot="slotProps" rounded>
+          <Button asChild v-slot="slotProps" text>
             <RouterLink :class="slotProps.class" :to="{ name: 'debts' }">
               <i class="pi pi-eye" /> Ver
             </RouterLink>

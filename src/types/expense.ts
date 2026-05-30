@@ -1,5 +1,6 @@
 import type { Group } from "./group";
 import type { User } from "./user";
+
 export interface ExpenseDetail {
   id: string;
   amount: string;
