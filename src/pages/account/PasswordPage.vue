@@ -63,42 +63,43 @@
 import { ref } from "vue";
 import AppBreadcrumb from "@/layout/AppBreadcrumb.vue";
 import { passwordResolver } from "@/resolvers/password.resolver";
-import { authService } from "@/services/auth.service";
 import { usersService } from "@/services/users.service";
 import { getErrorMessage } from "@/services/axios";
+import { useAuthStore } from "@/stores/auth.store";
 import type { FormSubmitEvent } from "@primevue/forms";
 import { useToast } from "primevue";
 
 const toast = useToast();
+const { user } = useAuthStore();
 
 const loading = ref(false);
 
 const onSubmit = async (form: FormSubmitEvent) => {
-  if (form.valid) {
-    loading.value = true;
+  if (!form.valid) return;
 
-    try {
-      const user = await authService.me();
+  loading.value = true;
 
-      await usersService.update(user.id, { password: form.values.password });
+  try {
+    await usersService.update(user.id as string, {
+      password: form.values.password,
+    });
 
-      form.reset();
+    form.reset();
 
-      toast.add({
-        severity: "success",
-        summary: "Contraseña actualizada correctamente",
-        life: 3000,
-      });
-    } catch (err) {
-      toast.add({
-        severity: "error",
-        summary: "Error",
-        detail: getErrorMessage(err),
-        life: 3000,
-      });
-    } finally {
-      loading.value = false;
-    }
+    toast.add({
+      severity: "success",
+      summary: "Contraseña actualizada correctamente",
+      life: 3000,
+    });
+  } catch (err) {
+    toast.add({
+      severity: "error",
+      summary: "Error",
+      detail: getErrorMessage(err),
+      life: 3000,
+    });
+  } finally {
+    loading.value = false;
   }
 };
 </script>

@@ -82,40 +82,38 @@ const currentUser = ref<User | null>(await authService.me());
 const loading = ref(false);
 
 const onSubmit = async (form: FormSubmitEvent) => {
-  if (!currentUser.value) return;
+  if (!currentUser.value || !form.valid) return;
 
-  if (form.valid) {
-    loading.value = true;
+  loading.value = true;
 
-    const {
-      values: { firstName, lastName, email, password },
-    } = form;
+  const {
+    values: { firstName, lastName, email, password },
+  } = form;
 
-    try {
-      const updatedUser = await usersService.update(currentUser.value.id, {
-        firstName,
-        lastName,
-        email,
-        password,
-      });
+  try {
+    const updatedUser = await usersService.update(currentUser.value.id, {
+      firstName,
+      lastName,
+      email,
+      password,
+    });
 
-      currentUser.value = updatedUser;
+    currentUser.value = updatedUser;
 
-      toast.add({
-        severity: "success",
-        summary: "Datos actualizados correctamente",
-        life: 3000,
-      });
-    } catch (err) {
-      toast.add({
-        severity: "error",
-        summary: "Error",
-        detail: getErrorMessage(err),
-        life: 3000,
-      });
-    } finally {
-      loading.value = false;
-    }
+    toast.add({
+      severity: "success",
+      summary: "Datos actualizados correctamente",
+      life: 3000,
+    });
+  } catch (err) {
+    toast.add({
+      severity: "error",
+      summary: "Error",
+      detail: getErrorMessage(err),
+      life: 3000,
+    });
+  } finally {
+    loading.value = false;
   }
 };
 </script>
