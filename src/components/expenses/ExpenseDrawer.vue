@@ -28,21 +28,23 @@
     <div v-if="expense.splitted" class="flex justify-between pt-5">
       <span class="text-lg">{{ expense.user.fullName }}</span>
       <span class="text-lg font-semibold">
-        S/{{ expense.details[0].amount }}
+        S/{{ expense.details[0]?.amount || expense.amount }}
       </span>
     </div>
-    <hr />
-    <Tag severity="warn" value="Detalle" />
-    <ul class="pt-5">
-      <li
-        v-for="detail in expense.details"
-        :key="detail.id"
-        class="flex justify-between"
-      >
-        <span class="text-lg">{{ detail.user.fullName }}</span>
-        <span class="text-lg font-semibold">S/{{ detail.amount }}</span>
-      </li>
-    </ul>
+    <div v-if="expense.details.length">
+      <hr />
+      <Tag severity="warn" value="Detalle" />
+      <ul class="pt-5">
+        <li
+          v-for="detail in expense.details"
+          :key="detail.id"
+          class="flex justify-between"
+        >
+          <span class="text-lg">{{ detail.user.fullName }}</span>
+          <span class="text-lg font-semibold">S/{{ detail.amount }}</span>
+        </li>
+      </ul>
+    </div>
   </Drawer>
 </template>
 

@@ -62,7 +62,7 @@
             @update:modelValue="field.onChange"
           />
         </Field>
-        <label for="splitted">Dividir entre todos</label>
+        <label for="splitted">Incluirme en gasto</label>
       </div>
       <div class="flex flex-col gap-2 max-w-30">
         <label for="amount">Monto total</label>
@@ -98,14 +98,13 @@
 </template>
 
 <script setup lang="ts">
-import { ref, watch } from "vue";
+import { reactive, watch } from "vue";
 import { Field, useForm } from "vee-validate";
 import { expenseSchema } from "@/schemas/expense.schema";
 import type { Group } from "@/types/group";
-import type { User } from "@/types/user";
 import type { ExpensePayload } from "@/types/expense";
 import { groupsService } from "@/services/groups.service";
-import { membershipsService } from "@/services/memberships.service";
+import { useGroupMembers } from "@/composables/useGroupMembers.ts";
 import ExpenseDetail from "./ExpenseDetail.vue";
 
 const emit = defineEmits<{ (e: "submit", payload: ExpensePayload): void }>();
@@ -122,8 +121,8 @@ const { handleSubmit, errors, values, setFieldValue, isSubmitting } = useForm({
   },
 });
 
-const groups = ref<Group[]>(await groupsService.getAll());
-const members = ref<User[]>([]);
+const groups = reactive<Group[]>(await groupsService.getAll());
+const members = useGroupMembers(() => values.group as string);
 
 const onSubmit = handleSubmit((values) => emit("submit", values));
 
@@ -148,15 +147,5 @@ const splitAmount = () => {
 watch(
   [() => values.amount, () => values.splitted, () => values.details?.length],
   splitAmount,
-);
-
-watch(
-  () => values.group,
-  async (selectedGroup) => {
-    const memberships = await membershipsService.getAll({
-      group: selectedGroup,
-    });
-    members.value = memberships.map((memberships) => memberships.user);
-  },
 );
 </script>

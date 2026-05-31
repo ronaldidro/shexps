@@ -9,17 +9,30 @@ import type { PaginatedData, PaginationParams } from "@/types/pagination";
 
 export const expensesService = {
   async getAll(params: PaginationParams) {
-    const { data } = await api.get<PaginatedData<Expense>>("/expenses", {
-      params,
-    });
-    return data;
+    try {
+      const response = await api.get<PaginatedData<Expense>>("/expenses", {
+        params,
+      });
+      return response.data;
+    } catch (error) {
+      throw new Error(getErrorMessage(error));
+    }
   },
 
   async getDetails(params: PaginationParams) {
-    const { data } = await api.get<PaginatedData<ExpenseDetail>>(
-      "/expenses/details",
-      { params },
-    );
+    try {
+      const response = await api.get<PaginatedData<ExpenseDetail>>(
+        "/expenses/details",
+        { params },
+      );
+      return response.data;
+    } catch (error) {
+      throw new Error(getErrorMessage(error));
+    }
+  },
+
+  async getDetailsSum(params: { debtor: string; group: string }) {
+    const { data } = await api.get<number>("/expenses/details/sum", { params });
     return data;
   },
 
