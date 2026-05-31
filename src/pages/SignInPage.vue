@@ -133,27 +133,27 @@ const authStore = useAuthStore();
 const loading = ref(false);
 
 const onSubmit = async (form: FormSubmitEvent) => {
-  if (form.valid) {
-    loading.value = true;
+  if (!form.valid) return;
 
-    try {
-      const {
-        values: { email, password },
-      } = form;
+  loading.value = true;
 
-      await authStore.signIn({ email, password });
+  try {
+    const {
+      values: { email, password },
+    } = form;
 
-      router.push({ name: "dashboard" });
-    } catch (err) {
-      toast.add({
-        severity: "error",
-        summary: "Error",
-        detail: getErrorMessage(err),
-        life: 3000,
-      });
-    } finally {
-      loading.value = false;
-    }
+    await authStore.signIn({ email, password });
+
+    router.push({ name: "dashboard" });
+  } catch (err) {
+    toast.add({
+      severity: "error",
+      summary: "Error",
+      detail: getErrorMessage(err),
+      life: 3000,
+    });
+  } finally {
+    loading.value = false;
   }
 };
 </script>

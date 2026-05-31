@@ -42,30 +42,28 @@ const items = computed(() => {
 });
 
 const onSubmit = async (form: FormSubmitEvent) => {
-  if (!group.value) return;
+  if (!group.value || !form.valid) return;
 
-  if (form.valid) {
-    try {
-      await groupsService.update(group.value.id, {
-        name: form.values.name,
-        members: form.values.members,
-      });
+  try {
+    await groupsService.update(group.value.id, {
+      name: form.values.name,
+      members: form.values.members,
+    });
 
-      toast.add({
-        severity: "success",
-        summary: "Grupo actualizado correctamente",
-        life: 3000,
-      });
+    toast.add({
+      severity: "success",
+      summary: "Grupo actualizado correctamente",
+      life: 3000,
+    });
 
-      router.push({ name: "groups" });
-    } catch (err) {
-      toast.add({
-        severity: "error",
-        summary: "Error",
-        detail: getErrorMessage(err),
-        life: 3000,
-      });
-    }
+    router.push({ name: "groups" });
+  } catch (err) {
+    toast.add({
+      severity: "error",
+      summary: "Error",
+      detail: getErrorMessage(err),
+      life: 3000,
+    });
   }
 };
 </script>
