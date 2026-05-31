@@ -21,6 +21,11 @@ const model = ref([
         icon: "pi pi-fw pi-wallet",
         to: "/debts",
       },
+      {
+        label: "Pagos",
+        icon: "pi pi-fw pi-paypal",
+        to: "/payments",
+      },
     ],
   },
   {

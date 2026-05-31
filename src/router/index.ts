@@ -38,6 +38,18 @@ const routes = [
         meta: { requiresAuth: true },
       },
       {
+        path: "payments",
+        name: "payments",
+        component: () => import("@/pages/payments/PaymentsPage.vue"),
+        meta: { requiresAuth: true },
+      },
+      {
+        path: "payments/new",
+        name: "new-payment",
+        component: () => import("@/pages/payments/PaymentPage.vue"),
+        meta: { requiresAuth: true },
+      },
+      {
         path: "groups",
         name: "groups",
         component: () => import("@/pages/groups/GroupsPage.vue"),

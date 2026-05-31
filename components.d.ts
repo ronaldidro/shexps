@@ -35,6 +35,8 @@ declare module 'vue' {
     Message: typeof import('primevue/message')['default']
     MultiSelect: typeof import('primevue/multiselect')['default']
     Password: typeof import('primevue/password')['default']
+    PaymentDrawer: typeof import('./src/components/payments/PaymentDrawer.vue')['default']
+    PaymentForm: typeof import('./src/components/payments/PaymentForm.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
     ScrollTop: typeof import('primevue/scrolltop')['default']
