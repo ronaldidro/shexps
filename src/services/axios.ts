@@ -1,4 +1,3 @@
-import router from "@/router";
 import { useAuthStore } from "@/stores/auth.store";
 import axios, { isAxiosError } from "axios";
 
@@ -18,13 +17,11 @@ api.interceptors.request.use((config) => {
 
 api.interceptors.response.use(
   (response) => response,
-
   (error) => {
+    const authStore = useAuthStore();
     const status = error.response?.status;
-    const requestUrl = error.config?.url;
-    const isSignInRequest = requestUrl?.includes("/sign-in");
 
-    if (status === 401 && !isSignInRequest) router.push({ name: "sign-in" });
+    if (status === 401) authStore.logout();
 
     return Promise.reject(error);
   },
