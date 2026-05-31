@@ -42,6 +42,7 @@
           <div class="flex gap-3">
             <Button icon="pi pi-eye" rounded @click="openDrawer(payment.id)" />
             <Button
+              v-if="payment.user.id === user.id"
               icon="pi pi-times"
               severity="danger"
               rounded
@@ -75,6 +76,7 @@ import { paymentsService } from "@/services/payments.service";
 import { getErrorMessage } from "@/services/axios";
 import type { Payment } from "@/types/payment";
 import router from "@/router";
+import { useAuthStore } from "@/stores/auth.store";
 
 const el = useTemplateRef("el");
 
@@ -83,6 +85,7 @@ const showDrawer = ref(false);
 
 const confirm = useConfirm();
 const toast = useToast();
+const { user } = useAuthStore();
 
 const {
   items: payments,
