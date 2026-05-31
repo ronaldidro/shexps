@@ -87,12 +87,12 @@ const router = createRouter({
 });
 
 router.beforeEach((to) => {
-  const authStore = useAuthStore();
+  const { user } = useAuthStore();
   const requiresAuth = to.meta.requiresAuth;
 
-  if (requiresAuth && !authStore.token) return "/sign-in";
+  if (requiresAuth && !user.token) return "/sign-in";
 
-  if (to.path === "/sign-in" && authStore.token) return "/";
+  if (to.path === "/sign-in" && user.token) return "/";
 });
 
 export default router;

@@ -7,10 +7,9 @@ const api = axios.create({
 });
 
 api.interceptors.request.use((config) => {
-  const authStore = useAuthStore();
+  const { user } = useAuthStore();
 
-  if (authStore.token)
-    config.headers.Authorization = `Bearer ${authStore.token}`;
+  if (user.token) config.headers.Authorization = `Bearer ${user.token}`;
 
   return config;
 });
@@ -18,10 +17,10 @@ api.interceptors.request.use((config) => {
 api.interceptors.response.use(
   (response) => response,
   (error) => {
-    const authStore = useAuthStore();
+    const { logout } = useAuthStore();
     const status = error.response?.status;
 
-    if (status === 401) authStore.logout();
+    if (status === 401) logout();
 
     return Promise.reject(error);
   },
