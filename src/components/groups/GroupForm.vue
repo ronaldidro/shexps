@@ -50,6 +50,7 @@ import { usersService } from "@/services/users.service";
 import type { User } from "@/types/user";
 import type { GroupPayload } from "@/types/group";
 import type { FormSubmitEvent } from "@primevue/forms";
+import { useAuthStore } from "@/stores/auth.store";
 
 withDefaults(
   defineProps<{
@@ -62,10 +63,17 @@ withDefaults(
 
 const emit = defineEmits<{ (e: "submit", values: GroupPayload): void }>();
 
+const { user: authUser } = useAuthStore();
+
 const submit = (form: FormSubmitEvent) => {
   if (!form.valid) return;
   emit("submit", form.values as GroupPayload);
 };
 
-const users = ref<User[]>(await usersService.getAll());
+const getUsers = async () => {
+  const users = await usersService.getAll();
+  return users.filter((user) => user.id !== authUser.id);
+};
+
+const users = ref<User[]>(await getUsers());
 </script>
