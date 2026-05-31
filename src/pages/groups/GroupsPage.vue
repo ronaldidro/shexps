@@ -49,14 +49,15 @@ import GroupDialog from "@/components/groups/GroupDialog.vue";
 import AppBreadcrumb from "@/layout/AppBreadcrumb.vue";
 import { groupsService } from "@/services/groups.service";
 import type { Group, GroupPayload } from "@/types/group";
-import { useConfirm, useToast } from "primevue";
+import { useConfirm } from "primevue";
 import { getErrorMessage } from "@/services/axios";
+import { useNotification } from "@/composables/useNotification";
 
 const groups = ref<Group[]>(await groupsService.getAll());
 const showDialog = ref(false);
 
 const confirm = useConfirm();
-const toast = useToast();
+const { showToast } = useNotification();
 
 const openDialog = () => (showDialog.value = true);
 
@@ -87,17 +88,15 @@ const handleCreate = async (values: GroupPayload) => {
 
     groups.value = await groupsService.getAll();
 
-    toast.add({
+    showToast({
       severity: "success",
       summary: "Grupo registrado correctamente",
-      life: 3000,
     });
   } catch (err) {
-    toast.add({
+    showToast({
       severity: "error",
       summary: "Error",
       detail: getErrorMessage(err),
-      life: 3000,
     });
   }
 };
@@ -106,19 +105,17 @@ const handleDelete = async (id: string) => {
   try {
     await groupsService.remove(id);
 
-    toast.add({
+    showToast({
       severity: "success",
       summary: "Grupo eliminado correctamente",
-      life: 3000,
     });
 
     groups.value = await groupsService.getAll();
   } catch (err) {
-    toast.add({
+    showToast({
       severity: "error",
       summary: "Error",
       detail: getErrorMessage(err),
-      life: 3000,
     });
   }
 };

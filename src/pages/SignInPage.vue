@@ -118,18 +118,18 @@
 
 <script setup lang="ts">
 import { ref } from "vue";
-import { useToast } from "primevue/usetoast";
 import { authResolver } from "@/resolvers/auth.resolver";
 import { useRouter } from "vue-router";
 import { useAuthStore } from "@/stores/auth.store";
 import type { FormSubmitEvent } from "@primevue/forms";
 import type { SignInPayload } from "@/types/auth";
 import FloatingConfigurator from "@/components/FloatingConfigurator.vue";
+import { useNotification } from "@/composables/useNotification";
 import { getErrorMessage } from "@/services/axios";
 
-const toast = useToast();
 const router = useRouter();
 const { signIn } = useAuthStore();
+const { showToast } = useNotification();
 
 const loading = ref(false);
 
@@ -142,11 +142,10 @@ const onSubmit = async (form: FormSubmitEvent) => {
     await signIn(form.values as SignInPayload);
     router.push({ name: "dashboard" });
   } catch (err) {
-    toast.add({
+    showToast({
       severity: "error",
       summary: "Error",
       detail: getErrorMessage(err),
-      life: 3000,
     });
   } finally {
     loading.value = false;

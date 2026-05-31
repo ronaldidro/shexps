@@ -68,7 +68,7 @@
 
 <script setup lang="ts">
 import { ref, useTemplateRef } from "vue";
-import { useConfirm, useToast } from "primevue";
+import { useConfirm } from "primevue";
 import AppBreadcrumb from "@/layout/AppBreadcrumb.vue";
 import PaymentDrawer from "@/components/payments/PaymentDrawer.vue";
 import { useScrollPagination } from "@/composables/useScrollPagination";
@@ -77,6 +77,7 @@ import { getErrorMessage } from "@/services/axios";
 import type { Payment } from "@/types/payment";
 import router from "@/router";
 import { useAuthStore } from "@/stores/auth.store";
+import { useNotification } from "@/composables/useNotification";
 
 const el = useTemplateRef("el");
 
@@ -84,8 +85,8 @@ const selectedId = ref<string | null>(null);
 const showDrawer = ref(false);
 
 const confirm = useConfirm();
-const toast = useToast();
 const { user } = useAuthStore();
+const { showToast } = useNotification();
 
 const {
   items: payments,
@@ -127,19 +128,14 @@ const handleDelete = async (id: string) => {
   try {
     await paymentsService.remove(id);
 
-    toast.add({
-      severity: "success",
-      summary: "Pago eliminado correctamente",
-      life: 3000,
-    });
+    showToast({ severity: "success", summary: "Pago eliminado correctamente" });
 
     await reload();
   } catch (err) {
-    toast.add({
+    showToast({
       severity: "error",
       summary: "Error",
       detail: getErrorMessage(err),
-      life: 3000,
     });
   }
 };

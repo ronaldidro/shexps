@@ -16,29 +16,27 @@ import AppBreadcrumb from "@/layout/AppBreadcrumb.vue";
 import PaymentForm from "@/components/payments/PaymentForm.vue";
 import { getErrorMessage } from "@/services/axios";
 import { paymentsService } from "@/services/payments.service";
+import { useNotification } from "@/composables/useNotification";
 import type { PaymentPayload } from "@/types/payment";
-import { useToast } from "primevue";
 import router from "@/router";
 
-const toast = useToast();
+const { showToast } = useNotification();
 
 const onSubmit = async (values: PaymentPayload) => {
   try {
     await paymentsService.create(values);
 
-    toast.add({
+    showToast({
       severity: "success",
       summary: "Pago registrado correctamente",
-      life: 3000,
     });
 
     router.push({ name: "payments" });
   } catch (err) {
-    toast.add({
+    showToast({
       severity: "error",
       summary: "Error",
       detail: getErrorMessage(err),
-      life: 3000,
     });
   }
 };

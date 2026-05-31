@@ -75,7 +75,8 @@ import type { Expense } from "@/types/expense";
 import AppBreadcrumb from "@/layout/AppBreadcrumb.vue";
 import ExpenseDrawer from "@/components/expenses/ExpenseDrawer.vue";
 import { useScrollPagination } from "@/composables/useScrollPagination";
-import { useConfirm, useToast } from "primevue";
+import { useNotification } from "@/composables/useNotification";
+import { useConfirm } from "primevue";
 import router from "@/router";
 
 const el = useTemplateRef("el");
@@ -84,7 +85,7 @@ const selectedId = ref<string | null>(null);
 const showDrawer = ref(false);
 
 const confirm = useConfirm();
-const toast = useToast();
+const { showToast } = useNotification();
 
 const {
   items: expenses,
@@ -126,19 +127,17 @@ const handleDelete = async (id: string) => {
   try {
     await expensesService.remove(id);
 
-    toast.add({
+    showToast({
       severity: "success",
       summary: "Gasto eliminado correctamente",
-      life: 3000,
     });
 
     await reload();
   } catch (err) {
-    toast.add({
+    showToast({
       severity: "error",
       summary: "Error",
       detail: getErrorMessage(err),
-      life: 3000,
     });
   }
 };

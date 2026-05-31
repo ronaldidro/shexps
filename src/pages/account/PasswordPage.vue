@@ -67,10 +67,10 @@ import { usersService } from "@/services/users.service";
 import { getErrorMessage } from "@/services/axios";
 import { useAuthStore } from "@/stores/auth.store";
 import type { FormSubmitEvent } from "@primevue/forms";
-import { useToast } from "primevue";
+import { useNotification } from "@/composables/useNotification";
 
-const toast = useToast();
 const { user } = useAuthStore();
+const { showToast } = useNotification();
 
 const loading = ref(false);
 
@@ -86,17 +86,15 @@ const onSubmit = async (form: FormSubmitEvent) => {
 
     form.reset();
 
-    toast.add({
+    showToast({
       severity: "success",
       summary: "Contraseña actualizada correctamente",
-      life: 3000,
     });
   } catch (err) {
-    toast.add({
+    showToast({
       severity: "error",
       summary: "Error",
       detail: getErrorMessage(err),
-      life: 3000,
     });
   } finally {
     loading.value = false;

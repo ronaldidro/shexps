@@ -70,13 +70,13 @@ import { ref } from "vue";
 import { authService } from "@/services/auth.service";
 import { usersService } from "@/services/users.service";
 import { userResolver } from "@/resolvers/user.resolver";
-import { useToast } from "primevue";
 import type { FormSubmitEvent } from "@primevue/forms";
-import AppBreadcrumb from "@/layout/AppBreadcrumb.vue";
 import type { User } from "@/types/user";
 import { getErrorMessage } from "@/services/axios";
+import AppBreadcrumb from "@/layout/AppBreadcrumb.vue";
+import { useNotification } from "@/composables/useNotification";
 
-const toast = useToast();
+const { showToast } = useNotification();
 
 const currentUser = ref<User | null>(await authService.me());
 const loading = ref(false);
@@ -100,17 +100,15 @@ const onSubmit = async (form: FormSubmitEvent) => {
 
     currentUser.value = updatedUser;
 
-    toast.add({
+    showToast({
       severity: "success",
       summary: "Datos actualizados correctamente",
-      life: 3000,
     });
   } catch (err) {
-    toast.add({
+    showToast({
       severity: "error",
       summary: "Error",
       detail: getErrorMessage(err),
-      life: 3000,
     });
   } finally {
     loading.value = false;

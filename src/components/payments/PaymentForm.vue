@@ -131,12 +131,13 @@
 <script setup lang="ts">
 import { reactive, ref } from "vue";
 import type { FormInstance, FormSubmitEvent } from "@primevue/forms";
-import { useToast, type SelectChangeEvent } from "primevue";
+import { type SelectChangeEvent } from "primevue";
 import type { Group } from "@/types/group";
 import { groupsService } from "@/services/groups.service";
 import { expensesService } from "@/services/expenses.service";
 import { paymentResolver } from "@/resolvers/payment.resolver";
 import { useGroupMembers } from "@/composables/useGroupMembers";
+import { useNotification } from "@/composables/useNotification";
 import { payMethods } from "@/utils";
 import type { PaymentPayload } from "@/types/payment";
 
@@ -144,12 +145,12 @@ const emit = defineEmits<{
   (e: "submit", values: PaymentPayload): void;
 }>();
 
-const toast = useToast();
-
 const showMore = ref(false);
 const formRef = ref<FormInstance | null>(null);
 const groups = reactive<Group[]>(await groupsService.getAll());
+
 const members = useGroupMembers(() => formRef.value?.states.group?.value);
+const { showToast } = useNotification();
 
 const submit = (form: FormSubmitEvent) => {
   if (!form.valid) return;
@@ -176,10 +177,6 @@ const handlePayerChange = async (e: SelectChangeEvent) => {
 
   showMore.value = false;
 
-  toast.add({
-    severity: "warn",
-    summary: "No se encontraron deudas",
-    life: 3000,
-  });
+  showToast({ severity: "warn", summary: "No se encontraron deudas" });
 };
 </script>

@@ -17,28 +17,26 @@ import ExpenseForm from "@/components/expenses/ExpenseForm.vue";
 import { expensesService } from "@/services/expenses.service";
 import { getErrorMessage } from "@/services/axios";
 import type { ExpensePayload } from "@/types/expense";
-import { useToast } from "primevue";
+import { useNotification } from "@/composables/useNotification";
 import router from "@/router";
 
-const toast = useToast();
+const { showToast } = useNotification();
 
 const onSubmit = async (payload: ExpensePayload) => {
   try {
     await expensesService.create(payload);
 
-    toast.add({
+    showToast({
       severity: "success",
       summary: "Gasto registrado correctamente",
-      life: 3000,
     });
 
     router.push({ name: "expenses" });
   } catch (err) {
-    toast.add({
+    showToast({
       severity: "error",
       summary: "Error",
       detail: getErrorMessage(err),
-      life: 3000,
     });
   }
 };

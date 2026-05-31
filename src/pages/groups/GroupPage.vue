@@ -14,13 +14,13 @@ import AppBreadcrumb from "@/layout/AppBreadcrumb.vue";
 import type { Group, GroupPayload } from "@/types/group";
 import { groupsService } from "@/services/groups.service";
 import { useRoute } from "vue-router";
-import { useToast } from "primevue";
 import router from "@/router";
 import GroupForm from "@/components/groups/GroupForm.vue";
 import { getErrorMessage } from "@/services/axios";
+import { useNotification } from "@/composables/useNotification";
 
 const route = useRoute();
-const toast = useToast();
+const { showToast } = useNotification();
 
 const group = ref<Group | null>(
   await groupsService.get(route.params.id as string),
@@ -46,19 +46,17 @@ const onSubmit = async (values: GroupPayload) => {
   try {
     await groupsService.update(group.value.id, values);
 
-    toast.add({
+    showToast({
       severity: "success",
       summary: "Grupo actualizado correctamente",
-      life: 3000,
     });
 
     router.push({ name: "groups" });
   } catch (err) {
-    toast.add({
+    showToast({
       severity: "error",
       summary: "Error",
       detail: getErrorMessage(err),
-      life: 3000,
     });
   }
 };
