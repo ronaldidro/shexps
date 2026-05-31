@@ -48,6 +48,7 @@ import { ref } from "vue";
 import { groupResolver } from "@/resolvers/group.resolver";
 import { usersService } from "@/services/users.service";
 import type { User } from "@/types/user";
+import type { GroupPayload } from "@/types/group";
 import type { FormSubmitEvent } from "@primevue/forms";
 
 withDefaults(
@@ -59,9 +60,12 @@ withDefaults(
   },
 );
 
-const emit = defineEmits<{ (e: "submit", form: FormSubmitEvent): void }>();
+const emit = defineEmits<{ (e: "submit", values: GroupPayload): void }>();
 
-const submit = (form: FormSubmitEvent) => emit("submit", form);
+const submit = (form: FormSubmitEvent) => {
+  if (!form.valid) return;
+  emit("submit", form.values as GroupPayload);
+};
 
 const users = ref<User[]>(await usersService.getAll());
 </script>

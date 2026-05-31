@@ -48,8 +48,7 @@ import { ref } from "vue";
 import GroupDialog from "@/components/groups/GroupDialog.vue";
 import AppBreadcrumb from "@/layout/AppBreadcrumb.vue";
 import { groupsService } from "@/services/groups.service";
-import type { Group } from "@/types/group";
-import type { FormSubmitEvent } from "@primevue/forms";
+import type { Group, GroupPayload } from "@/types/group";
 import { useConfirm, useToast } from "primevue";
 import { getErrorMessage } from "@/services/axios";
 
@@ -82,12 +81,9 @@ const openConfirmDialog = (id: string) => {
   });
 };
 
-const handleCreate = async (form: FormSubmitEvent) => {
+const handleCreate = async (values: GroupPayload) => {
   try {
-    await groupsService.create({
-      name: form.values.name,
-      members: form.values.members,
-    });
+    await groupsService.create(values);
 
     groups.value = await groupsService.getAll();
 

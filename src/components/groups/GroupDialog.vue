@@ -11,24 +11,20 @@
 </template>
 
 <script setup lang="ts">
-import type { FormSubmitEvent } from "@primevue/forms";
+import type { GroupPayload } from "@/types/group.ts";
 import GroupForm from "./GroupForm.vue";
 
 defineProps<{ visible: boolean }>();
 
 const emit = defineEmits<{
   (e: "update:visible", value: boolean): void;
-  (e: "onSubmit", form: FormSubmitEvent): void;
+  (e: "onSubmit", values: GroupPayload): void;
 }>();
 
-const submit = (form: FormSubmitEvent) => {
-  if (form.valid) {
-    emit("onSubmit", form);
-    emit("update:visible", false);
-  }
-};
-
-const close = () => {
+const submit = (values: GroupPayload) => {
+  emit("onSubmit", values);
   emit("update:visible", false);
 };
+
+const close = () => emit("update:visible", false);
 </script>

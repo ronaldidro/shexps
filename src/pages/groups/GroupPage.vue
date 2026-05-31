@@ -11,10 +11,9 @@
 <script setup lang="ts">
 import { computed, ref } from "vue";
 import AppBreadcrumb from "@/layout/AppBreadcrumb.vue";
-import type { Group } from "@/types/group";
+import type { Group, GroupPayload } from "@/types/group";
 import { groupsService } from "@/services/groups.service";
 import { useRoute } from "vue-router";
-import type { FormSubmitEvent } from "@primevue/forms";
 import { useToast } from "primevue";
 import router from "@/router";
 import GroupForm from "@/components/groups/GroupForm.vue";
@@ -41,14 +40,11 @@ const items = computed(() => {
   ];
 });
 
-const onSubmit = async (form: FormSubmitEvent) => {
-  if (!group.value || !form.valid) return;
+const onSubmit = async (values: GroupPayload) => {
+  if (!group.value) return;
 
   try {
-    await groupsService.update(group.value.id, {
-      name: form.values.name,
-      members: form.values.members,
-    });
+    await groupsService.update(group.value.id, values);
 
     toast.add({
       severity: "success",

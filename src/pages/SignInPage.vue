@@ -123,12 +123,13 @@ import { authResolver } from "@/resolvers/auth.resolver";
 import { useRouter } from "vue-router";
 import { useAuthStore } from "@/stores/auth.store";
 import type { FormSubmitEvent } from "@primevue/forms";
+import type { SignInPayload } from "@/types/auth";
 import FloatingConfigurator from "@/components/FloatingConfigurator.vue";
 import { getErrorMessage } from "@/services/axios";
 
 const toast = useToast();
 const router = useRouter();
-const authStore = useAuthStore();
+const { signIn } = useAuthStore();
 
 const loading = ref(false);
 
@@ -138,12 +139,7 @@ const onSubmit = async (form: FormSubmitEvent) => {
   loading.value = true;
 
   try {
-    const {
-      values: { email, password },
-    } = form;
-
-    await authStore.signIn({ email, password });
-
+    await signIn(form.values as SignInPayload);
     router.push({ name: "dashboard" });
   } catch (err) {
     toast.add({
