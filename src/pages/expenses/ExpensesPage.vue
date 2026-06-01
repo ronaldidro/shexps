@@ -53,7 +53,7 @@
           <Tag
             v-for="detail of expense.details"
             :key="detail.id"
-            :value="detail.user.fullName"
+            :value="detail.user.firstName"
             severity="info"
           />
         </div>

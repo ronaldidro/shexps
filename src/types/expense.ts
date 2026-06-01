@@ -32,6 +32,8 @@ export interface ExpensePayload {
 }
 
 interface ExpenseSummaryDetail {
+  firstName: string;
+  lastName: string;
   fullName: string;
   amount: number;
 }

@@ -26,7 +26,7 @@
       <span class="text-2xl font-semibold">S/{{ expense.amount }}</span>
     </div>
     <div v-if="expense.splitted" class="flex justify-between pt-5">
-      <span class="text-lg">{{ expense.user.fullName }}</span>
+      <span class="text-lg">{{ expense.user.firstName }}</span>
       <span class="text-lg font-semibold">
         S/{{ expense.details[0]?.amount || expense.amount }}
       </span>
@@ -40,7 +40,7 @@
           :key="detail.id"
           class="flex justify-between"
         >
-          <span class="text-lg">{{ detail.user.fullName }}</span>
+          <span class="text-lg">{{ detail.user.firstName }}</span>
           <span class="text-lg font-semibold">S/{{ detail.amount }}</span>
         </li>
       </ul>

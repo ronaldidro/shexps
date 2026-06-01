@@ -29,7 +29,7 @@
           :modelValue="field.value"
           @update:modelValue="field.onChange"
           :options="members"
-          optionLabel="fullName"
+          optionLabel="firstName"
           optionValue="id"
           placeholder="Miembro"
         />

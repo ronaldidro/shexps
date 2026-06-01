@@ -22,9 +22,9 @@
       </div>
       <div class="flex justify-between items-center">
         <div class="flex items-center gap-4">
-          <Tag :value="payment.payer.fullName" />
+          <Tag :value="payment.payer.firstName" />
           <i class="pi pi-arrow-right" />
-          <Tag :value="payment.user.fullName" severity="secondary" />
+          <Tag :value="payment.user.firstName" severity="secondary" />
         </div>
         <span class="text-2xl font-semibold">S/{{ payment.amount }}</span>
       </div>

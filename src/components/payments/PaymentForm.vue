@@ -37,7 +37,7 @@
         name="payer"
         :options="members"
         @change="handlePayerChange"
-        optionLabel="fullName"
+        optionLabel="firstName"
         optionValue="id"
         placeholder="Selecciona miembro"
         fluid

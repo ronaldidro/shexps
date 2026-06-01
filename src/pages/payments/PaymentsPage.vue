@@ -52,9 +52,9 @@
         </div>
         <div class="flex items-center gap-2 mt-2">
           <span>De</span>
-          <Tag :value="payment.payer.fullName" />
+          <Tag :value="payment.payer.firstName" />
           <span>para</span>
-          <Tag :value="payment.user.fullName" severity="secondary" />
+          <Tag :value="payment.user.firstName" severity="secondary" />
         </div>
       </div>
       <p v-show="loading" class="text-center py-4">

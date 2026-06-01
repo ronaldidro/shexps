@@ -50,7 +50,7 @@
           v-for="debtor in summary.debtors"
           class="flex items-center justify-between"
         >
-          <span class="font-medium">{{ debtor.fullName }}</span>
+          <span class="font-medium">{{ debtor.firstName }}</span>
           <Chip :label="`S/${debtor.amount}`" />
         </div>
       </div>
