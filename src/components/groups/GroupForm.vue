@@ -25,7 +25,7 @@
         <MultiSelect
           name="members"
           :options="users"
-          optionLabel="fullName"
+          optionLabel="firstName"
           optionValue="id"
           :showToggleAll="false"
           placeholder="Selecciona miembros"
@@ -71,7 +71,7 @@ const submit = (form: FormSubmitEvent) => {
 };
 
 const getUsers = async () => {
-  const users = await usersService.getAll();
+  const users = await usersService.getAll({ role: "guest" });
   return users.filter((user) => user.id !== authUser.id);
 };
 

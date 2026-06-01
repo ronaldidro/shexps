@@ -1,3 +1,5 @@
+import type { PaginationParams } from "./pagination";
+
 export interface User {
   id: string;
   firstName: string;
@@ -12,4 +14,10 @@ export interface UpdateUserPayload {
   lastName?: string;
   email?: string;
   password?: string;
+}
+
+type Role = "admin" | "guest";
+
+export interface UserPaginationParams extends PaginationParams {
+  role?: Role;
 }
