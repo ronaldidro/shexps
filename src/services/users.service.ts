@@ -1,12 +1,8 @@
 import api, { getErrorMessage } from "@/services/axios";
-import type {
-  User,
-  UpdateUserPayload,
-  UserPaginationParams,
-} from "@/types/user";
+import type { User, UpdateUserPayload, UserQueryParams } from "@/types/user";
 
 export const usersService = {
-  async getAll(params: UserPaginationParams) {
+  async getAll(params: UserQueryParams) {
     try {
       const response = await api.get<User[]>("/users", { params });
       return response.data;

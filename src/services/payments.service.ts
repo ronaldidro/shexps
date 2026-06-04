@@ -1,9 +1,9 @@
-import type { PaginatedData, PaginationParams } from "@/types/pagination";
+import type { PaginatedData, QueryParams } from "@/types/pagination";
 import api, { getErrorMessage } from "@/services/axios";
 import type { Payment, PaymentPayload } from "@/types/payment";
 
 export const paymentsService = {
-  async getAll(params: PaginationParams) {
+  async getAll(params: QueryParams) {
     try {
       const response = await api.get<PaginatedData<Payment>>("/payments", {
         params,

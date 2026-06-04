@@ -1,4 +1,4 @@
-import type { PaginationParams } from "./pagination";
+import type { QueryParams } from "./pagination";
 
 export interface User {
   id: string;
@@ -18,6 +18,6 @@ export interface UpdateUserPayload {
 
 type Role = "admin" | "guest";
 
-export interface UserPaginationParams extends PaginationParams {
+export interface UserQueryParams extends QueryParams {
   role?: Role;
 }

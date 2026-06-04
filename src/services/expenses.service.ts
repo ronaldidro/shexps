@@ -5,10 +5,10 @@ import type {
   ExpensePayload,
   ExpenseSummary,
 } from "@/types/expense";
-import type { PaginatedData, PaginationParams } from "@/types/pagination";
+import type { PaginatedData, QueryParams } from "@/types/pagination";
 
 export const expensesService = {
-  async getAll(params: PaginationParams) {
+  async getAll(params: QueryParams) {
     try {
       const response = await api.get<PaginatedData<Expense>>("/expenses", {
         params,
@@ -19,7 +19,7 @@ export const expensesService = {
     }
   },
 
-  async getDetails(params: PaginationParams) {
+  async getDetails(params: QueryParams) {
     try {
       const response = await api.get<PaginatedData<ExpenseDetail>>(
         "/expenses/details",

@@ -96,7 +96,7 @@
           v-for="creditor in summary.creditors"
           class="flex items-center justify-between"
         >
-          <span class="font-medium">{{ creditor.fullName }}</span>
+          <span class="font-medium">{{ creditor.firstName }}</span>
           <Chip :label="`S/${creditor.amount}`" />
         </div>
       </div>

@@ -2,12 +2,10 @@
   <AppBreadcrumb :items="[{ label: 'Movimientos' }, { label: 'Pagos' }]" />
   <Toolbar class="mb-7">
     <template #start>
-      <IconField>
-        <InputIcon>
-          <i class="pi pi-search" />
-        </InputIcon>
-        <InputText placeholder="Buscar por descripción" />
-      </IconField>
+      <InputGroup>
+        <Button icon="pi pi-search" @click="handleSearch" />
+        <InputText v-model="search" placeholder="Buscar" />
+      </InputGroup>
     </template>
     <template #end>
       <Button
@@ -83,6 +81,7 @@ const el = useTemplateRef("el");
 
 const selectedId = ref<string | null>(null);
 const showDrawer = ref(false);
+const search = ref("");
 
 const confirm = useConfirm();
 const { user } = useAuthStore();
@@ -92,9 +91,9 @@ const {
   items: payments,
   loading,
   reload,
+  setFilters,
 } = await useScrollPagination<Payment>({
   el,
-  limit: 10,
   fetcher: paymentsService.getAll,
 });
 
@@ -102,6 +101,8 @@ const openDrawer = (id: string) => {
   selectedId.value = id;
   showDrawer.value = true;
 };
+
+const handleSearch = async () => await setFilters({ search: search.value });
 
 const openConfirmDialog = (id: string) => {
   confirm.require({

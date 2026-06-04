@@ -2,12 +2,10 @@
   <AppBreadcrumb :items="[{ label: 'Movimientos' }, { label: 'Deudas' }]" />
   <Toolbar class="mb-7">
     <template #start>
-      <IconField>
-        <InputIcon>
-          <i class="pi pi-search" />
-        </InputIcon>
-        <InputText placeholder="Buscar por descripción" />
-      </IconField>
+      <InputGroup>
+        <Button icon="pi pi-search" @click="handleSearch" />
+        <InputText v-model="search" placeholder="Buscar" />
+      </InputGroup>
     </template>
   </Toolbar>
   <div class="card p-1!">
@@ -67,12 +65,18 @@ const el = useTemplateRef("el");
 
 const selectedId = ref<string | null>(null);
 const showDrawer = ref(false);
+const search = ref("");
 
-const { items: details, loading } = await useScrollPagination<ExpenseDetail>({
+const {
+  items: details,
+  loading,
+  setFilters,
+} = await useScrollPagination<ExpenseDetail>({
   el,
-  limit: 10,
   fetcher: expensesService.getDetails,
 });
+
+const handleSearch = async () => await setFilters({ search: search.value });
 
 const openDrawer = (id: string) => {
   selectedId.value = id;

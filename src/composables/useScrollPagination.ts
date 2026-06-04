@@ -1,24 +1,18 @@
 import { ref, type Ref } from "vue";
 import { useInfiniteScroll } from "@vueuse/core";
-import type { PaginatedData, PaginationParams } from "@/types/pagination";
-
-interface ScrollPaginationOptions<T> {
-  el: Ref<HTMLElement | null>;
-  limit?: number;
-  distance?: number;
-  fetcher: (params: PaginationParams) => Promise<PaginatedData<T>>;
-}
+import type { QueryParams, ScrollPaginationOptions } from "@/types/pagination";
 
 export async function useScrollPagination<T>({
   el,
   fetcher,
-  limit = 10,
+  filters = { limit: 10 },
   distance = 10,
 }: ScrollPaginationOptions<T>) {
   const items: Ref = ref<T[]>([]);
   const page = ref(1);
   const loading = ref(false);
   const hasMore = ref(true);
+  const query = ref<QueryParams>({ ...filters });
 
   const loadPage = async () => {
     if (loading.value || !hasMore.value) return;
@@ -26,7 +20,10 @@ export async function useScrollPagination<T>({
     loading.value = true;
 
     try {
-      const response = await fetcher({ page: page.value, limit });
+      const response = await fetcher({
+        ...query.value,
+        page: page.value,
+      });
 
       items.value.push(...response.data);
 
@@ -49,16 +46,22 @@ export async function useScrollPagination<T>({
     await loadPage();
   };
 
+  const setFilters = async (filters: Partial<QueryParams>) => {
+    query.value = { ...query.value, ...filters };
+    await reload();
+  };
+
   await loadPage();
 
   useInfiniteScroll(el, loadPage, {
     distance,
     canLoadMore: () => hasMore.value && !loading.value,
-  }); 
+  });
 
   return {
     items,
     loading,
     reload,
+    setFilters,
   };
 }
