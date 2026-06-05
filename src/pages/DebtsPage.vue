@@ -3,8 +3,8 @@
   <Toolbar class="mb-7">
     <template #start>
       <InputGroup>
-        <Button icon="pi pi-search" @click="handleSearch" />
         <InputText v-model="search" placeholder="Buscar" />
+        <Button icon="pi pi-search" @click="handleSearch" />
       </InputGroup>
     </template>
   </Toolbar>
@@ -48,6 +48,11 @@
         <i class="pi pi-spin pi-spinner" />
         Cargando...
       </p>
+      <ScrollTop
+        target="parent"
+        icon="pi pi-arrow-up"
+        :buttonProps="{ severity: 'contrast', raised: true, rounded: true }"
+      />
     </div>
   </div>
   <ExpenseDrawer v-model:visible="showDrawer" :id="selectedId" />

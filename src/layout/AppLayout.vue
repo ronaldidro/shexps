@@ -49,7 +49,5 @@ onErrorCaptured(({ message }) => {
       <AppFooter />
     </div>
     <div class="layout-mask animate-fadein" @click="hideMobileMenu" />
-    <ScrollTop />
-    <Toast />
   </div>
 </template>

@@ -22,12 +22,12 @@
           <Chip :label="`S/${summary.amount}`" />
         </div>
         <div class="flex justify-between">
-          <Button asChild v-slot="slotProps" text>
+          <Button asChild v-slot="slotProps" outlined>
             <RouterLink :class="slotProps.class" :to="{ name: 'new-expense' }">
               <i class="pi pi-plus" /> Nuevo
             </RouterLink>
           </Button>
-          <Button asChild v-slot="slotProps" text>
+          <Button asChild v-slot="slotProps" outlined>
             <RouterLink :class="slotProps.class" :to="{ name: 'expenses' }">
               <i class="pi pi-eye" /> Ver
             </RouterLink>
