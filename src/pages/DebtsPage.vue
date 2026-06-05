@@ -61,7 +61,7 @@
 <script setup lang="ts">
 import { ref, useTemplateRef } from "vue";
 import AppBreadcrumb from "@/layout/AppBreadcrumb.vue";
-import { expensesService } from "@/services/expenses.service";
+import { detailsService } from "@/services/details.service";
 import type { ExpenseDetail } from "@/types/expense";
 import ExpenseDrawer from "@/components/expenses/ExpenseDrawer.vue";
 import { useScrollPagination } from "@/composables/useScrollPagination";
@@ -78,7 +78,7 @@ const {
   setFilters,
 } = await useScrollPagination<ExpenseDetail>({
   el,
-  fetcher: expensesService.getDetails,
+  fetcher: detailsService.getAll,
 });
 
 const handleSearch = async () => await setFilters({ search: search.value });

@@ -134,7 +134,7 @@ import type { FormInstance, FormSubmitEvent } from "@primevue/forms";
 import { type SelectChangeEvent } from "primevue";
 import type { Group } from "@/types/group";
 import { groupsService } from "@/services/groups.service";
-import { expensesService } from "@/services/expenses.service";
+import { detailsService } from "@/services/details.service";
 import { paymentResolver } from "@/resolvers/payment.resolver";
 import { useGroupMembers } from "@/composables/useGroupMembers";
 import { useNotification } from "@/composables/useNotification";
@@ -164,7 +164,7 @@ const handleGroupChange = () => {
 };
 
 const handlePayerChange = async (e: SelectChangeEvent) => {
-  const sum = await expensesService.getDetailsSum({
+  const sum = await detailsService.getSum({
     debtor: e.value,
     group: formRef.value?.states.group?.value,
   });
