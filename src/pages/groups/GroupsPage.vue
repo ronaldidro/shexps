@@ -2,15 +2,13 @@
   <AppBreadcrumb :items="[{ label: 'Configuración' }, { label: 'Grupos' }]" />
   <Toolbar class="mb-7">
     <template #start>
-      <IconField>
-        <InputIcon>
-          <i class="pi pi-search" />
-        </InputIcon>
-        <InputText placeholder="Buscar por nombre" />
-      </IconField>
+      <InputGroup>
+        <InputText placeholder="Buscar" />
+        <Button icon="pi pi-search" />
+      </InputGroup>
     </template>
     <template #end>
-      <Button label="Nuevo" icon="pi pi-plus" @click="openDialog" />
+      <Button label="Nuevo" icon="pi pi-plus" @click="showDialog = true" />
     </template>
   </Toolbar>
   <div class="grid grid-cols-1 md:grid-cols-3 gap-7">
@@ -58,8 +56,6 @@ const showDialog = ref(false);
 
 const confirm = useConfirm();
 const { showToast } = useNotification();
-
-const openDialog = () => (showDialog.value = true);
 
 const openConfirmDialog = (id: string) => {
   confirm.require({
