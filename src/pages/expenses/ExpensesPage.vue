@@ -54,6 +54,11 @@
             :value="detail.user.firstName"
             severity="info"
           />
+          <Tag
+            v-if="expense.splitted || !expense.details.length"
+            :value="expense.user.firstName"
+            severity="info"
+          />
         </div>
       </div>
       <p v-show="loading" class="text-center py-4">
