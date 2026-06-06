@@ -17,12 +17,28 @@ import PaymentForm from "@/components/payments/PaymentForm.vue";
 import { getErrorMessage } from "@/services/axios";
 import { paymentsService } from "@/services/payments.service";
 import { useNotification } from "@/composables/useNotification";
+import { usePreviewDialog } from "@/composables/usePreviewDialog";
 import type { PaymentPayload } from "@/types/payment";
+import { useAuthStore } from "@/stores/auth.store";
 import router from "@/router";
 
 const { showToast } = useNotification();
+const { openPreview } = usePreviewDialog();
+const { user } = useAuthStore();
 
-const onSubmit = async (values: PaymentPayload) => {
+const onSubmit = (payload: PaymentPayload, preview: PaymentPayload) =>
+  openPreview({
+    title: "Nuevo pago",
+    data: {
+      ...preview,
+      remaining: payload.debt - payload.amount,
+      user,
+      type: "payment",
+    },
+    handleSave: () => create(payload),
+  });
+
+const create = async (values: PaymentPayload) => {
   try {
     await paymentsService.create(values);
 

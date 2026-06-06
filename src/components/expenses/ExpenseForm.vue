@@ -87,7 +87,13 @@
     <div class="flex flex-col gap-2">
       <ExpenseDetail :members :errors />
     </div>
-    <Button type="submit" label="Verificar" class="ml-auto" />
+    <Button
+      type="submit"
+      label="Verificar"
+      icon="pi pi-arrow-up-right"
+      iconPos="right"
+      class="ml-auto"
+    />
   </form>
 </template>
 

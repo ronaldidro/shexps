@@ -18,18 +18,18 @@ import { expensesService } from "@/services/expenses.service";
 import { getErrorMessage } from "@/services/axios";
 import type { ExpensePayload } from "@/types/expense";
 import { useNotification } from "@/composables/useNotification";
+import { usePreviewDialog } from "@/composables/usePreviewDialog";
 import router from "@/router";
 import { useAuthStore } from "@/stores/auth.store";
-import { usePreviewDialog } from "@/composables/usePreviewDialog";
 
 const { showToast } = useNotification();
-const { user } = useAuthStore();
 const { openPreview } = usePreviewDialog();
+const { user } = useAuthStore();
 
 const onSubmit = (payload: ExpensePayload, preview: ExpensePayload) =>
   openPreview({
     title: "Nuevo gasto",
-    data: { ...preview, user },
+    data: { ...preview, user, type: "expense" },
     handleSave: () => create(payload),
   });
 

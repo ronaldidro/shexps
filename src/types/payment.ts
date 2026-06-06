@@ -18,6 +18,7 @@ export interface Payment {
 
 export interface PaymentPayload {
   description: string;
+  debt: number;
   amount: number;
   method: PayMethod;
   group: string;

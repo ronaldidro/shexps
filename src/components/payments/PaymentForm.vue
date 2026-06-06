@@ -11,7 +11,7 @@
       method: '',
       description: '',
     }"
-    @submit="submit"
+    @submit="onSubmit"
     class="flex flex-col gap-4"
   >
     <div class="flex flex-col gap-2">
@@ -120,8 +120,9 @@
       </div>
       <Button
         type="submit"
-        label="Guardar"
-        icon="pi pi-check"
+        label="Verificar"
+        icon="pi pi-arrow-up-right"
+        iconPos="right"
         class="ml-auto"
       />
     </div>
@@ -142,7 +143,7 @@ import { payMethods } from "@/utils";
 import type { PaymentPayload } from "@/types/payment";
 
 const emit = defineEmits<{
-  (e: "submit", values: PaymentPayload): void;
+  (e: "submit", values: PaymentPayload, preview: PaymentPayload): void;
 }>();
 
 const showMore = ref(false);
@@ -152,9 +153,21 @@ const groups = reactive<Group[]>(await groupsService.getAll());
 const members = useGroupMembers(() => formRef.value?.states.group?.value);
 const { showToast } = useNotification();
 
-const submit = (form: FormSubmitEvent) => {
+const onSubmit = (form: FormSubmitEvent) => {
   if (!form.valid) return;
-  emit("submit", form.values as PaymentPayload);
+  const values = form.values as PaymentPayload;
+  emit("submit", values, getPreview(values));
+};
+
+const getPreview = (values: PaymentPayload) => {
+  const group = groups.find((group) => group.id === values.group);
+  const member = members.value.find((member) => member.id === values.payer);
+
+  return {
+    ...values,
+    group: group?.name ?? "",
+    payer: member?.firstName ?? "",
+  };
 };
 
 const handleGroupChange = () => {
