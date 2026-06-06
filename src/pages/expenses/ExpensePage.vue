@@ -19,10 +19,21 @@ import { getErrorMessage } from "@/services/axios";
 import type { ExpensePayload } from "@/types/expense";
 import { useNotification } from "@/composables/useNotification";
 import router from "@/router";
+import { useAuthStore } from "@/stores/auth.store";
+import { usePreviewDialog } from "@/composables/usePreviewDialog";
 
 const { showToast } = useNotification();
+const { user } = useAuthStore();
+const { openPreview } = usePreviewDialog();
 
-const onSubmit = async (payload: ExpensePayload) => {
+const onSubmit = (payload: ExpensePayload, preview: ExpensePayload) =>
+  openPreview({
+    title: "Nuevo gasto",
+    data: { ...preview, user },
+    handleSave: () => create(payload),
+  });
+
+const create = async (payload: ExpensePayload) => {
   try {
     await expensesService.create(payload);
 

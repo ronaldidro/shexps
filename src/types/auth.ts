@@ -6,3 +6,9 @@ export interface SignInPayload {
 export interface SignInResponse {
   accessToken: string;
 }
+
+export interface AuthUser {
+  id: string | null;
+  name: string | null;
+  token: string | null;
+}

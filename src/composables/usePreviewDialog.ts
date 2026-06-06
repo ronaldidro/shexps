@@ -1,0 +1,29 @@
+import { useDialog } from "primevue";
+import PreviewMovement from "@/components/PreviewMovement.vue";
+
+export const usePreviewDialog = () => {
+  const dialog = useDialog();
+
+  const openPreview = ({
+    title,
+    data,
+    handleSave,
+  }: {
+    title: string;
+    data: unknown;
+    handleSave: () => void;
+  }) => {
+    dialog.open(PreviewMovement, {
+      props: {
+        header: title,
+        style: { width: "50vw" },
+        breakpoints: { "960px": "75vw", "640px": "90vw" },
+        modal: true,
+      },
+      data,
+      emits: { onSave: handleSave },
+    });
+  };
+
+  return { openPreview };
+};

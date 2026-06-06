@@ -87,13 +87,7 @@
     <div class="flex flex-col gap-2">
       <ExpenseDetail :members :errors />
     </div>
-    <Button
-      type="submit"
-      label="Guardar"
-      icon="pi pi-check"
-      class="ml-auto"
-      :loading="isSubmitting"
-    />
+    <Button type="submit" label="Verificar" class="ml-auto" />
   </form>
 </template>
 
@@ -107,9 +101,11 @@ import { groupsService } from "@/services/groups.service";
 import { useGroupMembers } from "@/composables/useGroupMembers.ts";
 import ExpenseDetail from "./ExpenseDetail.vue";
 
-const emit = defineEmits<{ (e: "submit", payload: ExpensePayload): void }>();
+const emit = defineEmits<{
+  (e: "submit", payload: ExpensePayload, preview: ExpensePayload): void;
+}>();
 
-const { handleSubmit, errors, values, setFieldValue, isSubmitting } = useForm({
+const { handleSubmit, errors, values, setFieldValue } = useForm({
   validationSchema: expenseSchema,
   initialValues: {
     group: "",
@@ -124,7 +120,20 @@ const { handleSubmit, errors, values, setFieldValue, isSubmitting } = useForm({
 const groups = reactive<Group[]>(await groupsService.getAll());
 const members = useGroupMembers(() => values.group as string);
 
-const onSubmit = handleSubmit((values) => emit("submit", values));
+const onSubmit = handleSubmit((values) =>
+  emit("submit", values, getPreview(values)),
+);
+
+const getPreview = (values: ExpensePayload) => {
+  const group = groups.find((group) => group.id === values.group);
+
+  const details = values.details?.map((detail) => {
+    const member = members.value.find((member) => member.id === detail.user);
+    return { user: member?.fullName ?? "", amount: detail.amount };
+  });
+
+  return { ...values, group: group?.name ?? "", details };
+};
 
 const splitAmount = () => {
   if (!values.details?.length) return;

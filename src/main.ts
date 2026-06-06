@@ -5,6 +5,7 @@ import PrimeVue from "primevue/config";
 import Aura from "@primeuix/themes/aura";
 import ToastService from "primevue/toastservice";
 import ConfirmationService from "primevue/confirmationservice";
+import DialogService from "primevue/dialogservice";
 import App from "./App.vue";
 import piniaPluginPersistedstate from "pinia-plugin-persistedstate";
 
@@ -29,5 +30,6 @@ app.use(PrimeVue, {
 
 app.use(ToastService);
 app.use(ConfirmationService);
+app.use(DialogService);
 
 app.mount("#app");
