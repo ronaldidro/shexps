@@ -52,9 +52,12 @@
           <Tag :value="payment.user.firstName" severity="secondary" />
         </div>
       </div>
-      <p v-show="loading" class="text-center py-4">
-        <i class="pi pi-spin pi-spinner" />
-        Cargando...
+      <p v-if="loading" class="text-center pt-5">
+        <ProgressSpinner style="width: 50px; height: 50px" />
+      </p>
+      <p v-else-if="!payments.length" class="text-center text-lg pt-5">
+        <i class="pi pi-info-circle pr-2" />
+        No se encontraron pagos
       </p>
       <ScrollTop
         target="parent"

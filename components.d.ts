@@ -41,6 +41,7 @@ declare module 'vue' {
     PaymentDrawer: typeof import('./src/components/payments/PaymentDrawer.vue')['default']
     PaymentForm: typeof import('./src/components/payments/PaymentForm.vue')['default']
     PaymentPreview: typeof import('./src/components/previews/PaymentPreview.vue')['default']
+    ProgressSpinner: typeof import('primevue/progressspinner')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
     ScrollTop: typeof import('primevue/scrolltop')['default']
