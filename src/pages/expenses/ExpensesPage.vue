@@ -2,10 +2,7 @@
   <AppBreadcrumb :items="[{ label: 'Movimientos' }, { label: 'Gastos' }]" />
   <Toolbar class="mb-7">
     <template #start>
-      <InputGroup>
-        <InputText v-model="search" placeholder="Buscar" />
-        <Button icon="pi pi-search" @click="handleSearch" />
-      </InputGroup>
+      <SearchField v-model="search" @search="handleSearch" />
     </template>
     <template #end>
       <Button
@@ -82,6 +79,7 @@ import { getErrorMessage } from "@/services/axios";
 import type { Expense } from "@/types/expense";
 import AppBreadcrumb from "@/layout/AppBreadcrumb.vue";
 import ExpenseDrawer from "@/components/expenses/ExpenseDrawer.vue";
+import SearchField from "@/components/SearchField.vue";
 import { useScrollPagination } from "@/composables/useScrollPagination";
 import { useNotification } from "@/composables/useNotification";
 import { useConfirm } from "primevue";
@@ -111,7 +109,10 @@ const openDrawer = (id: string) => {
   showDrawer.value = true;
 };
 
-const handleSearch = async () => await setFilters({ search: search.value });
+const handleSearch = async (value: string) => {
+  search.value = value;
+  await setFilters({ search: value });
+};
 
 const openConfirmDialog = (id: string) => {
   confirm.require({

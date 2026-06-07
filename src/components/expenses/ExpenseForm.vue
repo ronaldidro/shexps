@@ -135,7 +135,7 @@ const getPreview = (values: ExpensePayload) => {
 
   const details = values.details?.map((detail) => {
     const member = members.value.find((member) => member.id === detail.user);
-    return { user: member?.fullName ?? "", amount: detail.amount };
+    return { user: member?.firstName ?? "", amount: detail.amount };
   });
 
   return { ...values, group: group?.name ?? "", details };

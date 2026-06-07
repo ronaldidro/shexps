@@ -2,10 +2,7 @@
   <AppBreadcrumb :items="[{ label: 'Movimientos' }, { label: 'Deudas' }]" />
   <Toolbar class="mb-7">
     <template #start>
-      <InputGroup>
-        <InputText v-model="search" placeholder="Buscar" />
-        <Button icon="pi pi-search" @click="handleSearch" />
-      </InputGroup>
+      <SearchField v-model="search" @search="handleSearch" />
     </template>
   </Toolbar>
   <div class="card p-1!">
@@ -64,6 +61,7 @@ import AppBreadcrumb from "@/layout/AppBreadcrumb.vue";
 import { detailsService } from "@/services/details.service";
 import type { ExpenseDetail } from "@/types/expense";
 import ExpenseDrawer from "@/components/expenses/ExpenseDrawer.vue";
+import SearchField from "@/components/SearchField.vue";
 import { useScrollPagination } from "@/composables/useScrollPagination";
 
 const el = useTemplateRef("el");
@@ -81,7 +79,10 @@ const {
   fetcher: detailsService.getAll,
 });
 
-const handleSearch = async () => await setFilters({ search: search.value });
+const handleSearch = async (value: string) => {
+  search.value = value;
+  await setFilters({ search: value });
+};
 
 const openDrawer = (id: string) => {
   selectedId.value = id;
