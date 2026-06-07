@@ -111,11 +111,13 @@ const emit = defineEmits<{
   (e: "submit", payload: ExpensePayload, preview: ExpensePayload): void;
 }>();
 
+const groups = reactive<Group[]>(await groupsService.getAll());
+
 const { handleSubmit, errors, values, setFieldValue } = useForm({
   validationSchema: expenseSchema,
   initialValues: {
-    group: "",
-    expensedAt: "",
+    group: groups[0].id,
+    expensedAt: new Date(),
     description: "",
     amount: null,
     splitted: false,
@@ -123,7 +125,6 @@ const { handleSubmit, errors, values, setFieldValue } = useForm({
   },
 });
 
-const groups = reactive<Group[]>(await groupsService.getAll());
 const members = useGroupMembers(() => values.group as string);
 
 const onSubmit = handleSubmit((values) =>
