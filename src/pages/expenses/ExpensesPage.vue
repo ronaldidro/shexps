@@ -44,7 +44,7 @@
             />
           </div>
         </div>
-        <div class="flex gap-2 mt-2">
+        <div class="flex gap-2 mt-2 flex-wrap">
           <Tag
             v-for="detail of expense.details"
             :key="detail.id"
