@@ -101,6 +101,7 @@ const onSubmit = (form: FormSubmitEvent) => {
 
 const onClear = () => {
   formRef.value?.reset();
+  members.value = [];
   emit("clear");
 };
 </script>
