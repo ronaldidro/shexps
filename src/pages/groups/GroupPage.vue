@@ -4,6 +4,8 @@
     <GroupForm
       :initialValues="{ name: group.name, members }"
       @submit="onSubmit"
+      leftButtonLabel="Regresar"
+      @click:leftButton="router.push({ name: 'groups' })"
     />
   </div>
 </template>

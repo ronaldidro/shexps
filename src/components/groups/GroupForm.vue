@@ -39,7 +39,15 @@
         </Message>
       </div>
     </div>
-    <Button type="submit" label="Guardar" icon="pi pi-check" class="ml-auto" />
+    <div class="flex items-center justify-between">
+      <Button
+        type="button"
+        :label="leftButtonLabel"
+        severity="secondary"
+        @click="$emit('click:leftButton')"
+      />
+      <Button type="submit" label="Guardar" icon="pi pi-check" />
+    </div>
   </Form>
 </template>
 
@@ -55,13 +63,17 @@ import { useAuthStore } from "@/stores/auth.store";
 withDefaults(
   defineProps<{
     initialValues?: { name: string; members: string[] };
+    leftButtonLabel: string;
   }>(),
   {
     initialValues: () => ({ name: "", members: [] }),
   },
 );
 
-const emit = defineEmits<{ (e: "submit", values: GroupPayload): void }>();
+const emit = defineEmits<{
+  (e: "submit", values: GroupPayload): void;
+  (e: "click:leftButton"): void;
+}>();
 
 const { user: authUser } = useAuthStore();
 

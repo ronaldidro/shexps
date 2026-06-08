@@ -88,13 +88,20 @@
     <div class="flex flex-col gap-2">
       <ExpenseDetail :members :errors />
     </div>
-    <Button
-      type="submit"
-      label="Verificar"
-      icon="pi pi-arrow-up-right"
-      iconPos="right"
-      class="ml-auto"
-    />
+    <div class="flex items-center justify-between">
+      <Button
+        type="button"
+        label="Regresar"
+        severity="secondary"
+        @click="router.push({ name: 'expenses' })"
+      />
+      <Button
+        type="submit"
+        label="Verificar"
+        icon="pi pi-arrow-up-right"
+        iconPos="right"
+      />
+    </div>
   </form>
 </template>
 
@@ -107,6 +114,7 @@ import type { ExpensePayload } from "@/types/expense";
 import { groupsService } from "@/services/groups.service";
 import { useGroupMembers } from "@/composables/useGroupMembers.ts";
 import ExpenseDetail from "./ExpenseDetail.vue";
+import router from "@/router";
 
 const emit = defineEmits<{
   (e: "submit", payload: ExpensePayload, preview: ExpensePayload): void;

@@ -118,29 +118,45 @@
           {{ $form.description.error?.message }}
         </Message>
       </div>
-      <Button
-        type="submit"
-        label="Verificar"
-        icon="pi pi-arrow-up-right"
-        iconPos="right"
-        class="ml-auto"
-      />
+      <div class="flex items-center justify-between">
+        <Button
+          type="button"
+          label="Regresar"
+          severity="secondary"
+          @click="router.push({ name: 'payments' })"
+        />
+        <Button
+          type="submit"
+          label="Verificar"
+          icon="pi pi-arrow-up-right"
+          iconPos="right"
+        />
+      </div>
     </div>
+    <Button
+      v-if="!showMore"
+      type="button"
+      label="Regresar"
+      severity="secondary"
+      class="mr-auto"
+      @click="router.push({ name: 'payments' })"
+    />
   </Form>
 </template>
 
 <script setup lang="ts">
 import { reactive, ref } from "vue";
 import type { FormInstance, FormSubmitEvent } from "@primevue/forms";
-import { type SelectChangeEvent } from "primevue";
+import type { SelectChangeEvent } from "primevue";
 import type { Group } from "@/types/group";
+import type { PaymentPayload } from "@/types/payment";
 import { groupsService } from "@/services/groups.service";
 import { detailsService } from "@/services/details.service";
 import { paymentResolver } from "@/resolvers/payment.resolver";
 import { useGroupMembers } from "@/composables/useGroupMembers";
 import { useNotification } from "@/composables/useNotification";
 import { payMethods } from "@/utils";
-import type { PaymentPayload } from "@/types/payment";
+import router from "@/router";
 
 const emit = defineEmits<{
   (e: "submit", values: PaymentPayload, preview: PaymentPayload): void;

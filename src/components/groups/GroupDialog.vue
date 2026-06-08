@@ -6,7 +6,11 @@
     header="Nuevo grupo"
     :modal="true"
   >
-    <GroupForm @submit="submit" />
+    <GroupForm
+      @submit="submit"
+      leftButtonLabel="Cancelar"
+      @click:leftButton="close"
+    />
   </Dialog>
 </template>
 
