@@ -1,6 +1,6 @@
 <template>
   <AppBreadcrumb :items="[{ label: 'Movimientos' }, { label: 'Gastos' }]" />
-  <Toolbar class="mb-7">
+  <Toolbar class="mb-5">
     <template #start>
       <SearchField v-model="search" @search="handleSearch" />
     </template>
@@ -12,6 +12,7 @@
       />
     </template>
   </Toolbar>
+  <FilterPanel @submit="handleFilters" @clear="handleClear" />
   <div class="card p-1!">
     <div ref="el" class="overflow-y-auto h-dvh">
       <div
@@ -80,9 +81,11 @@ import { ref, useTemplateRef } from "vue";
 import { expensesService } from "@/services/expenses.service";
 import { getErrorMessage } from "@/services/axios";
 import type { Expense } from "@/types/expense";
+import type { QueryParams } from "@/types/pagination";
 import AppBreadcrumb from "@/layout/AppBreadcrumb.vue";
 import ExpenseDrawer from "@/components/expenses/ExpenseDrawer.vue";
 import SearchField from "@/components/SearchField.vue";
+import FilterPanel from "@/components/FilterPanel.vue";
 import { useScrollPagination } from "@/composables/useScrollPagination";
 import { useNotification } from "@/composables/useNotification";
 import { useConfirm } from "primevue";
@@ -102,10 +105,7 @@ const {
   loading,
   reload,
   setFilters,
-} = await useScrollPagination<Expense>({
-  el,
-  fetcher: expensesService.getAll,
-});
+} = await useScrollPagination<Expense>({ el, fetcher: expensesService.getAll });
 
 const openDrawer = (id: string) => {
   selectedId.value = id;
@@ -116,6 +116,13 @@ const handleSearch = async (value: string) => {
   search.value = value;
   await setFilters({ search: value });
 };
+
+const handleFilters = async (values: QueryParams) => {
+  if (!values) return;
+  await setFilters({ ...values });
+};
+
+const handleClear = async () => await reload();
 
 const openConfirmDialog = (id: string) => {
   confirm.require({

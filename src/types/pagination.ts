@@ -11,14 +11,15 @@ export interface PaginatedData<T> {
 
 export interface QueryParams {
   search?: string;
-  page?: number;
-  limit?: number;
+  group?: string;
+  user?: string;
+  startDate?: string;
+  endDate?: string;
+  page: number;
+  limit: number;
 }
 
 export interface ScrollPaginationOptions<T> {
   el: Ref<HTMLElement | null>;
-  limit?: number;
-  distance?: number;
-  filters?: QueryParams;
   fetcher: (params: QueryParams) => Promise<PaginatedData<T>>;
 }

@@ -1,5 +1,3 @@
-import type { QueryParams } from "./pagination";
-
 export interface User {
   id: string;
   firstName: string;
@@ -18,6 +16,6 @@ export interface UpdateUserPayload {
 
 type Role = "admin" | "guest";
 
-export interface UserQueryParams extends QueryParams {
+export interface UserQueryParams {
   role?: Role;
 }

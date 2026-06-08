@@ -1,7 +1,7 @@
 <template>
   <InputGroup class="max-w-60 md:max-w-full">
     <IconField>
-      <InputText v-model="search" placeholder="Buscar" />
+      <InputText v-model="search" placeholder="Buscar por descripción" />
       <InputIcon
         v-if="search"
         class="pi pi-times cursor-pointer"

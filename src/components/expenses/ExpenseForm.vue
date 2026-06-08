@@ -25,6 +25,7 @@
           @update:modelValue="field.onChange"
           dateFormat="dd/mm/yy"
           :maxDate="new Date()"
+          :manualInput="false"
           showIcon
           showButtonBar
           placeholder="Selecciona fecha"
