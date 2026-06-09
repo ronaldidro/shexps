@@ -12,7 +12,11 @@
       />
     </template>
   </Toolbar>
-  <FilterPanel v-if="expenses" @submit="handleFilters" @clear="handleClear" />
+  <FilterPanel
+    v-show="expenses.length"
+    @submit="handleFilters"
+    @clear="handleClear"
+  />
   <div class="card p-1!">
     <div ref="el" class="overflow-y-auto h-dvh">
       <div
