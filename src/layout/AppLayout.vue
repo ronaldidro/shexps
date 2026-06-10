@@ -21,7 +21,9 @@ const containerClass = computed(() => {
 
 const error = reactive({ exists: false, message: "" });
 
-onErrorCaptured(({ message }) => {
+onErrorCaptured(({ message, stack }) => {
+  if (import.meta.env.DEV) console.error(stack);
+
   error.exists = true;
   error.message = message;
   return false;

@@ -2,10 +2,10 @@ import { ref, type Ref } from "vue";
 import { useInfiniteScroll } from "@vueuse/core";
 import type { QueryParams, ScrollPaginationOptions } from "@/types/pagination";
 
-export async function useScrollPagination<T>({
+export const useScrollPagination = <T>({
   el,
   fetcher,
-}: ScrollPaginationOptions<T>) {
+}: ScrollPaginationOptions<T>) => {
   const items: Ref = ref<T[]>([]);
   const loading = ref(false);
   const hasMore = ref(true);
@@ -48,4 +48,4 @@ export async function useScrollPagination<T>({
   });
 
   return { items, loading, reload, setFilters };
-}
+};

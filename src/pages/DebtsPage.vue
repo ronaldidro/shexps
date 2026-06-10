@@ -77,10 +77,7 @@ const {
   items: details,
   loading,
   setFilters,
-} = await useScrollPagination<ExpenseDetail>({
-  el,
-  fetcher: detailsService.getAll,
-});
+} = useScrollPagination<ExpenseDetail>({ el, fetcher: detailsService.getAll });
 
 const handleSearch = async (value: string) => {
   search.value = value;

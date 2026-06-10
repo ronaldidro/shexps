@@ -98,10 +98,7 @@ const {
   loading,
   reload,
   setFilters,
-} = await useScrollPagination<Payment>({
-  el,
-  fetcher: paymentsService.getAll,
-});
+} = useScrollPagination<Payment>({ el, fetcher: paymentsService.getAll });
 
 const openDrawer = (id: string) => {
   selectedId.value = id;
