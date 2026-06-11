@@ -15,31 +15,19 @@
       >
         <div class="flex justify-between">
           <div class="flex flex-col">
-            <p
-              class="font-medium text-surface-500 dark:text-surface-400 text-sm"
-            >
+            <p class="font-medium text-surface-500 dark:text-surface-400 text-sm">
               {{ detail.expense.expensedAt }}
             </p>
             <span class="text-xl font-semibold">S/{{ detail.amount }}</span>
-            <span
-              class="font-medium text-surface-500 dark:text-surface-400 text-lg line-clamp-1"
-            >
+            <span class="font-medium text-surface-500 dark:text-surface-400 text-lg line-clamp-1">
               {{ detail.expense.description }}
             </span>
           </div>
           <div class="flex gap-3">
-            <Button
-              icon="pi pi-eye"
-              rounded
-              @click="openDrawer(detail.expense.id)"
-            />
+            <Button icon="pi pi-eye" rounded @click="openDrawer(detail.expense.id)" />
           </div>
         </div>
-        <Tag
-          :value="detail.expense.user.firstName"
-          severity="warn"
-          class="mt-2"
-        />
+        <Tag :value="detail.expense.user.firstName" severity="warn" class="mt-2" />
       </div>
       <p v-if="loading" class="text-center pt-5">
         <ProgressSpinner style="width: 50px; height: 50px" />
@@ -59,33 +47,33 @@
 </template>
 
 <script setup lang="ts">
-import { ref, useTemplateRef } from "vue";
-import AppBreadcrumb from "@/layout/AppBreadcrumb.vue";
-import { detailsService } from "@/services/details.service";
-import type { ExpenseDetail } from "@/types/expense";
-import ExpenseDrawer from "@/components/expenses/ExpenseDrawer.vue";
-import SearchField from "@/components/SearchField.vue";
-import { useScrollPagination } from "@/composables/useScrollPagination";
+import { ref, useTemplateRef } from 'vue'
+import AppBreadcrumb from '@/layout/AppBreadcrumb.vue'
+import { detailsService } from '@/services/details.service'
+import type { ExpenseDetail } from '@/types/expense'
+import ExpenseDrawer from '@/components/expenses/ExpenseDrawer.vue'
+import SearchField from '@/components/SearchField.vue'
+import { useScrollPagination } from '@/composables/useScrollPagination'
 
-const el = useTemplateRef("el");
+const el = useTemplateRef('el')
 
-const selectedId = ref<string | null>(null);
-const showDrawer = ref(false);
-const search = ref("");
+const selectedId = ref<string | null>(null)
+const showDrawer = ref(false)
+const search = ref('')
 
 const {
   items: details,
   loading,
   setFilters,
-} = useScrollPagination<ExpenseDetail>({ el, fetcher: detailsService.getAll });
+} = useScrollPagination<ExpenseDetail>({ el, fetcher: detailsService.getAll })
 
 const handleSearch = async (value: string) => {
-  search.value = value;
-  await setFilters({ search: value });
-};
+  search.value = value
+  await setFilters({ search: value })
+}
 
 const openDrawer = (id: string) => {
-  selectedId.value = id;
-  showDrawer.value = true;
-};
+  selectedId.value = id
+  showDrawer.value = true
+}
 </script>

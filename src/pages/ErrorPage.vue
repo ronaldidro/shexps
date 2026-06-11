@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import FloatingConfigurator from "@/components/FloatingConfigurator.vue";
+import FloatingConfigurator from '@/components/FloatingConfigurator.vue'
 
-defineProps<{ message: string }>();
+defineProps<{ message: string }>()
 </script>
 
 <template>
@@ -30,12 +30,9 @@ defineProps<{ message: string }>();
               class="flex justify-center items-center border-2 border-pink-500 rounded-full"
               style="height: 3.2rem; width: 3.2rem"
             >
-              <i class="pi pi-fw pi-exclamation-circle text-2xl! text-pink-500">
-              </i>
+              <i class="pi pi-fw pi-exclamation-circle text-2xl! text-pink-500"> </i>
             </div>
-            <h1
-              class="text-surface-900 dark:text-surface-0 font-bold text-5xl mb-2"
-            >
+            <h1 class="text-surface-900 dark:text-surface-0 font-bold text-5xl mb-2">
               Ocurrió un error
             </h1>
             <span class="text-muted-color mb-8">

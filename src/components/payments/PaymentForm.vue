@@ -76,11 +76,7 @@
               fluid
             />
           </InputGroup>
-          <Message
-            v-if="$form.amount?.invalid"
-            severity="error"
-            variant="simple"
-          >
+          <Message v-if="$form.amount?.invalid" severity="error" variant="simple">
             {{ $form.amount.error?.message }}
           </Message>
         </div>
@@ -110,11 +106,7 @@
           rows="3"
           fluid
         />
-        <Message
-          v-if="$form.description?.invalid"
-          severity="error"
-          variant="simple"
-        >
+        <Message v-if="$form.description?.invalid" severity="error" variant="simple">
           {{ $form.description.error?.message }}
         </Message>
       </div>
@@ -125,12 +117,7 @@
           severity="secondary"
           @click="router.push({ name: 'payments' })"
         />
-        <Button
-          type="submit"
-          label="Verificar"
-          icon="pi pi-arrow-up-right"
-          iconPos="right"
-        />
+        <Button type="submit" label="Verificar" icon="pi pi-arrow-up-right" iconPos="right" />
       </div>
     </div>
     <Button
@@ -145,67 +132,67 @@
 </template>
 
 <script setup lang="ts">
-import { reactive, ref } from "vue";
-import type { FormInstance, FormSubmitEvent } from "@primevue/forms";
-import type { SelectChangeEvent } from "primevue";
-import type { Group } from "@/types/group";
-import type { PaymentPayload } from "@/types/payment";
-import { groupsService } from "@/services/groups.service";
-import { detailsService } from "@/services/details.service";
-import { paymentResolver } from "@/resolvers/payment.resolver";
-import { useGroupMembers } from "@/composables/useGroupMembers";
-import { useNotification } from "@/composables/useNotification";
-import { payMethods } from "@/utils";
-import router from "@/router";
+import { reactive, ref } from 'vue'
+import type { FormInstance, FormSubmitEvent } from '@primevue/forms'
+import type { SelectChangeEvent } from 'primevue'
+import type { Group } from '@/types/group'
+import type { PaymentPayload } from '@/types/payment'
+import { groupsService } from '@/services/groups.service'
+import { detailsService } from '@/services/details.service'
+import { paymentResolver } from '@/resolvers/payment.resolver'
+import { useGroupMembers } from '@/composables/useGroupMembers'
+import { useNotification } from '@/composables/useNotification'
+import { payMethods } from '@/utils'
+import router from '@/router'
 
 const emit = defineEmits<{
-  (e: "submit", values: PaymentPayload, preview: PaymentPayload): void;
-}>();
+  (e: 'submit', values: PaymentPayload, preview: PaymentPayload): void
+}>()
 
-const showMore = ref(false);
-const formRef = ref<FormInstance | null>(null);
-const groups = reactive<Group[]>(await groupsService.getAll());
+const showMore = ref(false)
+const formRef = ref<FormInstance | null>(null)
+const groups = reactive<Group[]>(await groupsService.getAll())
 
-const members = useGroupMembers(() => formRef.value?.states.group?.value);
-const { showToast } = useNotification();
+const members = useGroupMembers(() => formRef.value?.states.group?.value)
+const { showToast } = useNotification()
 
 const onSubmit = (form: FormSubmitEvent) => {
-  if (!form.valid) return;
-  const values = form.values as PaymentPayload;
-  emit("submit", values, getPreview(values));
-};
+  if (!form.valid) return
+  const values = form.values as PaymentPayload
+  emit('submit', values, getPreview(values))
+}
 
 const getPreview = (values: PaymentPayload) => {
-  const group = groups.find((group) => group.id === values.group);
-  const member = members.value.find((member) => member.id === values.payer);
+  const group = groups.find((group) => group.id === values.group)
+  const member = members.value.find((member) => member.id === values.payer)
 
   return {
     ...values,
-    group: group?.name ?? "",
-    payer: member?.firstName ?? "",
-  };
-};
+    group: group?.name ?? '',
+    payer: member?.firstName ?? '',
+  }
+}
 
 const handleGroupChange = () => {
-  formRef.value?.setFieldValue("payer", "");
-  formRef.value?.setFieldValue("debt", null);
-  showMore.value = false;
-};
+  formRef.value?.setFieldValue('payer', '')
+  formRef.value?.setFieldValue('debt', null)
+  showMore.value = false
+}
 
 const handlePayerChange = async (e: SelectChangeEvent) => {
   const sum = await detailsService.getSum({
     debtor: e.value,
     group: formRef.value?.states.group?.value,
-  });
+  })
 
   if (sum) {
-    showMore.value = true;
-    formRef.value?.setFieldValue("debt", sum);
-    return;
+    showMore.value = true
+    formRef.value?.setFieldValue('debt', sum)
+    return
   }
 
-  showMore.value = false;
+  showMore.value = false
 
-  showToast({ severity: "warn", summary: "No se encontraron deudas" });
-};
+  showToast({ severity: 'warn', summary: 'No se encontraron deudas' })
+}
 </script>

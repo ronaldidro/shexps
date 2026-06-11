@@ -8,10 +8,7 @@
     style="height: auto"
   >
     <div class="flex justify-between">
-      <Tag
-        severity="contrast"
-        :value="expense.splitted ? 'Total' : 'Parcial'"
-      />
+      <Tag severity="contrast" :value="expense.splitted ? 'Total' : 'Parcial'" />
       <Tag :value="expense.group.name" />
     </div>
     <div class="flex justify-between items-center pt-5">
@@ -35,11 +32,7 @@
       <hr />
       <Tag severity="warn" value="Detalle" />
       <ul class="pt-5">
-        <li
-          v-for="detail in expense.details"
-          :key="detail.id"
-          class="flex justify-between"
-        >
+        <li v-for="detail in expense.details" :key="detail.id" class="flex justify-between">
           <span class="text-lg">{{ detail.user.firstName }}</span>
           <span class="text-lg font-semibold">S/{{ detail.amount }}</span>
         </li>
@@ -49,28 +42,28 @@
 </template>
 
 <script setup lang="ts">
-import { expensesService } from "@/services/expenses.service";
-import type { Expense } from "@/types/expense";
-import { ref, watch } from "vue";
+import { expensesService } from '@/services/expenses.service'
+import type { Expense } from '@/types/expense'
+import { ref, watch } from 'vue'
 
 const props = defineProps<{
-  visible: boolean;
-  id: string | null;
-}>();
+  visible: boolean
+  id: string | null
+}>()
 
 const emit = defineEmits<{
-  (e: "update:visible", value: boolean): void;
-}>();
+  (e: 'update:visible', value: boolean): void
+}>()
 
-const close = () => emit("update:visible", false);
+const close = () => emit('update:visible', false)
 
-const expense = ref<Expense>();
+const expense = ref<Expense>()
 
 watch(
   () => props.visible,
   async (isVisible) => {
-    if (!isVisible || !props.id) return;
-    expense.value = await expensesService.get(props.id);
+    if (!isVisible || !props.id) return
+    expense.value = await expensesService.get(props.id)
   },
-);
+)
 </script>

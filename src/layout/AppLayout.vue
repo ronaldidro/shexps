@@ -1,33 +1,33 @@
 <script setup>
-import { useLayout } from "@/layout/composables/layout";
-import { computed, onErrorCaptured, reactive, ref } from "vue";
-import AppFooter from "./AppFooter.vue";
-import AppSidebar from "./AppSidebar.vue";
-import AppTopbar from "./AppTopbar.vue";
-import ErrorPage from "@/pages/ErrorPage.vue";
-import CardSkeleton from "@/components/CardSkeleton.vue";
+import { useLayout } from '@/layout/composables/layout'
+import { computed, onErrorCaptured, reactive } from 'vue'
+import AppFooter from './AppFooter.vue'
+import AppSidebar from './AppSidebar.vue'
+import AppTopbar from './AppTopbar.vue'
+import ErrorPage from '@/pages/ErrorPage.vue'
+import CardSkeleton from '@/components/CardSkeleton.vue'
 
-const { layoutConfig, layoutState, hideMobileMenu } = useLayout();
+const { layoutConfig, layoutState, hideMobileMenu } = useLayout()
 
 const containerClass = computed(() => {
   return {
-    "layout-overlay": layoutConfig.menuMode === "overlay",
-    "layout-static": layoutConfig.menuMode === "static",
-    "layout-overlay-active": layoutState.overlayMenuActive,
-    "layout-mobile-active": layoutState.mobileMenuActive,
-    "layout-static-inactive": layoutState.staticMenuInactive,
-  };
-});
+    'layout-overlay': layoutConfig.menuMode === 'overlay',
+    'layout-static': layoutConfig.menuMode === 'static',
+    'layout-overlay-active': layoutState.overlayMenuActive,
+    'layout-mobile-active': layoutState.mobileMenuActive,
+    'layout-static-inactive': layoutState.staticMenuInactive,
+  }
+})
 
-const error = reactive({ exists: false, message: "" });
+const error = reactive({ exists: false, message: '' })
 
 onErrorCaptured(({ message, stack }) => {
-  if (import.meta.env.DEV) console.error(stack);
+  if (import.meta.env.DEV) console.error(stack)
 
-  error.exists = true;
-  error.message = message;
-  return false;
-});
+  error.exists = true
+  error.message = message
+  return false
+})
 </script>
 
 <template>

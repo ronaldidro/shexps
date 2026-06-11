@@ -19,10 +19,7 @@
         </p>
         <div v-if="group.user.id === user.id" class="flex gap-3">
           <Button asChild v-slot="slotProps" rounded>
-            <RouterLink
-              :class="slotProps.class"
-              :to="{ name: 'group', params: { id: group.id } }"
-            >
+            <RouterLink :class="slotProps.class" :to="{ name: 'group', params: { id: group.id } }">
               <i class="pi pi-pencil" />
             </RouterLink>
           </Button>
@@ -35,9 +32,7 @@
         </div>
       </div>
       <p class="text-primary font-medium">{{ group.members }} miembro(s)</p>
-      <p class="text-muted-color font-medium">
-        Creado el {{ group.createdAt }}
-      </p>
+      <p class="text-muted-color font-medium">Creado el {{ group.createdAt }}</p>
       <Accordion>
         <AccordionPanel value="0">
           <AccordionHeader class="px-0!">Miembros</AccordionHeader>
@@ -57,79 +52,79 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from "vue";
-import { useConfirm } from "primevue";
-import type { Group, GroupPayload } from "@/types/group";
-import GroupDialog from "@/components/groups/GroupDialog.vue";
-import AppBreadcrumb from "@/layout/AppBreadcrumb.vue";
-import { groupsService } from "@/services/groups.service";
-import { getErrorMessage } from "@/services/axios";
-import { useNotification } from "@/composables/useNotification";
-import { useAuthStore } from "@/stores/auth.store";
+import { ref } from 'vue'
+import { useConfirm } from 'primevue'
+import type { Group, GroupPayload } from '@/types/group'
+import GroupDialog from '@/components/groups/GroupDialog.vue'
+import AppBreadcrumb from '@/layout/AppBreadcrumb.vue'
+import { groupsService } from '@/services/groups.service'
+import { getErrorMessage } from '@/services/axios'
+import { useNotification } from '@/composables/useNotification'
+import { useAuthStore } from '@/stores/auth.store'
 
-const groups = ref<Group[]>(await groupsService.getAll());
-const showDialog = ref(false);
+const groups = ref<Group[]>(await groupsService.getAll())
+const showDialog = ref(false)
 
-const { showToast } = useNotification();
-const { user } = useAuthStore();
-const confirm = useConfirm();
+const { showToast } = useNotification()
+const { user } = useAuthStore()
+const confirm = useConfirm()
 
 const openConfirmDialog = (id: string) => {
   confirm.require({
-    header: "Eliminar grupo",
-    message: "¿Está seguro de que desea continuar?",
-    icon: "pi pi-exclamation-triangle",
+    header: 'Eliminar grupo',
+    message: '¿Está seguro de que desea continuar?',
+    icon: 'pi pi-exclamation-triangle',
     rejectProps: {
-      label: "No",
-      severity: "secondary",
-      icon: "pi pi-times",
+      label: 'No',
+      severity: 'secondary',
+      icon: 'pi pi-times',
       text: true,
     },
     acceptProps: {
-      label: "Sí",
-      severity: "danger",
-      icon: "pi pi-check",
+      label: 'Sí',
+      severity: 'danger',
+      icon: 'pi pi-check',
       outlined: true,
     },
     accept: () => handleDelete(id),
-  });
-};
+  })
+}
 
 const handleCreate = async (values: GroupPayload) => {
   try {
-    await groupsService.create(values);
+    await groupsService.create(values)
 
-    groups.value = await groupsService.getAll();
+    groups.value = await groupsService.getAll()
 
     showToast({
-      severity: "success",
-      summary: "Grupo registrado correctamente",
-    });
+      severity: 'success',
+      summary: 'Grupo registrado correctamente',
+    })
   } catch (err) {
     showToast({
-      severity: "error",
-      summary: "Error",
+      severity: 'error',
+      summary: 'Error',
       detail: getErrorMessage(err),
-    });
+    })
   }
-};
+}
 
 const handleDelete = async (id: string) => {
   try {
-    await groupsService.remove(id);
+    await groupsService.remove(id)
 
     showToast({
-      severity: "success",
-      summary: "Grupo eliminado correctamente",
-    });
+      severity: 'success',
+      summary: 'Grupo eliminado correctamente',
+    })
 
-    groups.value = await groupsService.getAll();
+    groups.value = await groupsService.getAll()
   } catch (err) {
     showToast({
-      severity: "error",
-      summary: "Error",
+      severity: 'error',
+      summary: 'Error',
       detail: getErrorMessage(err),
-    });
+    })
   }
-};
+}
 </script>

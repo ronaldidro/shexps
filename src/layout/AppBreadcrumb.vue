@@ -2,12 +2,7 @@
   <div class="mb-7 rounded-md">
     <Breadcrumb :home :model="items" class="p-0! bg-transparent!">
       <template #item="{ item, props }">
-        <RouterLink
-          v-if="item.route"
-          v-slot="{ href, navigate }"
-          :to="item.route"
-          custom
-        >
+        <RouterLink v-if="item.route" v-slot="{ href, navigate }" :to="item.route" custom>
           <a :href="href" v-bind="props.action" @click="navigate">
             <span :class="[item.icon, 'text-color']" />
             <span class="text-primary font-semibold">{{ item.label }}</span>
@@ -24,9 +19,9 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from "vue";
+import { ref } from 'vue'
 
-defineProps<{ items: { label: string; route?: string }[] }>();
+defineProps<{ items: { label: string; route?: string }[] }>()
 
-const home = ref({ icon: "pi pi-home", route: "/" });
+const home = ref({ icon: 'pi pi-home', route: '/' })
 </script>

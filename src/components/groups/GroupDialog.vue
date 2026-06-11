@@ -6,29 +6,25 @@
     header="Nuevo grupo"
     :modal="true"
   >
-    <GroupForm
-      @submit="submit"
-      leftButtonLabel="Cancelar"
-      @click:leftButton="close"
-    />
+    <GroupForm @submit="submit" leftButtonLabel="Cancelar" @click:leftButton="close" />
   </Dialog>
 </template>
 
 <script setup lang="ts">
-import type { GroupPayload } from "@/types/group.ts";
-import GroupForm from "./GroupForm.vue";
+import type { GroupPayload } from '@/types/group.ts'
+import GroupForm from './GroupForm.vue'
 
-defineProps<{ visible: boolean }>();
+defineProps<{ visible: boolean }>()
 
 const emit = defineEmits<{
-  (e: "update:visible", value: boolean): void;
-  (e: "onSubmit", values: GroupPayload): void;
-}>();
+  (e: 'update:visible', value: boolean): void
+  (e: 'onSubmit', values: GroupPayload): void
+}>()
 
 const submit = (values: GroupPayload) => {
-  emit("onSubmit", values);
-  emit("update:visible", false);
-};
+  emit('onSubmit', values)
+  emit('update:visible', false)
+}
 
-const close = () => emit("update:visible", false);
+const close = () => emit('update:visible', false)
 </script>

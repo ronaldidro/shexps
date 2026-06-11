@@ -43,36 +43,30 @@
       <i class="pi pi-money-bill" />
       <span class="text-lg">Deuda</span>
     </article>
-    <span class="text-muted-color font-medium">
-      S/{{ payment.debt.toFixed(2) }}
-    </span>
+    <span class="text-muted-color font-medium"> S/{{ payment.debt.toFixed(2) }} </span>
   </div>
   <div class="flex items-center justify-between">
     <article class="flex items-center gap-2">
       <i class="pi pi-money-bill" />
       <span class="text-lg">Pago</span>
     </article>
-    <span class="text-muted-color font-medium">
-      S/{{ payment.amount.toFixed(2) }}
-    </span>
+    <span class="text-muted-color font-medium"> S/{{ payment.amount.toFixed(2) }} </span>
   </div>
   <div class="flex items-center justify-between">
     <article class="flex items-center gap-2">
       <i class="pi pi-money-bill" />
       <span class="text-lg">Pendiente</span>
     </article>
-    <span class="text-muted-color font-medium">
-      S/{{ payment.remaining.toFixed(2) }}
-    </span>
+    <span class="text-muted-color font-medium"> S/{{ payment.remaining.toFixed(2) }} </span>
   </div>
 </template>
 
 <script setup lang="ts">
-import type { AuthUser } from "@/types/auth";
-import type { PaymentPayload } from "@/types/payment";
-import { PAY_DESCRIPTION } from "@/utils";
+import type { AuthUser } from '@/types/auth'
+import type { PaymentPayload } from '@/types/payment'
+import { PAY_DESCRIPTION } from '@/utils'
 
 defineProps<{
-  payment: PaymentPayload & { remaining: number } & { user: AuthUser };
-}>();
+  payment: PaymentPayload & { remaining: number } & { user: AuthUser }
+}>()
 </script>

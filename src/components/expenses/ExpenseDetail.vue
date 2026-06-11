@@ -9,11 +9,7 @@
       @click="push({ user: '', amount: null })"
     />
   </div>
-  <div
-    v-for="(detail, index) in fields"
-    :key="detail.key"
-    class="flex items-start gap-2"
-  >
+  <div v-for="(detail, index) in fields" :key="detail.key" class="flex items-start gap-2">
     <Button
       type="button"
       icon="pi pi-times"
@@ -64,11 +60,11 @@
 </template>
 
 <script setup lang="ts">
-import { Field, useFieldArray, type FormErrors } from "vee-validate";
-import type { ExpensePayload } from "@/types/expense";
-import type { User } from "@/types/user";
+import { Field, useFieldArray, type FormErrors } from 'vee-validate'
+import type { ExpensePayload } from '@/types/expense'
+import type { User } from '@/types/user'
 
-defineProps<{ members: User[]; errors: FormErrors<ExpensePayload> }>();
+defineProps<{ members: User[]; errors: FormErrors<ExpensePayload> }>()
 
-const { fields, push, remove } = useFieldArray("details");
+const { fields, push, remove } = useFieldArray('details')
 </script>

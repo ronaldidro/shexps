@@ -1,8 +1,8 @@
 <script setup>
-import { useLayout } from "@/layout/composables/layout";
-import { computed } from "vue";
+import { useLayout } from '@/layout/composables/layout'
+import { computed } from 'vue'
 
-const { layoutState, isDesktop } = useLayout();
+const { layoutState, isDesktop } = useLayout()
 
 const props = defineProps({
   item: {
@@ -17,7 +17,7 @@ const props = defineProps({
     type: String,
     default: null,
   },
-});
+})
 
 const fullPath = computed(() =>
   props.item.path
@@ -25,56 +25,48 @@ const fullPath = computed(() =>
       ? props.parentPath + props.item.path
       : props.item.path
     : null,
-);
+)
 
 const isActive = computed(() => {
   return props.item.path
     ? layoutState.activePath?.startsWith(fullPath.value)
-    : layoutState.activePath === props.item.to;
-});
+    : layoutState.activePath === props.item.to
+})
 
 const itemClick = (event, item) => {
   if (item.disabled) {
-    event.preventDefault();
-    return;
+    event.preventDefault()
+    return
   }
 
   if (item.command) {
-    item.command({ originalEvent: event, item: item });
+    item.command({ originalEvent: event, item: item })
   }
 
   if (item.items) {
     if (isActive.value) {
-      layoutState.activePath = layoutState.activePath.replace(item.path, "");
+      layoutState.activePath = layoutState.activePath.replace(item.path, '')
     } else {
-      layoutState.activePath = fullPath.value;
-      layoutState.menuHoverActive = true;
+      layoutState.activePath = fullPath.value
+      layoutState.menuHoverActive = true
     }
   } else {
-    layoutState.overlayMenuActive = false;
-    layoutState.mobileMenuActive = false;
-    layoutState.menuHoverActive = false;
+    layoutState.overlayMenuActive = false
+    layoutState.mobileMenuActive = false
+    layoutState.menuHoverActive = false
   }
-};
+}
 
 const onMouseEnter = () => {
-  if (
-    isDesktop() &&
-    props.root &&
-    props.item.items &&
-    layoutState.menuHoverActive
-  ) {
-    layoutState.activePath = fullPath.value;
+  if (isDesktop() && props.root && props.item.items && layoutState.menuHoverActive) {
+    layoutState.activePath = fullPath.value
   }
-};
+}
 </script>
 
 <template>
   <li :class="{ 'layout-root-menuitem': root, 'active-menuitem': isActive }">
-    <div
-      v-if="root && item.visible !== false"
-      class="layout-menuitem-root-text"
-    >
+    <div v-if="root && item.visible !== false" class="layout-menuitem-root-text">
       {{ item.label }}
     </div>
     <a
@@ -88,10 +80,7 @@ const onMouseEnter = () => {
     >
       <i :class="item.icon" class="layout-menuitem-icon" />
       <span class="layout-menuitem-text">{{ item.label }}</span>
-      <i
-        class="pi pi-fw pi-angle-down layout-submenu-toggler"
-        v-if="item.items"
-      />
+      <i class="pi pi-fw pi-angle-down layout-submenu-toggler" v-if="item.items" />
     </a>
     <router-link
       v-if="item.to && !item.items && item.visible !== false"
@@ -104,15 +93,9 @@ const onMouseEnter = () => {
     >
       <i :class="item.icon" class="layout-menuitem-icon" />
       <span class="layout-menuitem-text">{{ item.label }}</span>
-      <i
-        class="pi pi-fw pi-angle-down layout-submenu-toggler"
-        v-if="item.items"
-      />
+      <i class="pi pi-fw pi-angle-down layout-submenu-toggler" v-if="item.items" />
     </router-link>
-    <Transition
-      v-if="item.items && item.visible !== false"
-      name="layout-submenu"
-    >
+    <Transition v-if="item.items && item.visible !== false" name="layout-submenu">
       <ul v-show="root ? true : isActive" class="layout-submenu">
         <app-menu-item
           v-for="child in item.items"

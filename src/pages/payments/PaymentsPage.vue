@@ -5,11 +5,7 @@
       <SearchField v-model="search" @search="handleSearch" />
     </template>
     <template #end>
-      <Button
-        label="Nuevo"
-        icon="pi pi-plus"
-        @click="router.push({ name: 'new-payment' })"
-      />
+      <Button label="Nuevo" icon="pi pi-plus" @click="router.push({ name: 'new-payment' })" />
     </template>
   </Toolbar>
   <div class="card p-1!">
@@ -22,15 +18,11 @@
       >
         <div class="flex justify-between">
           <div class="flex flex-col">
-            <p
-              class="font-medium text-surface-500 dark:text-surface-400 text-sm"
-            >
+            <p class="font-medium text-surface-500 dark:text-surface-400 text-sm">
               {{ payment.createdAt }}
             </p>
             <span class="text-xl font-semibold">S/{{ payment.amount }}</span>
-            <span
-              class="font-medium text-surface-500 dark:text-surface-400 text-lg line-clamp-1"
-            >
+            <span class="font-medium text-surface-500 dark:text-surface-400 text-lg line-clamp-1">
               {{ payment.description }}
             </span>
           </div>
@@ -70,80 +62,80 @@
 </template>
 
 <script setup lang="ts">
-import { ref, useTemplateRef } from "vue";
-import { useConfirm } from "primevue";
-import AppBreadcrumb from "@/layout/AppBreadcrumb.vue";
-import PaymentDrawer from "@/components/payments/PaymentDrawer.vue";
-import SearchField from "@/components/SearchField.vue";
-import { useScrollPagination } from "@/composables/useScrollPagination";
-import { paymentsService } from "@/services/payments.service";
-import { getErrorMessage } from "@/services/axios";
-import type { Payment } from "@/types/payment";
-import router from "@/router";
-import { useAuthStore } from "@/stores/auth.store";
-import { useNotification } from "@/composables/useNotification";
+import { ref, useTemplateRef } from 'vue'
+import { useConfirm } from 'primevue'
+import AppBreadcrumb from '@/layout/AppBreadcrumb.vue'
+import PaymentDrawer from '@/components/payments/PaymentDrawer.vue'
+import SearchField from '@/components/SearchField.vue'
+import { useScrollPagination } from '@/composables/useScrollPagination'
+import { paymentsService } from '@/services/payments.service'
+import { getErrorMessage } from '@/services/axios'
+import type { Payment } from '@/types/payment'
+import router from '@/router'
+import { useAuthStore } from '@/stores/auth.store'
+import { useNotification } from '@/composables/useNotification'
 
-const el = useTemplateRef("el");
+const el = useTemplateRef('el')
 
-const selectedId = ref<string | null>(null);
-const showDrawer = ref(false);
-const search = ref("");
+const selectedId = ref<string | null>(null)
+const showDrawer = ref(false)
+const search = ref('')
 
-const confirm = useConfirm();
-const { user } = useAuthStore();
-const { showToast } = useNotification();
+const confirm = useConfirm()
+const { user } = useAuthStore()
+const { showToast } = useNotification()
 
 const {
   items: payments,
   loading,
   reload,
   setFilters,
-} = useScrollPagination<Payment>({ el, fetcher: paymentsService.getAll });
+} = useScrollPagination<Payment>({ el, fetcher: paymentsService.getAll })
 
 const openDrawer = (id: string) => {
-  selectedId.value = id;
-  showDrawer.value = true;
-};
+  selectedId.value = id
+  showDrawer.value = true
+}
 
 const handleSearch = async (value: string) => {
-  search.value = value;
-  await setFilters({ search: value });
-};
+  search.value = value
+  await setFilters({ search: value })
+}
 
 const openConfirmDialog = (id: string) => {
   confirm.require({
-    header: "Eliminar pago",
-    message: "¿Está seguro de que desea continuar?",
-    icon: "pi pi-exclamation-triangle",
+    header: 'Eliminar pago',
+    message: '¿Está seguro de que desea continuar?',
+    icon: 'pi pi-exclamation-triangle',
     rejectProps: {
-      label: "No",
-      severity: "secondary",
-      icon: "pi pi-times",
+      label: 'No',
+      severity: 'secondary',
+      icon: 'pi pi-times',
       text: true,
     },
     acceptProps: {
-      label: "Sí",
-      severity: "danger",
-      icon: "pi pi-check",
+      label: 'Sí',
+      severity: 'danger',
+      icon: 'pi pi-check',
       outlined: true,
     },
     accept: () => handleDelete(id),
-  });
-};
+  })
+}
 
 const handleDelete = async (id: string) => {
   try {
-    await paymentsService.remove(id);
+    await paymentsService.remove(id)
 
-    showToast({ severity: "success", summary: "Pago eliminado correctamente" });
+    showToast({ severity: 'success', summary: 'Pago eliminado correctamente' })
 
-    await reload();
+    await reload()
   } catch (err) {
     showToast({
-      severity: "error",
-      summary: "Error",
+      severity: 'error',
+      summary: 'Error',
       detail: getErrorMessage(err),
-    });
+    })
   }
-};
+}
 </script>

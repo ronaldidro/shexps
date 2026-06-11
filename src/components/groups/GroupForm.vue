@@ -8,13 +8,7 @@
   >
     <div class="flex flex-col gap-2">
       <label for="name">Nombre</label>
-      <InputText
-        id="name"
-        name="name"
-        type="text"
-        placeholder="Nombre del grupo"
-        fluid
-      />
+      <InputText id="name" name="name" type="text" placeholder="Nombre del grupo" fluid />
       <Message v-if="$form.name?.invalid" severity="error" variant="simple">
         {{ $form.name.error?.message }}
       </Message>
@@ -30,11 +24,7 @@
           :showToggleAll="false"
           placeholder="Selecciona miembros"
         />
-        <Message
-          v-if="$form.members?.invalid"
-          severity="error"
-          variant="simple"
-        >
+        <Message v-if="$form.members?.invalid" severity="error" variant="simple">
           {{ $form.members.error?.message }}
         </Message>
       </div>
@@ -52,40 +42,40 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from "vue";
-import { groupResolver } from "@/resolvers/group.resolver";
-import { usersService } from "@/services/users.service";
-import type { User } from "@/types/user";
-import type { GroupPayload } from "@/types/group";
-import type { FormSubmitEvent } from "@primevue/forms";
-import { useAuthStore } from "@/stores/auth.store";
+import { ref } from 'vue'
+import { groupResolver } from '@/resolvers/group.resolver'
+import { usersService } from '@/services/users.service'
+import type { User } from '@/types/user'
+import type { GroupPayload } from '@/types/group'
+import type { FormSubmitEvent } from '@primevue/forms'
+import { useAuthStore } from '@/stores/auth.store'
 
 withDefaults(
   defineProps<{
-    initialValues?: { name: string; members: string[] };
-    leftButtonLabel: string;
+    initialValues?: { name: string; members: string[] }
+    leftButtonLabel: string
   }>(),
   {
-    initialValues: () => ({ name: "", members: [] }),
+    initialValues: () => ({ name: '', members: [] }),
   },
-);
+)
 
 const emit = defineEmits<{
-  (e: "submit", values: GroupPayload): void;
-  (e: "click:leftButton"): void;
-}>();
+  (e: 'submit', values: GroupPayload): void
+  (e: 'click:leftButton'): void
+}>()
 
-const { user: authUser } = useAuthStore();
+const { user: authUser } = useAuthStore()
 
 const submit = (form: FormSubmitEvent) => {
-  if (!form.valid) return;
-  emit("submit", form.values as GroupPayload);
-};
+  if (!form.valid) return
+  emit('submit', form.values as GroupPayload)
+}
 
 const getUsers = async () => {
-  const users = await usersService.getAll({ role: "guest" });
-  return users.filter((user) => user.id !== authUser.id);
-};
+  const users = await usersService.getAll({ role: 'guest' })
+  return users.filter((user) => user.id !== authUser.id)
+}
 
-const users = ref<User[]>(await getUsers());
+const users = ref<User[]>(await getUsers())
 </script>

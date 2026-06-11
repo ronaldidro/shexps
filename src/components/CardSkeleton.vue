@@ -1,5 +1,5 @@
 <template>
-  <div v-for="_ in 3" class="card">
+  <div v-for="i in 3" :key="i" class="card">
     <div
       class="rounded border border-surface-200 dark:border-surface-700 p-6 bg-surface-0 dark:bg-surface-900"
     >

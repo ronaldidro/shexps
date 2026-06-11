@@ -28,10 +28,7 @@
         </div>
         <span class="text-2xl font-semibold">S/{{ payment.amount }}</span>
       </div>
-      <div
-        v-if="Number(payment.remaining) > 0"
-        class="flex justify-between items-center"
-      >
+      <div v-if="Number(payment.remaining) > 0" class="flex justify-between items-center">
         <span class="font-semibold text-lg">Saldo pendiente de pago</span>
         <span class="font-semibold text-lg">S/{{ payment.remaining }}</span>
       </div>
@@ -44,29 +41,29 @@
 </template>
 
 <script setup lang="ts">
-import { ref, watch } from "vue";
-import type { Payment } from "@/types/payment";
-import { paymentsService } from "@/services/payments.service";
-import { PAY_DESCRIPTION } from "@/utils";
+import { ref, watch } from 'vue'
+import type { Payment } from '@/types/payment'
+import { paymentsService } from '@/services/payments.service'
+import { PAY_DESCRIPTION } from '@/utils'
 
 const props = defineProps<{
-  visible: boolean;
-  id: string | null;
-}>();
+  visible: boolean
+  id: string | null
+}>()
 
 const emit = defineEmits<{
-  (e: "update:visible", value: boolean): void;
-}>();
+  (e: 'update:visible', value: boolean): void
+}>()
 
-const close = () => emit("update:visible", false);
+const close = () => emit('update:visible', false)
 
-const payment = ref<Payment>();
+const payment = ref<Payment>()
 
 watch(
   () => props.visible,
   async (isVisible) => {
-    if (!isVisible || !props.id) return;
-    payment.value = await paymentsService.get(props.id);
+    if (!isVisible || !props.id) return
+    payment.value = await paymentsService.get(props.id)
   },
-);
+)
 </script>

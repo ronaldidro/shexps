@@ -18,77 +18,53 @@
           placeholder="Ingresa tus nombres"
           fluid
         />
-        <Message
-          v-if="$form.firstName?.invalid"
-          severity="error"
-          variant="simple"
-        >
+        <Message v-if="$form.firstName?.invalid" severity="error" variant="simple">
           {{ $form.firstName.error?.message }}
         </Message>
       </div>
       <div class="flex flex-col gap-2">
         <label for="lastName">Apellidos</label>
-        <InputText
-          name="lastName"
-          type="text"
-          placeholder="Ingresa tus apellidos"
-          fluid
-        />
-        <Message
-          v-if="$form.lastName?.invalid"
-          severity="error"
-          variant="simple"
-        >
+        <InputText name="lastName" type="text" placeholder="Ingresa tus apellidos" fluid />
+        <Message v-if="$form.lastName?.invalid" severity="error" variant="simple">
           {{ $form.lastName.error?.message }}
         </Message>
       </div>
       <div class="flex flex-col gap-2">
         <label for="email">Correo electrónico</label>
-        <InputText
-          name="email"
-          type="email"
-          placeholder="Ingresa tu correo"
-          fluid
-        />
+        <InputText name="email" type="email" placeholder="Ingresa tu correo" fluid />
         <Message v-if="$form.email?.invalid" severity="error" variant="simple">
           {{ $form.email.error?.message }}
         </Message>
       </div>
-      <Button
-        type="submit"
-        label="Guardar"
-        icon="pi pi-check"
-        class="ml-auto"
-        :loading
-      />
+      <Button type="submit" label="Guardar" icon="pi pi-check" class="ml-auto" :loading />
     </Form>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref } from "vue";
-import { authService } from "@/services/auth.service";
-import { usersService } from "@/services/users.service";
-import { userResolver } from "@/resolvers/user.resolver";
-import type { FormSubmitEvent } from "@primevue/forms";
-import type { User } from "@/types/user";
-import { getErrorMessage } from "@/services/axios";
-import AppBreadcrumb from "@/layout/AppBreadcrumb.vue";
-import { useNotification } from "@/composables/useNotification";
+import { ref } from 'vue'
+import { authService } from '@/services/auth.service'
+import { usersService } from '@/services/users.service'
+import { userResolver } from '@/resolvers/user.resolver'
+import type { FormSubmitEvent } from '@primevue/forms'
+import type { User } from '@/types/user'
+import { getErrorMessage } from '@/services/axios'
+import AppBreadcrumb from '@/layout/AppBreadcrumb.vue'
+import { useNotification } from '@/composables/useNotification'
 
-const { showToast } = useNotification();
+const { showToast } = useNotification()
 
-const currentUser = ref<User | null>(await authService.me());
-const loading = ref(false);
+const currentUser = ref<User | null>(await authService.me())
+const loading = ref(false)
 
 const onSubmit = async (form: FormSubmitEvent) => {
-  if (!currentUser.value || !form.valid) return;
+  if (!currentUser.value || !form.valid) return
 
-  loading.value = true;
+  loading.value = true
 
   const {
     values: { firstName, lastName, email, password },
-  } = form;
+  } = form
 
   try {
     const updatedUser = await usersService.update(currentUser.value.id, {
@@ -96,22 +72,22 @@ const onSubmit = async (form: FormSubmitEvent) => {
       lastName,
       email,
       password,
-    });
+    })
 
-    currentUser.value = updatedUser;
+    currentUser.value = updatedUser
 
     showToast({
-      severity: "success",
-      summary: "Datos actualizados correctamente",
-    });
+      severity: 'success',
+      summary: 'Datos actualizados correctamente',
+    })
   } catch (err) {
     showToast({
-      severity: "error",
-      summary: "Error",
+      severity: 'error',
+      summary: 'Error',
       detail: getErrorMessage(err),
-    });
+    })
   } finally {
-    loading.value = false;
+    loading.value = false
   }
-};
+}
 </script>

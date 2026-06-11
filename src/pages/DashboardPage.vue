@@ -4,9 +4,7 @@
     <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
       <div class="card mb-0! flex flex-col gap-4">
         <div class="flex items-center justify-between">
-          <span class="block text-muted-color font-medium text-xl">
-            Gastos
-          </span>
+          <span class="block text-muted-color font-medium text-xl"> Gastos </span>
           <div
             class="flex items-center justify-center bg-orange-100 dark:bg-orange-400/10 rounded-border"
             style="width: 2.5rem; height: 2.5rem"
@@ -36,9 +34,7 @@
       </div>
       <div v-if="summary.debtors.length" class="card mb-0! flex flex-col gap-4">
         <div class="flex items-center justify-between">
-          <span class="block text-muted-color font-medium text-xl">
-            Te deben
-          </span>
+          <span class="block text-muted-color font-medium text-xl"> Te deben </span>
           <div
             class="flex items-center justify-center bg-cyan-100 dark:bg-cyan-400/10 rounded-border"
             style="width: 2.5rem; height: 2.5rem"
@@ -47,7 +43,8 @@
           </div>
         </div>
         <div
-          v-for="debtor in summary.debtors"
+          v-for="(debtor, index) in summary.debtors"
+          :key="index"
           class="flex items-center justify-between"
         >
           <span class="font-medium">{{ debtor.firstName }}</span>
@@ -56,9 +53,7 @@
       </div>
       <div class="card mb-0! flex flex-col gap-4">
         <div class="flex items-center justify-between">
-          <span class="block text-muted-color font-medium text-xl">
-            Deudas
-          </span>
+          <span class="block text-muted-color font-medium text-xl"> Deudas </span>
           <div
             class="flex items-center justify-center bg-blue-100 dark:bg-blue-400/10 rounded-border"
             style="width: 2.5rem; height: 2.5rem"
@@ -77,14 +72,9 @@
           </Button>
         </div>
       </div>
-      <div
-        v-if="summary.creditors.length"
-        class="card mb-0! flex flex-col gap-4"
-      >
+      <div v-if="summary.creditors.length" class="card mb-0! flex flex-col gap-4">
         <div class="flex items-center justify-between">
-          <span class="block text-muted-color font-medium text-xl">
-            Le debes
-          </span>
+          <span class="block text-muted-color font-medium text-xl"> Le debes </span>
           <div
             class="flex items-center justify-center bg-purple-100 dark:bg-purple-400/10 rounded-border"
             style="width: 2.5rem; height: 2.5rem"
@@ -93,7 +83,8 @@
           </div>
         </div>
         <div
-          v-for="creditor in summary.creditors"
+          v-for="(creditor, index) in summary.creditors"
+          :key="index"
           class="flex items-center justify-between"
         >
           <span class="font-medium">{{ creditor.firstName }}</span>
@@ -105,10 +96,10 @@
 </template>
 
 <script setup lang="ts">
-import { reactive } from "vue";
-import AppBreadcrumb from "@/layout/AppBreadcrumb.vue";
-import type { ExpenseSummary } from "@/types/expense";
-import { expensesService } from "@/services/expenses.service";
+import { reactive } from 'vue'
+import AppBreadcrumb from '@/layout/AppBreadcrumb.vue'
+import type { ExpenseSummary } from '@/types/expense'
+import { expensesService } from '@/services/expenses.service'
 
-const summary = reactive<ExpenseSummary>(await expensesService.getSummary());
+const summary = reactive<ExpenseSummary>(await expensesService.getSummary())
 </script>

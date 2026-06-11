@@ -8,11 +8,7 @@
         style="
           border-radius: 56px;
           padding: 0.3rem;
-          background: linear-gradient(
-            180deg,
-            var(--primary-color) 10%,
-            rgba(33, 150, 243, 0) 30%
-          );
+          background: linear-gradient(180deg, var(--primary-color) 10%, rgba(33, 150, 243, 0) 30%);
         "
       >
         <div
@@ -53,14 +49,10 @@
                 />
               </g>
             </svg>
-            <div
-              class="text-surface-900 dark:text-surface-0 text-3xl font-medium mb-4"
-            >
+            <div class="text-surface-900 dark:text-surface-0 text-3xl font-medium mb-4">
               Bienvenido a Splitty
             </div>
-            <span class="text-muted-color font-medium">
-              Inicia sesión para continuar
-            </span>
+            <span class="text-muted-color font-medium"> Inicia sesión para continuar </span>
           </div>
           <Form
             v-slot="$form"
@@ -70,9 +62,7 @@
             class="flex flex-col gap-4"
           >
             <div class="flex flex-col gap-2">
-              <label for="email" class="font-medium">
-                Correo electrónico
-              </label>
+              <label for="email" class="font-medium"> Correo electrónico </label>
               <InputText
                 id="email"
                 name="email"
@@ -80,11 +70,7 @@
                 placeholder="Ingresa tu correo"
                 fluid
               />
-              <Message
-                v-if="$form.email?.invalid"
-                severity="error"
-                variant="simple"
-              >
+              <Message v-if="$form.email?.invalid" severity="error" variant="simple">
                 {{ $form.email.error?.message }}
               </Message>
             </div>
@@ -117,40 +103,40 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from "vue";
-import { authResolver } from "@/resolvers/auth.resolver";
-import { useRouter } from "vue-router";
-import { useAuthStore } from "@/stores/auth.store";
-import type { FormSubmitEvent } from "@primevue/forms";
-import type { SignInPayload } from "@/types/auth";
-import FloatingConfigurator from "@/components/FloatingConfigurator.vue";
-import { useNotification } from "@/composables/useNotification";
-import { getErrorMessage } from "@/services/axios";
+import { ref } from 'vue'
+import { authResolver } from '@/resolvers/auth.resolver'
+import { useRouter } from 'vue-router'
+import { useAuthStore } from '@/stores/auth.store'
+import type { FormSubmitEvent } from '@primevue/forms'
+import type { SignInPayload } from '@/types/auth'
+import FloatingConfigurator from '@/components/FloatingConfigurator.vue'
+import { useNotification } from '@/composables/useNotification'
+import { getErrorMessage } from '@/services/axios'
 
-const router = useRouter();
-const { signIn } = useAuthStore();
-const { showToast } = useNotification();
+const router = useRouter()
+const { signIn } = useAuthStore()
+const { showToast } = useNotification()
 
-const loading = ref(false);
+const loading = ref(false)
 
 const onSubmit = async (form: FormSubmitEvent) => {
-  if (!form.valid) return;
+  if (!form.valid) return
 
-  loading.value = true;
+  loading.value = true
 
   try {
-    await signIn(form.values as SignInPayload);
-    router.push({ name: "dashboard" });
+    await signIn(form.values as SignInPayload)
+    router.push({ name: 'dashboard' })
   } catch (err) {
     showToast({
-      severity: "error",
-      summary: "Error",
+      severity: 'error',
+      summary: 'Error',
       detail: getErrorMessage(err),
-    });
+    })
   } finally {
-    loading.value = false;
+    loading.value = false
   }
-};
+}
 </script>
 
 <style scoped>

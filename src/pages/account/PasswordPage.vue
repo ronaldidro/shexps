@@ -1,7 +1,5 @@
 <template>
-  <AppBreadcrumb
-    :items="[{ label: 'Configuración' }, { label: 'Contraseña' }]"
-  />
+  <AppBreadcrumb :items="[{ label: 'Configuración' }, { label: 'Contraseña' }]" />
   <div class="card md:max-w-sm">
     <Form
       v-slot="$form"
@@ -40,64 +38,54 @@
           toggleMask
           fluid
         />
-        <Message
-          v-if="$form.passwordConfirmation?.invalid"
-          severity="error"
-          variant="simple"
-        >
+        <Message v-if="$form.passwordConfirmation?.invalid" severity="error" variant="simple">
           {{ $form.passwordConfirmation.error?.message }}
         </Message>
       </div>
-      <Button
-        type="submit"
-        label="Guardar"
-        class="ml-auto"
-        icon="pi pi-check"
-        :loading
-      />
+      <Button type="submit" label="Guardar" class="ml-auto" icon="pi pi-check" :loading />
     </Form>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref } from "vue";
-import AppBreadcrumb from "@/layout/AppBreadcrumb.vue";
-import { passwordResolver } from "@/resolvers/password.resolver";
-import { usersService } from "@/services/users.service";
-import { getErrorMessage } from "@/services/axios";
-import { useAuthStore } from "@/stores/auth.store";
-import type { FormSubmitEvent } from "@primevue/forms";
-import { useNotification } from "@/composables/useNotification";
+import { ref } from 'vue'
+import AppBreadcrumb from '@/layout/AppBreadcrumb.vue'
+import { passwordResolver } from '@/resolvers/password.resolver'
+import { usersService } from '@/services/users.service'
+import { getErrorMessage } from '@/services/axios'
+import { useAuthStore } from '@/stores/auth.store'
+import type { FormSubmitEvent } from '@primevue/forms'
+import { useNotification } from '@/composables/useNotification'
 
-const { user } = useAuthStore();
-const { showToast } = useNotification();
+const { user } = useAuthStore()
+const { showToast } = useNotification()
 
-const loading = ref(false);
+const loading = ref(false)
 
 const onSubmit = async (form: FormSubmitEvent) => {
-  if (!form.valid) return;
+  if (!form.valid) return
 
-  loading.value = true;
+  loading.value = true
 
   try {
     await usersService.update(user.id as string, {
       password: form.values.password,
-    });
+    })
 
-    form.reset();
+    form.reset()
 
     showToast({
-      severity: "success",
-      summary: "Contraseña actualizada correctamente",
-    });
+      severity: 'success',
+      summary: 'Contraseña actualizada correctamente',
+    })
   } catch (err) {
     showToast({
-      severity: "error",
-      summary: "Error",
+      severity: 'error',
+      summary: 'Error',
       detail: getErrorMessage(err),
-    });
+    })
   } finally {
-    loading.value = false;
+    loading.value = false
   }
-};
+}
 </script>
