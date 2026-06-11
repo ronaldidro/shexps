@@ -1,18 +1,20 @@
 import { ref, watch, type MaybeRefOrGetter, toValue } from "vue";
 import type { User } from "@/types/user";
-import { membershipsService } from "@/services/memberships.service";
+import { groupsService } from "@/services/groups.service";
+import { useAuthStore } from "@/stores/auth.store";
 
 export const useGroupMembers = (group: MaybeRefOrGetter<string>) => {
   const members = ref<User[]>([]);
+  const { user } = useAuthStore();
 
   const getMembers = async (selectedGroup: string) => {
     if (!selectedGroup) return;
 
-    const memberships = await membershipsService.getAll({
-      group: selectedGroup,
-    });
+    const group = await groupsService.get(selectedGroup);
 
-    members.value = memberships.map((membership) => membership.user);
+    members.value = group.memberships
+      .filter((membership) => membership.user.id !== user.id)
+      .map((membership) => membership.user);
   };
 
   watch(() => toValue(group), getMembers, { immediate: true });

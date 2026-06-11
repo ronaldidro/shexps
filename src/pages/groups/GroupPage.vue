@@ -12,13 +12,13 @@
 
 <script setup lang="ts">
 import { computed, ref } from "vue";
+import { useRoute } from "vue-router";
 import AppBreadcrumb from "@/layout/AppBreadcrumb.vue";
 import type { Group, GroupPayload } from "@/types/group";
 import { groupsService } from "@/services/groups.service";
-import { useRoute } from "vue-router";
+import { getErrorMessage } from "@/services/axios";
 import router from "@/router";
 import GroupForm from "@/components/groups/GroupForm.vue";
-import { getErrorMessage } from "@/services/axios";
 import { useNotification } from "@/composables/useNotification";
 
 const route = useRoute();
@@ -30,7 +30,10 @@ const group = ref<Group | null>(
 
 const members = computed(() => {
   if (!group.value) return [];
-  return group.value.memberships.map((membership) => membership.user.id);
+
+  return group.value.memberships
+    .filter((membership) => membership.user.id !== group.value?.user.id)
+    .map((membership) => membership.user.id);
 });
 
 const items = computed(() => {

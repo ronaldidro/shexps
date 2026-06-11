@@ -12,16 +12,16 @@
     </template>
   </Toolbar>
   <div class="grid grid-cols-1 md:grid-cols-3 gap-7">
-    <div v-for="(item, index) in groups" :key="index" class="card mb-0!">
+    <div v-for="(group, index) in groups" :key="index" class="card mb-0!">
       <div class="flex items-center justify-between gap-10">
         <p class="text-xl font-medium mb-0!">
-          {{ item.name }}
+          {{ group.name }}
         </p>
-        <div class="flex gap-3">
+        <div v-if="group.user.id === user.id" class="flex gap-3">
           <Button asChild v-slot="slotProps" rounded>
             <RouterLink
               :class="slotProps.class"
-              :to="{ name: 'group', params: { id: item.id } }"
+              :to="{ name: 'group', params: { id: group.id } }"
             >
               <i class="pi pi-pencil" />
             </RouterLink>
@@ -30,12 +30,27 @@
             icon="pi pi-times"
             severity="danger"
             rounded
-            @click="openConfirmDialog(item.id)"
+            @click="openConfirmDialog(group.id)"
           />
         </div>
       </div>
-      <p class="text-primary font-medium">{{ item.members }} miembro(s)</p>
-      <p class="text-muted-color font-medium">Creado el {{ item.createdAt }}</p>
+      <p class="text-primary font-medium">{{ group.members }} miembro(s)</p>
+      <p class="text-muted-color font-medium">
+        Creado el {{ group.createdAt }}
+      </p>
+      <Accordion>
+        <AccordionPanel value="0">
+          <AccordionHeader class="px-0!">Miembros</AccordionHeader>
+          <AccordionContent unstyled class="pb-4">
+            <div class="flex flex-wrap gap-2">
+              <Tag v-for="membership in group.memberships" :key="membership.id">
+                {{ membership.user.firstName }}
+                <span v-if="membership.user.id === group.user.id">(C)</span>
+              </Tag>
+            </div>
+          </AccordionContent>
+        </AccordionPanel>
+      </Accordion>
     </div>
   </div>
   <GroupDialog v-model:visible="showDialog" @onSubmit="handleCreate" />
@@ -43,19 +58,21 @@
 
 <script setup lang="ts">
 import { ref } from "vue";
+import { useConfirm } from "primevue";
+import type { Group, GroupPayload } from "@/types/group";
 import GroupDialog from "@/components/groups/GroupDialog.vue";
 import AppBreadcrumb from "@/layout/AppBreadcrumb.vue";
 import { groupsService } from "@/services/groups.service";
-import type { Group, GroupPayload } from "@/types/group";
-import { useConfirm } from "primevue";
 import { getErrorMessage } from "@/services/axios";
 import { useNotification } from "@/composables/useNotification";
+import { useAuthStore } from "@/stores/auth.store";
 
 const groups = ref<Group[]>(await groupsService.getAll());
 const showDialog = ref(false);
 
-const confirm = useConfirm();
 const { showToast } = useNotification();
+const { user } = useAuthStore();
+const confirm = useConfirm();
 
 const openConfirmDialog = (id: string) => {
   confirm.require({
