@@ -8,7 +8,8 @@ export const filterResolver = zodResolver(
       user: z.string().nullable(),
       range: z.preprocess((val) => {
         if (!Array.isArray(val)) return [];
-        const [start, end] = val;
+        const [start, end] = val as Date[];
+        if (end) end.setHours(23, 59, 59, 999);
         return [start?.toISOString(), end?.toISOString()];
       }, z.any().optional()),
     })
