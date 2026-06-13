@@ -8,7 +8,7 @@
       <Button label="Nuevo" icon="pi pi-plus" @click="router.push({ name: 'new-expense' })" />
     </template>
   </Toolbar>
-  <FilterPanel @submit="handleFilters" @report="handleReport" @clear="handleClear" />
+  <FilterPanel @submit="handleFilters" @report="handleReport" @clear="handleClear" :reporting />
   <div class="card p-1!">
     <div ref="el" class="overflow-y-auto h-dvh">
       <div
@@ -89,6 +89,7 @@ const el = useTemplateRef('el')
 const selectedId = ref<string | null>(null)
 const showDrawer = ref(false)
 const search = ref('')
+const reporting = ref(false)
 
 const confirm = useConfirm()
 const { showToast } = useNotification()
@@ -117,6 +118,7 @@ const handleFilters = async (values: QueryParams) => {
 
 const handleReport = async (values: QueryParams) => {
   try {
+    reporting.value = true
     const blob = await reportsService.create({ ...values, type: 'expense' })
     const url = URL.createObjectURL(blob)
 
@@ -132,6 +134,8 @@ const handleReport = async (values: QueryParams) => {
     }
 
     showToast({ severity: 'error', summary: 'Error', detail: getErrorMessage(err) })
+  } finally {
+    reporting.value = false
   }
 }
 

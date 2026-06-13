@@ -60,6 +60,7 @@
           severity="contrast"
           icon="pi pi-file-pdf"
           @click="onReport"
+          :loading="reporting"
         />
         <Button type="submit" label="Filtrar" icon="pi pi-filter" />
       </div>
@@ -75,6 +76,8 @@ import { groupsService } from '@/services/groups.service'
 import { useGroupMembers } from '@/composables/useGroupMembers'
 import { filterResolver } from '@/resolvers/filter.resolver'
 import type { QueryParams } from '@/types/pagination'
+
+defineProps<{ reporting: boolean }>()
 
 const emit = defineEmits<{
   (e: 'submit', payload: QueryParams): void
