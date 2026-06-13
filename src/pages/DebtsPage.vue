@@ -5,6 +5,7 @@
       <SearchField v-model="search" @search="handleSearch" />
     </template>
   </Toolbar>
+  <FilterPanel @submit="handleFilters" @report="handleReport" @clear="handleClear" :reporting />
   <div class="card p-1!">
     <div ref="el" class="overflow-y-auto h-dvh">
       <div
@@ -51,9 +52,12 @@ import { ref, useTemplateRef } from 'vue'
 import AppBreadcrumb from '@/layout/AppBreadcrumb.vue'
 import { detailsService } from '@/services/details.service'
 import type { ExpenseDetail } from '@/types/expense'
+import type { QueryParams } from '@/types/pagination'
 import ExpenseDrawer from '@/components/expenses/ExpenseDrawer.vue'
 import SearchField from '@/components/SearchField.vue'
+import FilterPanel from '@/components/FilterPanel.vue'
 import { useScrollPagination } from '@/composables/useScrollPagination'
+import { useReport } from '@/composables/useReport'
 
 const el = useTemplateRef('el')
 
@@ -61,9 +65,12 @@ const selectedId = ref<string | null>(null)
 const showDrawer = ref(false)
 const search = ref('')
 
+const { handleReport, reporting } = useReport('debts')
+
 const {
   items: details,
   loading,
+  reload,
   setFilters,
 } = useScrollPagination<ExpenseDetail>({ el, fetcher: detailsService.getAll })
 
@@ -71,6 +78,13 @@ const handleSearch = async (value: string) => {
   search.value = value
   await setFilters({ search: value })
 }
+
+const handleFilters = async (values: QueryParams) => {
+  if (Object.values(values).every((value) => !value)) return
+  await setFilters({ ...values })
+}
+
+const handleClear = async () => await reload()
 
 const openDrawer = (id: string) => {
   selectedId.value = id
