@@ -8,7 +8,7 @@
       <Button label="Nuevo" icon="pi pi-plus" @click="router.push({ name: 'new-expense' })" />
     </template>
   </Toolbar>
-  <FilterPanel @submit="handleFilters" @clear="handleClear" />
+  <FilterPanel @submit="handleFilters" @report="handleReport" @clear="handleClear" />
   <div class="card p-1!">
     <div ref="el" class="overflow-y-auto h-dvh">
       <div
@@ -71,7 +71,8 @@
 <script setup lang="ts">
 import { ref, useTemplateRef } from 'vue'
 import { expensesService } from '@/services/expenses.service'
-import { getErrorMessage } from '@/services/axios'
+import { reportsService } from '@/services/reports.service'
+import { getError, getErrorMessage } from '@/services/axios'
 import type { Expense } from '@/types/expense'
 import type { QueryParams } from '@/types/pagination'
 import AppBreadcrumb from '@/layout/AppBreadcrumb.vue'
@@ -110,8 +111,28 @@ const handleSearch = async (value: string) => {
 }
 
 const handleFilters = async (values: QueryParams) => {
-  if (!values) return
+  if (Object.values(values).every((value) => !value)) return
   await setFilters({ ...values })
+}
+
+const handleReport = async (values: QueryParams) => {
+  try {
+    const blob = await reportsService.create({ ...values, type: 'expense' })
+    const url = URL.createObjectURL(blob)
+
+    window.open(url, '_blank')
+
+    setTimeout(() => URL.revokeObjectURL(url), 1000)
+  } catch (err) {
+    const error = getError(err)
+
+    if (error && error.status === 404) {
+      showToast({ severity: 'warn', summary: 'No se encontraron gastos' })
+      return
+    }
+
+    showToast({ severity: 'error', summary: 'Error', detail: getErrorMessage(err) })
+  }
 }
 
 const handleClear = async () => await reload()

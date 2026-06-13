@@ -21,15 +21,9 @@ export const filterResolver = zodResolver(
       },
       { message: 'Debe seleccionar ambas fechas', path: ['range'] },
     )
-    .transform(({ group, user, range }) => {
-      const result: Record<string, unknown> = {}
-      const [startDate, endDate] = range
-
-      if (group) result.group = group
-      if (user) result.user = user
-      if (startDate) result.startDate = startDate
-      if (endDate) result.endDate = endDate
-
-      return Object.keys(result).length ? result : null
-    }),
+    .transform(({ range, ...rest }) => ({
+      ...rest,
+      startDate: range[0],
+      endDate: range[1],
+    })),
 )

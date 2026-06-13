@@ -31,4 +31,6 @@ export const getErrorMessage = (error: unknown) =>
     ? error.response?.data?.message || error.message
     : 'Ocurrió un error inesperado'
 
+export const getError = (error: unknown) => (isAxiosError(error) ? error : null)
+
 export default api

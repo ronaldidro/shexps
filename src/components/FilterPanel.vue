@@ -54,7 +54,13 @@
           icon="pi pi-eraser"
           @click="onClear"
         />
-        <Button type="button" label="Reporte" severity="contrast" icon="pi pi-file-pdf" />
+        <Button
+          type="button"
+          label="Reporte"
+          severity="contrast"
+          icon="pi pi-file-pdf"
+          @click="onReport"
+        />
         <Button type="submit" label="Filtrar" icon="pi pi-filter" />
       </div>
     </Form>
@@ -72,6 +78,7 @@ import type { QueryParams } from '@/types/pagination'
 
 const emit = defineEmits<{
   (e: 'submit', payload: QueryParams): void
+  (e: 'report', payload: QueryParams): void
   (e: 'clear'): void
 }>()
 
@@ -83,6 +90,15 @@ const members = useGroupMembers(() => formRef.value?.states.group?.value)
 const onSubmit = (form: FormSubmitEvent) => {
   if (!form.valid) return
   emit('submit', form.values as QueryParams)
+}
+
+const onReport = async () => {
+  const form = formRef.value
+  const result = await form?.validate()
+
+  if (!form?.valid) return
+
+  emit('report', result?.values as QueryParams)
 }
 
 const onClear = () => {
