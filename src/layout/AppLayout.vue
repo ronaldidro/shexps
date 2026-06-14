@@ -6,6 +6,7 @@ import AppSidebar from './AppSidebar.vue'
 import AppTopbar from './AppTopbar.vue'
 import ErrorPage from '@/pages/ErrorPage.vue'
 import CardSkeleton from '@/components/CardSkeleton.vue'
+import AppTabMenu from '@/layout/AppTabMenu.vue'
 
 const { layoutConfig, layoutState, hideMobileMenu } = useLayout()
 
@@ -51,5 +52,6 @@ onErrorCaptured(({ message, stack }) => {
       <AppFooter />
     </div>
     <div class="layout-mask animate-fadein" @click="hideMobileMenu" />
+    <AppTabMenu />
   </div>
 </template>

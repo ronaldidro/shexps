@@ -1,59 +1,13 @@
 <script setup>
-import { ref } from 'vue'
 import AppMenuItem from './AppMenuItem.vue'
+import { useNavItems } from '@/composables/useNavItems.ts'
 
-const model = ref([
-  {
-    label: 'Movimientos',
-    items: [
-      {
-        label: 'Resumen',
-        icon: 'pi pi-fw pi-chart-line',
-        to: '/',
-      },
-      {
-        label: 'Gastos',
-        icon: 'pi pi-fw pi-dollar',
-        to: '/expenses',
-      },
-      {
-        label: 'Deudas',
-        icon: 'pi pi-fw pi-wallet',
-        to: '/debts',
-      },
-      {
-        label: 'Pagos',
-        icon: 'pi pi-fw pi-paypal',
-        to: '/payments',
-      },
-    ],
-  },
-  {
-    label: 'Configuración',
-    items: [
-      {
-        label: 'Grupos',
-        icon: 'pi pi-fw pi-address-book',
-        to: '/groups',
-      },
-      {
-        label: 'Perfil',
-        icon: 'pi pi-fw pi-id-card',
-        to: '/account',
-      },
-      {
-        label: 'Contraseña',
-        icon: 'pi pi-fw pi-key',
-        to: '/account/password',
-      },
-    ],
-  },
-])
+const { items } = useNavItems()
 </script>
 
 <template>
   <ul class="layout-menu">
-    <template v-for="(item, i) in model" :key="item">
+    <template v-for="(item, i) in [{ label: 'Panel', items }]" :key="item">
       <app-menu-item v-if="!item.separator" :item="item" :index="i"></app-menu-item>
       <li v-if="item.separator" class="menu-separator"></li>
     </template>
