@@ -15,6 +15,7 @@ declare module 'vue' {
     AccordionContent: typeof import('primevue/accordioncontent')['default']
     AccordionHeader: typeof import('primevue/accordionheader')['default']
     AccordionPanel: typeof import('primevue/accordionpanel')['default']
+    Avatar: typeof import('primevue/avatar')['default']
     Breadcrumb: typeof import('primevue/breadcrumb')['default']
     Button: typeof import('primevue/button')['default']
     CardSkeleton: typeof import('./src/components/CardSkeleton.vue')['default']
@@ -39,6 +40,7 @@ declare module 'vue' {
     InputIcon: typeof import('primevue/inputicon')['default']
     InputNumber: typeof import('primevue/inputnumber')['default']
     InputText: typeof import('primevue/inputtext')['default']
+    Menu: typeof import('primevue/menu')['default']
     Message: typeof import('primevue/message')['default']
     MovementPreview: typeof import('./src/components/previews/MovementPreview.vue')['default']
     MultiSelect: typeof import('primevue/multiselect')['default']
@@ -55,6 +57,9 @@ declare module 'vue' {
     Select: typeof import('primevue/select')['default']
     SelectButton: typeof import('primevue/selectbutton')['default']
     Skeleton: typeof import('primevue/skeleton')['default']
+    Tab: typeof import('primevue/tab')['default']
+    TabList: typeof import('primevue/tablist')['default']
+    Tabs: typeof import('primevue/tabs')['default']
     Tag: typeof import('primevue/tag')['default']
     Textarea: typeof import('primevue/textarea')['default']
     Toast: typeof import('primevue/toast')['default']
@@ -62,6 +67,7 @@ declare module 'vue' {
     Toolbar: typeof import('primevue/toolbar')['default']
   }
   export interface GlobalDirectives {
+    Ripple: typeof import('primevue/ripple')['default']
     StyleClass: typeof import('primevue/styleclass')['default']
   }
 }

@@ -1,5 +1,5 @@
 <template>
-  <AppBreadcrumb :items="[{ label: 'Configuración' }, { label: 'Contraseña' }]" />
+  <AppBreadcrumb :items="[{ label: 'Contraseña' }]" />
   <div class="card md:max-w-sm">
     <Form
       v-slot="$form"
@@ -68,22 +68,13 @@ const onSubmit = async (form: FormSubmitEvent) => {
   loading.value = true
 
   try {
-    await usersService.update(user.id as string, {
-      password: form.values.password,
-    })
+    await usersService.update(user.id as string, { password: form.values.password })
 
     form.reset()
 
-    showToast({
-      severity: 'success',
-      summary: 'Contraseña actualizada correctamente',
-    })
+    showToast({ severity: 'success', summary: 'Contraseña actualizada correctamente' })
   } catch (err) {
-    showToast({
-      severity: 'error',
-      summary: 'Error',
-      detail: getErrorMessage(err),
-    })
+    showToast({ severity: 'error', summary: 'Error', detail: getErrorMessage(err) })
   } finally {
     loading.value = false
   }

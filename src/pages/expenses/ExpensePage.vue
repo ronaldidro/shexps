@@ -1,7 +1,5 @@
 <template>
-  <AppBreadcrumb
-    :items="[{ label: 'Movimientos' }, { label: 'Gastos', route: '/expenses' }, { label: 'Nuevo' }]"
-  />
+  <AppBreadcrumb :items="[{ label: 'Gastos', route: '/expenses' }, { label: 'Nuevo' }]" />
   <div class="card p-5! md:max-w-sm">
     <ExpenseForm @submit="onSubmit" />
   </div>
@@ -33,18 +31,11 @@ const create = async (payload: ExpensePayload) => {
   try {
     await expensesService.create(payload)
 
-    showToast({
-      severity: 'success',
-      summary: 'Gasto registrado correctamente',
-    })
+    showToast({ severity: 'success', summary: 'Gasto registrado correctamente' })
 
     router.push({ name: 'expenses' })
   } catch (err) {
-    showToast({
-      severity: 'error',
-      summary: 'Error',
-      detail: getErrorMessage(err),
-    })
+    showToast({ severity: 'error', summary: 'Error', detail: getErrorMessage(err) })
   }
 }
 </script>

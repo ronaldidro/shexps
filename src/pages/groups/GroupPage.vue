@@ -36,11 +36,8 @@ const members = computed(() => {
 
 const items = computed(() => {
   if (!group.value) return []
-  return [
-    { label: 'Configuración' },
-    { label: 'Grupos', route: '/groups' },
-    { label: group.value.name },
-  ]
+
+  return [{ label: 'Grupos', route: '/groups' }, { label: group.value.name }]
 })
 
 const onSubmit = async (values: GroupPayload) => {
@@ -49,18 +46,11 @@ const onSubmit = async (values: GroupPayload) => {
   try {
     await groupsService.update(group.value.id, values)
 
-    showToast({
-      severity: 'success',
-      summary: 'Grupo actualizado correctamente',
-    })
+    showToast({ severity: 'success', summary: 'Grupo actualizado correctamente' })
 
     router.push({ name: 'groups' })
   } catch (err) {
-    showToast({
-      severity: 'error',
-      summary: 'Error',
-      detail: getErrorMessage(err),
-    })
+    showToast({ severity: 'error', summary: 'Error', detail: getErrorMessage(err) })
   }
 }
 </script>

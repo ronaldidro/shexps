@@ -1,5 +1,5 @@
 <template>
-  <AppBreadcrumb :items="[{ label: 'Movimientos' }, { label: 'Deudas' }]" />
+  <AppBreadcrumb :items="[{ label: 'Deudas' }]" />
   <Toolbar class="mb-7">
     <template #start>
       <SearchField v-model="search" @search="handleSearch" />

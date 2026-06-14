@@ -1,5 +1,5 @@
 <template>
-  <AppBreadcrumb :items="[{ label: 'Movimientos' }, { label: 'Resumen' }]" />
+  <AppBreadcrumb :items="[{ label: 'Resumen' }]" />
   <div v-if="summary">
     <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
       <div class="card mb-0! flex flex-col gap-4">
@@ -58,7 +58,7 @@
             class="flex items-center justify-center bg-blue-100 dark:bg-blue-400/10 rounded-border"
             style="width: 2.5rem; height: 2.5rem"
           >
-            <i class="pi pi-wallet text-blue-500 text-xl!"></i>
+            <i class="pi pi-credit-card text-blue-500 text-xl!"></i>
           </div>
         </div>
         <div class="text-surface-900 dark:text-surface-0 font-medium text-xl">
@@ -79,7 +79,7 @@
             class="flex items-center justify-center bg-purple-100 dark:bg-purple-400/10 rounded-border"
             style="width: 2.5rem; height: 2.5rem"
           >
-            <i class="pi pi-credit-card text-purple-500 text-xl!"></i>
+            <i class="pi pi-wallet text-purple-500 text-xl!"></i>
           </div>
         </div>
         <div

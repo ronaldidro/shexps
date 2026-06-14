@@ -1,5 +1,5 @@
 <template>
-  <AppBreadcrumb :items="[{ label: 'Configuración' }, { label: 'Grupos' }]" />
+  <AppBreadcrumb :items="[{ label: 'Grupos' }]" />
   <Toolbar class="mb-7">
     <template #start>
       <InputGroup>
@@ -74,18 +74,8 @@ const openConfirmDialog = (id: string) => {
     header: 'Eliminar grupo',
     message: '¿Está seguro de que desea continuar?',
     icon: 'pi pi-exclamation-triangle',
-    rejectProps: {
-      label: 'No',
-      severity: 'secondary',
-      icon: 'pi pi-times',
-      text: true,
-    },
-    acceptProps: {
-      label: 'Sí',
-      severity: 'danger',
-      icon: 'pi pi-check',
-      outlined: true,
-    },
+    rejectProps: { label: 'No', severity: 'secondary', icon: 'pi pi-times', text: true },
+    acceptProps: { label: 'Sí', severity: 'danger', icon: 'pi pi-check', outlined: true },
     accept: () => handleDelete(id),
   })
 }
@@ -96,16 +86,9 @@ const handleCreate = async (values: GroupPayload) => {
 
     groups.value = await groupsService.getAll()
 
-    showToast({
-      severity: 'success',
-      summary: 'Grupo registrado correctamente',
-    })
+    showToast({ severity: 'success', summary: 'Grupo registrado correctamente' })
   } catch (err) {
-    showToast({
-      severity: 'error',
-      summary: 'Error',
-      detail: getErrorMessage(err),
-    })
+    showToast({ severity: 'error', summary: 'Error', detail: getErrorMessage(err) })
   }
 }
 
@@ -113,18 +96,11 @@ const handleDelete = async (id: string) => {
   try {
     await groupsService.remove(id)
 
-    showToast({
-      severity: 'success',
-      summary: 'Grupo eliminado correctamente',
-    })
+    showToast({ severity: 'success', summary: 'Grupo eliminado correctamente' })
 
     groups.value = await groupsService.getAll()
   } catch (err) {
-    showToast({
-      severity: 'error',
-      summary: 'Error',
-      detail: getErrorMessage(err),
-    })
+    showToast({ severity: 'error', summary: 'Error', detail: getErrorMessage(err) })
   }
 }
 </script>

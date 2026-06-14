@@ -1,7 +1,5 @@
 <template>
-  <AppBreadcrumb
-    :items="[{ label: 'Movimientos' }, { label: 'Pagos', route: '/payments' }, { label: 'Nuevo' }]"
-  />
+  <AppBreadcrumb :items="[{ label: 'Pagos', route: '/payments' }, { label: 'Nuevo' }]" />
   <div class="card p-5! md:max-w-sm">
     <PaymentForm @submit="onSubmit" />
   </div>
@@ -38,18 +36,11 @@ const create = async (values: PaymentPayload) => {
   try {
     await paymentsService.create(values)
 
-    showToast({
-      severity: 'success',
-      summary: 'Pago registrado correctamente',
-    })
+    showToast({ severity: 'success', summary: 'Pago registrado correctamente' })
 
     router.push({ name: 'payments' })
   } catch (err) {
-    showToast({
-      severity: 'error',
-      summary: 'Error',
-      detail: getErrorMessage(err),
-    })
+    showToast({ severity: 'error', summary: 'Error', detail: getErrorMessage(err) })
   }
 }
 </script>

@@ -22,7 +22,7 @@ export const useReport = (type: ReportType) => {
       const error = getError(err)
 
       if (error && error.status === 404) {
-        showToast({ severity: 'warn', summary: 'No se encontraron gastos' })
+        showToast({ severity: 'warn', summary: 'No se encontraron resultados' })
         return
       }
 

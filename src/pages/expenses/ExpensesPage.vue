@@ -1,5 +1,5 @@
 <template>
-  <AppBreadcrumb :items="[{ label: 'Movimientos' }, { label: 'Gastos' }]" />
+  <AppBreadcrumb :items="[{ label: 'Gastos' }]" />
   <Toolbar class="mb-5">
     <template #start>
       <SearchField v-model="search" @search="handleSearch" />
@@ -123,18 +123,8 @@ const openConfirmDialog = (id: string) => {
     header: 'Eliminar gasto',
     message: '¿Está seguro de que desea continuar?',
     icon: 'pi pi-exclamation-triangle',
-    rejectProps: {
-      label: 'No',
-      severity: 'secondary',
-      icon: 'pi pi-times',
-      text: true,
-    },
-    acceptProps: {
-      label: 'Sí',
-      severity: 'danger',
-      icon: 'pi pi-check',
-      outlined: true,
-    },
+    rejectProps: { label: 'No', severity: 'secondary', icon: 'pi pi-times', text: true },
+    acceptProps: { label: 'Sí', severity: 'danger', icon: 'pi pi-check', outlined: true },
     accept: () => handleDelete(id),
   })
 }
@@ -143,18 +133,11 @@ const handleDelete = async (id: string) => {
   try {
     await expensesService.remove(id)
 
-    showToast({
-      severity: 'success',
-      summary: 'Gasto eliminado correctamente',
-    })
+    showToast({ severity: 'success', summary: 'Gasto eliminado correctamente' })
 
     await reload()
   } catch (err) {
-    showToast({
-      severity: 'error',
-      summary: 'Error',
-      detail: getErrorMessage(err),
-    })
+    showToast({ severity: 'error', summary: 'Error', detail: getErrorMessage(err) })
   }
 }
 </script>
