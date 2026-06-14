@@ -1,6 +1,7 @@
 import { defineStore } from 'pinia'
 import { reactive } from 'vue'
 import { authService } from '@/services/auth.service'
+import type { User } from '@/types/user'
 import type { SignInPayload, AuthUser } from '@/types/auth'
 import router from '@/router'
 
@@ -28,7 +29,12 @@ export const useAuthStore = defineStore(
       router.push({ name: 'sign-in' })
     }
 
-    return { user, signIn, logout }
+    const setAuthUser = ({ id, firstName }: User) => {
+      user.id = id
+      user.name = firstName
+    }
+
+    return { user, signIn, logout, setAuthUser }
   },
   { persist: true },
 )
