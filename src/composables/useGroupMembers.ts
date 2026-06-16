@@ -3,7 +3,7 @@ import type { User } from '@/types/user'
 import { groupsService } from '@/services/groups.service'
 import { useAuthStore } from '@/stores/auth.store'
 
-export const useGroupMembers = (group: MaybeRefOrGetter<string>) => {
+export const useGroupMembers = (group: MaybeRefOrGetter<string>, showAuthUser: boolean = false) => {
   const members = ref<User[]>([])
   const { user } = useAuthStore()
 
@@ -13,7 +13,7 @@ export const useGroupMembers = (group: MaybeRefOrGetter<string>) => {
     const group = await groupsService.get(selectedGroup)
 
     members.value = group.memberships
-      .filter((membership) => membership.user.id !== user.id)
+      .filter((membership) => showAuthUser || membership.user.id !== user.id)
       .map((membership) => membership.user)
   }
 

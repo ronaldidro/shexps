@@ -7,11 +7,8 @@
     position="bottom"
     style="height: auto"
   >
-    <div class="flex justify-between">
-      <Tag severity="contrast" :value="expense.splitted ? 'Total' : 'Parcial'" />
-      <Tag :value="expense.group.name" />
-    </div>
-    <div class="flex justify-between items-center pt-5">
+    <Tag :value="expense.group.name" />
+    <div class="flex justify-between items-center py-5">
       <div>
         <span class="font-medium text-xl">
           {{ expense.description }}
@@ -22,42 +19,29 @@
       </div>
       <span class="text-2xl font-semibold">S/{{ expense.amount }}</span>
     </div>
-    <div v-if="expense.splitted" class="flex justify-between pt-5">
-      <span class="text-lg">{{ expense.user.firstName }}</span>
-      <span class="text-lg font-semibold">
-        S/{{ expense.details[0]?.amount || expense.amount }}
-      </span>
-    </div>
-    <div v-if="expense.details.length">
-      <hr />
-      <Tag severity="warn" value="Detalle" />
-      <ul class="pt-5">
-        <li v-for="detail in expense.details" :key="detail.id" class="flex justify-between">
+    <Tag severity="warn" value="Detalle" />
+    <ul class="pt-5">
+      <li v-for="detail in expense.details" :key="detail.id">
+        <div vi class="flex justify-between">
           <span class="text-lg">{{ detail.user.firstName }}</span>
           <span class="text-lg font-semibold">S/{{ detail.amount }}</span>
-        </li>
-      </ul>
-    </div>
+        </div>
+      </li>
+    </ul>
   </Drawer>
 </template>
 
 <script setup lang="ts">
+import { ref, watch } from 'vue'
 import { expensesService } from '@/services/expenses.service'
 import type { Expense } from '@/types/expense'
-import { ref, watch } from 'vue'
 
-const props = defineProps<{
-  visible: boolean
-  id: string | null
-}>()
-
-const emit = defineEmits<{
-  (e: 'update:visible', value: boolean): void
-}>()
-
-const close = () => emit('update:visible', false)
+const props = defineProps<{ visible: boolean; id: string | null }>()
+const emit = defineEmits<{ (e: 'update:visible', value: boolean): void }>()
 
 const expense = ref<Expense>()
+
+const close = () => emit('update:visible', false)
 
 watch(
   () => props.visible,

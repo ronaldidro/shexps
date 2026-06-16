@@ -8,7 +8,13 @@
       <Button label="Nuevo" icon="pi pi-plus" @click="router.push({ name: 'new-expense' })" />
     </template>
   </Toolbar>
-  <FilterPanel @submit="handleFilters" @report="handleReport" @clear="handleClear" :reporting />
+  <FilterPanel
+    @submit="handleFilters"
+    @report="handleReport"
+    @clear="handleClear"
+    :showAuthUser="true"
+    :reporting
+  />
   <div class="card p-1!">
     <div ref="el" class="overflow-y-auto h-dvh">
       <div
@@ -42,11 +48,6 @@
             v-for="detail of expense.details"
             :key="detail.id"
             :value="detail.user.firstName"
-            severity="info"
-          />
-          <Tag
-            v-if="expense.splitted || !expense.details.length"
-            :value="expense.user.firstName"
             severity="info"
           />
         </div>

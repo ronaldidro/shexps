@@ -77,7 +77,9 @@ import { useGroupMembers } from '@/composables/useGroupMembers'
 import { filterResolver } from '@/resolvers/filter.resolver'
 import type { QueryParams } from '@/types/pagination'
 
-defineProps<{ reporting: boolean }>()
+const props = withDefaults(defineProps<{ reporting: boolean; showAuthUser?: boolean }>(), {
+  showAuthUser: false,
+})
 
 const emit = defineEmits<{
   (e: 'submit', payload: QueryParams): void
@@ -88,7 +90,7 @@ const emit = defineEmits<{
 const formRef = ref<FormInstance | null>(null)
 const groups = reactive<Group[]>(await groupsService.getAll())
 
-const members = useGroupMembers(() => formRef.value?.states.group?.value)
+const members = useGroupMembers(() => formRef.value?.states.group?.value, props.showAuthUser)
 
 const onSubmit = (form: FormSubmitEvent) => {
   if (!form.valid) return
