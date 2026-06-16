@@ -20,6 +20,7 @@ export interface PaymentPayload {
   description: string
   debt: number
   amount: number
+  remaining: number
   method: PayMethod
   group: string
   payer: string

@@ -20,17 +20,15 @@ const { showToast } = useNotification()
 const { openPreview } = usePreviewDialog()
 const { user } = useAuthStore()
 
-const onSubmit = (payload: PaymentPayload, preview: PaymentPayload) =>
+const onSubmit = (payload: PaymentPayload, preview: PaymentPayload) => {
+  const remaining = payload.debt - payload.amount
+
   openPreview({
     title: 'Nuevo pago',
-    data: {
-      ...preview,
-      remaining: payload.debt - payload.amount,
-      user,
-      type: 'payment',
-    },
-    handleSave: () => create(payload),
+    data: { ...preview, remaining, user, type: 'payment' },
+    handleSave: () => create({ ...payload, remaining }),
   })
+}
 
 const create = async (values: PaymentPayload) => {
   try {
