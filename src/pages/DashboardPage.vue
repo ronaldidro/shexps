@@ -101,31 +101,33 @@
 <script setup lang="ts">
 import { reactive } from 'vue'
 import type { ExpenseSummary } from '@/types/expense'
+import type { ChartData, ChartOptions } from 'chart.js'
 import AppBreadcrumb from '@/layout/AppBreadcrumb.vue'
 import { expensesService } from '@/services/expenses.service'
 
-const setChartData = () => {
+const setChartData = (): ChartData<'bar'> => {
   const documentStyle = getComputedStyle(document.documentElement)
 
   return {
     labels: summary.chart.labels,
     datasets: [
       {
-        label: 'Gastos por día',
+        type: 'bar',
+        label: 'Gasto individual',
         backgroundColor: documentStyle.getPropertyValue('--p-cyan-500'),
-        borderColor: documentStyle.getPropertyValue('--p-cyan-500'),
-        data: summary.chart.expensesData,
+        data: summary.chart.debtsData,
+        grouped: false,
       },
       {
-        label: 'Gasto individual',
+        type: 'bar',
+        label: 'Gasto total',
         backgroundColor: documentStyle.getPropertyValue('--p-gray-500'),
-        borderColor: documentStyle.getPropertyValue('--p-gray-500'),
-        data: summary.chart.debtsData,
+        data: summary.chart.expensesData,
       },
     ],
   }
 }
-const setChartOptions = () => {
+const setChartOptions = (): ChartOptions<'bar'> => {
   const documentStyle = getComputedStyle(document.documentElement)
   const textColor = documentStyle.getPropertyValue('--p-text-color')
   const textColorSecondary = documentStyle.getPropertyValue('--p-text-muted-color')
@@ -134,16 +136,17 @@ const setChartOptions = () => {
   return {
     maintainAspectRatio: false,
     aspectRatio: 0.8,
-    plugins: { legend: { labels: { color: textColor } } },
+    plugins: {
+      tooltip: {
+        mode: 'index',
+        intersect: false,
+        itemSort: (a, b) => b.datasetIndex - a.datasetIndex,
+      },
+      legend: { labels: { color: textColor } },
+    },
     scales: {
-      x: {
-        ticks: { color: textColorSecondary, font: { weight: 500 } },
-        grid: { display: false, drawBorder: false },
-      },
-      y: {
-        ticks: { color: textColorSecondary },
-        grid: { color: surfaceBorder, drawBorder: false },
-      },
+      x: { ticks: { color: textColorSecondary }, grid: { color: surfaceBorder } },
+      y: { ticks: { color: textColorSecondary }, grid: { color: surfaceBorder } },
     },
   }
 }
