@@ -5,7 +5,7 @@ export const useNavItems = () => {
   const route = useRoute()
 
   const items = [
-    { label: 'Resumen', icon: 'pi pi-fw pi-chart-line', to: '/' },
+    { label: 'Resumen', icon: 'pi pi-fw pi-chart-bar', to: '/' },
     { label: 'Gastos', icon: 'pi pi-fw pi-dollar', to: '/expenses' },
     { label: 'Deudas', icon: 'pi pi-fw pi-credit-card', to: '/debts' },
     { label: 'Pagos', icon: 'pi pi-fw pi-paypal', to: '/payments' },

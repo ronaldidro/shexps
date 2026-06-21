@@ -4,7 +4,7 @@
     <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
       <div class="card mb-0! flex flex-col gap-4">
         <div class="flex items-center justify-between">
-          <span class="block text-muted-color font-medium text-xl"> Gastos </span>
+          <span class="block text-muted-color font-medium text-xl">Gastos</span>
           <div
             class="flex items-center justify-center bg-orange-100 dark:bg-orange-400/10 rounded-border"
             style="width: 2.5rem; height: 2.5rem"
@@ -34,7 +34,7 @@
       </div>
       <div v-if="summary.debtors.length" class="card mb-0! flex flex-col gap-4">
         <div class="flex items-center justify-between">
-          <span class="block text-muted-color font-medium text-xl"> Te deben </span>
+          <span class="block text-muted-color font-medium text-xl">Te deben</span>
           <div
             class="flex items-center justify-center bg-cyan-100 dark:bg-cyan-400/10 rounded-border"
             style="width: 2.5rem; height: 2.5rem"
@@ -53,7 +53,7 @@
       </div>
       <div class="card mb-0! flex flex-col gap-4">
         <div class="flex items-center justify-between">
-          <span class="block text-muted-color font-medium text-xl"> Deudas </span>
+          <span class="block text-muted-color font-medium text-xl">Deudas</span>
           <div
             class="flex items-center justify-center bg-blue-100 dark:bg-blue-400/10 rounded-border"
             style="width: 2.5rem; height: 2.5rem"
@@ -74,7 +74,7 @@
       </div>
       <div v-if="summary.creditors.length" class="card mb-0! flex flex-col gap-4">
         <div class="flex items-center justify-between">
-          <span class="block text-muted-color font-medium text-xl"> Le debes </span>
+          <span class="block text-muted-color font-medium text-xl">Le debes</span>
           <div
             class="flex items-center justify-center bg-purple-100 dark:bg-purple-400/10 rounded-border"
             style="width: 2.5rem; height: 2.5rem"
@@ -92,14 +92,63 @@
         </div>
       </div>
     </div>
+    <div class="card mt-8">
+      <Chart type="bar" :data="chartData" :options="chartOptions" class="h-120" />
+    </div>
   </div>
 </template>
 
 <script setup lang="ts">
 import { reactive } from 'vue'
-import AppBreadcrumb from '@/layout/AppBreadcrumb.vue'
 import type { ExpenseSummary } from '@/types/expense'
+import AppBreadcrumb from '@/layout/AppBreadcrumb.vue'
 import { expensesService } from '@/services/expenses.service'
 
+const setChartData = () => {
+  const documentStyle = getComputedStyle(document.documentElement)
+
+  return {
+    labels: summary.chart.labels,
+    datasets: [
+      {
+        label: 'Gastos por día',
+        backgroundColor: documentStyle.getPropertyValue('--p-cyan-500'),
+        borderColor: documentStyle.getPropertyValue('--p-cyan-500'),
+        data: summary.chart.expensesData,
+      },
+      {
+        label: 'Gasto individual',
+        backgroundColor: documentStyle.getPropertyValue('--p-gray-500'),
+        borderColor: documentStyle.getPropertyValue('--p-gray-500'),
+        data: summary.chart.debtsData,
+      },
+    ],
+  }
+}
+const setChartOptions = () => {
+  const documentStyle = getComputedStyle(document.documentElement)
+  const textColor = documentStyle.getPropertyValue('--p-text-color')
+  const textColorSecondary = documentStyle.getPropertyValue('--p-text-muted-color')
+  const surfaceBorder = documentStyle.getPropertyValue('--p-content-border-color')
+
+  return {
+    maintainAspectRatio: false,
+    aspectRatio: 0.8,
+    plugins: { legend: { labels: { color: textColor } } },
+    scales: {
+      x: {
+        ticks: { color: textColorSecondary, font: { weight: 500 } },
+        grid: { display: false, drawBorder: false },
+      },
+      y: {
+        ticks: { color: textColorSecondary },
+        grid: { color: surfaceBorder, drawBorder: false },
+      },
+    },
+  }
+}
+
 const summary = reactive<ExpenseSummary>(await expensesService.getSummary())
+const chartData = reactive(setChartData())
+const chartOptions = reactive(setChartOptions())
 </script>

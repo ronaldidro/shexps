@@ -19,6 +19,7 @@ declare module 'vue' {
     Breadcrumb: typeof import('primevue/breadcrumb')['default']
     Button: typeof import('primevue/button')['default']
     CardSkeleton: typeof import('./src/components/CardSkeleton.vue')['default']
+    Chart: typeof import('primevue/chart')['default']
     Chip: typeof import('primevue/chip')['default']
     ConfirmDialog: typeof import('primevue/confirmdialog')['default']
     DatePicker: typeof import('primevue/datepicker')['default']

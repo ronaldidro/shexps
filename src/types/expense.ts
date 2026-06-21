@@ -38,6 +38,12 @@ interface ExpenseSummaryDetail {
   amount: number
 }
 
+interface ChartData {
+  labels: string[]
+  expensesData: number[]
+  debtsData: number[]
+}
+
 export interface ExpenseSummary {
   user: string
   expenses: number
@@ -45,4 +51,5 @@ export interface ExpenseSummary {
   debts: number
   debtors: ExpenseSummaryDetail[]
   creditors: ExpenseSummaryDetail[]
+  chart: ChartData
 }
