@@ -64,13 +64,7 @@ const routes = [
       {
         path: 'account',
         name: 'account',
-        component: () => import('@/pages/account/AccountPage.vue'),
-        meta: { requiresAuth: true },
-      },
-      {
-        path: 'account/password',
-        name: 'password',
-        component: () => import('@/pages/account/PasswordPage.vue'),
+        component: () => import('@/pages/AccountPage.vue'),
         meta: { requiresAuth: true },
       },
     ],
