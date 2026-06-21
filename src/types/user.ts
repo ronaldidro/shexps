@@ -14,6 +14,11 @@ export interface UpdateUserPayload {
   password?: string
 }
 
+export interface UpdatePasswordPayload {
+  current: string
+  renewed: string
+}
+
 type Role = 'admin' | 'guest'
 
 export interface UserQueryParams {

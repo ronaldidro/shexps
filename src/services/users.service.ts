@@ -1,5 +1,5 @@
 import api, { getErrorMessage } from '@/services/axios'
-import type { User, UpdateUserPayload, UserQueryParams } from '@/types/user'
+import type { User, UpdateUserPayload, UserQueryParams, UpdatePasswordPayload } from '@/types/user'
 
 export const usersService = {
   async getAll(params: UserQueryParams) {
@@ -13,6 +13,11 @@ export const usersService = {
 
   async update(id: string, payload: UpdateUserPayload) {
     const { data } = await api.patch<User>(`/users/${id}`, payload)
+    return data
+  },
+
+  async updatePassword(payload: UpdatePasswordPayload) {
+    const { data } = await api.patch<User>('/users/password', payload)
     return data
   },
 }

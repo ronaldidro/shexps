@@ -4,8 +4,9 @@ import { z } from 'zod'
 export const passwordResolver = zodResolver(
   z
     .object({
-      password: z
-        .string({ message: 'Contraseña es requerida' })
+      current: z.string({ message: 'Contraseña actual es requerida' }),
+      renewed: z
+        .string({ message: 'Nueva contraseña es requerida' })
         .min(8, 'Contraseña debe tener mínimo 8 caracteres')
         .refine((value) => /[A-Za-z]/.test(value), {
           message: 'Contraseña debe tener al menos una letra',
@@ -13,18 +14,18 @@ export const passwordResolver = zodResolver(
         .refine((value) => /\d/.test(value), {
           message: 'Contraseña debe tener al menos un número',
         }),
-      passwordConfirmation: z.string({
+      confirmed: z.string({
         message: 'Confirmación de contraseña es requerido',
       }),
     })
     .refine(
       (data) => {
-        if (!data.password) return true
-        return data.password === data.passwordConfirmation
+        if (!data.renewed) return true
+        return data.renewed === data.confirmed
       },
       {
         message: 'Las contraseñas no coinciden',
-        path: ['passwordConfirmation'],
+        path: ['confirmed'],
       },
     ),
 )
