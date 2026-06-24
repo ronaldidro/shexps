@@ -1,18 +1,17 @@
 import { ref } from 'vue'
+import type { QueryParams } from '@/types/pagination'
 import { useNotification } from '@/composables/useNotification'
 import { getError, getErrorMessage } from '@/services/axios'
-import { reportsService } from '@/services/reports.service'
-import type { QueryParams } from '@/types/pagination'
-import type { ReportType } from '@/types/report'
 
-export const useReport = (type: ReportType) => {
+export const useReport = (reporter: (params: QueryParams) => Promise<Blob>) => {
   const { showToast } = useNotification()
   const reporting = ref(false)
 
   const handleReport = async (values: QueryParams) => {
     try {
       reporting.value = true
-      const blob = await reportsService.create({ ...values, type })
+
+      const blob = await reporter(values)
       const url = URL.createObjectURL(blob)
 
       window.open(url, '_blank')

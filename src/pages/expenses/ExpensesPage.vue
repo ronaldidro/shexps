@@ -93,7 +93,7 @@ const search = ref('')
 
 const confirm = useConfirm()
 const { showToast } = useNotification()
-const { handleReport, reporting } = useReport('expenses')
+const { handleReport, reporting } = useReport(expensesService.getReport)
 
 const {
   items: expenses,

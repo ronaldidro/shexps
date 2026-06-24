@@ -18,4 +18,9 @@ export const detailsService = {
     const { data } = await api.get<number>('/details/sum', { params })
     return data
   },
+
+  async getReport(params: QueryParams) {
+    const { data } = await api.get<Blob>('/details/report', { params, responseType: 'blob' })
+    return data
+  },
 }

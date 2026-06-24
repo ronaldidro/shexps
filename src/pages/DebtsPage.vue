@@ -65,7 +65,7 @@ const selectedId = ref<string | null>(null)
 const showDrawer = ref(false)
 const search = ref('')
 
-const { handleReport, reporting } = useReport('debts')
+const { handleReport, reporting } = useReport(detailsService.getReport)
 
 const {
   items: details,

@@ -1,5 +1,5 @@
 import api, { getErrorMessage } from '@/services/axios'
-import type { Expense, ExpenseDetail, ExpensePayload, ExpenseSummary } from '@/types/expense'
+import type { Expense, ExpensePayload, ExpenseSummary } from '@/types/expense'
 import type { PaginatedData, QueryParams } from '@/types/pagination'
 
 export const expensesService = {
@@ -14,20 +14,6 @@ export const expensesService = {
     }
   },
 
-  async getDetails(params: QueryParams) {
-    try {
-      const response = await api.get<PaginatedData<ExpenseDetail>>('/expenses/details', { params })
-      return response.data
-    } catch (error) {
-      throw new Error(getErrorMessage(error))
-    }
-  },
-
-  async getDetailsSum(params: { debtor: string; group: string }) {
-    const { data } = await api.get<number>('/expenses/details/sum', { params })
-    return data
-  },
-
   async getSummary() {
     try {
       const response = await api.get<ExpenseSummary>('/expenses/summary')
@@ -35,6 +21,11 @@ export const expensesService = {
     } catch (error) {
       throw new Error(getErrorMessage(error))
     }
+  },
+
+  async getReport(params: QueryParams) {
+    const { data } = await api.get<Blob>('/expenses/report', { params, responseType: 'blob' })
+    return data
   },
 
   async get(id: string) {
