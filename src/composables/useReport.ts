@@ -1,13 +1,12 @@
 import { ref } from 'vue'
-import type { QueryParams } from '@/types/pagination'
 import { useNotification } from '@/composables/useNotification'
 import { getError, getErrorMessage } from '@/services/axios'
 
-export const useReport = (reporter: (params: QueryParams) => Promise<Blob>) => {
+export const useReport = <T>(reporter: (params: T) => Promise<Blob>) => {
   const { showToast } = useNotification()
   const reporting = ref(false)
 
-  const handleReport = async (values: QueryParams) => {
+  const handleReport = async (values: T) => {
     try {
       reporting.value = true
 

@@ -19,6 +19,11 @@ export const paymentsService = {
     return data
   },
 
+  async getReport(id: string) {
+    const { data } = await api.get<Blob>(`/payments/${id}/report`, { responseType: 'blob' })
+    return data
+  },
+
   async create(payload: PaymentPayload) {
     const { data } = await api.post<Payment>('/payments', payload)
     return data

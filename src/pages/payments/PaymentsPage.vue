@@ -27,6 +27,13 @@
             </span>
           </div>
           <div class="flex gap-3">
+            <Button
+              icon="pi pi-file-pdf"
+              rounded
+              severity="contrast"
+              :loading="reporting"
+              @click="handleReport(payment.id)"
+            />
             <Button icon="pi pi-eye" rounded @click="openDrawer(payment.id)" />
             <Button
               v-if="payment.user.id === user.id"
@@ -64,16 +71,17 @@
 <script setup lang="ts">
 import { ref, useTemplateRef } from 'vue'
 import { useConfirm } from 'primevue'
+import type { Payment } from '@/types/payment'
 import AppBreadcrumb from '@/layout/AppBreadcrumb.vue'
 import PaymentDrawer from '@/components/payments/PaymentDrawer.vue'
 import SearchField from '@/components/SearchField.vue'
 import { useScrollPagination } from '@/composables/useScrollPagination'
+import { useNotification } from '@/composables/useNotification'
+import { useReport } from '@/composables/useReport'
 import { paymentsService } from '@/services/payments.service'
 import { getErrorMessage } from '@/services/axios'
-import type { Payment } from '@/types/payment'
-import router from '@/router'
 import { useAuthStore } from '@/stores/auth.store'
-import { useNotification } from '@/composables/useNotification'
+import router from '@/router'
 
 const el = useTemplateRef('el')
 
@@ -84,6 +92,7 @@ const search = ref('')
 const confirm = useConfirm()
 const { user } = useAuthStore()
 const { showToast } = useNotification()
+const { reporting, handleReport } = useReport(paymentsService.getReport)
 
 const {
   items: payments,
