@@ -37,8 +37,11 @@ const create = async (values: PaymentPayload) => {
     showToast({ severity: 'success', summary: 'Pago registrado correctamente' })
 
     router.push({ name: 'payments' })
+
+    return true
   } catch (err) {
     showToast({ severity: 'error', summary: 'Error', detail: getErrorMessage(err) })
+    return false
   }
 }
 </script>

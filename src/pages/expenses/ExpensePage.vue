@@ -34,8 +34,11 @@ const create = async (payload: ExpensePayload) => {
     showToast({ severity: 'success', summary: 'Gasto registrado correctamente' })
 
     router.push({ name: 'expenses' })
+
+    return true
   } catch (err) {
     showToast({ severity: 'error', summary: 'Error', detail: getErrorMessage(err) })
+    return false
   }
 }
 </script>
