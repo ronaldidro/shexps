@@ -1,26 +1,22 @@
 <script setup>
+import { onMounted, ref } from 'vue'
 import { useLayout } from '@/layout/composables/layout'
 import { $t, updatePreset, updateSurfacePalette } from '@primeuix/themes'
 import Aura from '@primeuix/themes/aura'
 import Lara from '@primeuix/themes/lara'
 import Nora from '@primeuix/themes/nora'
-import { ref } from 'vue'
 
-const { layoutConfig, isDarkTheme, changeMenuMode } = useLayout()
+const { layoutConfig, isDarkTheme } = useLayout()
 
-const presets = {
-  Aura,
-  Lara,
-  Nora,
-}
+const presets = { Aura, Lara, Nora }
 const preset = ref(layoutConfig.preset)
 const presetOptions = ref(Object.keys(presets))
 
-const menuMode = ref(layoutConfig.menuMode)
-const menuModeOptions = ref([
-  { label: 'Fijo', value: 'static' },
-  { label: 'Sobrepuesto', value: 'overlay' },
-])
+// const menuMode = ref(layoutConfig.menuMode)
+// const menuModeOptions = ref([
+//   { label: 'Fijo', value: 'static' },
+//   { label: 'Sobrepuesto', value: 'overlay' },
+// ])
 
 const primaryColors = ref([
   { name: 'noir', palette: {} },
@@ -540,6 +536,16 @@ function onPresetChange() {
     .surfacePalette(surfacePalette)
     .use({ useDefaultOptions: true })
 }
+
+onMounted(() => {
+  onPresetChange()
+
+  if (isDarkTheme.value) {
+    document.documentElement.classList.add('app-dark')
+  } else {
+    document.documentElement.classList.remove('app-dark')
+  }
+})
 </script>
 
 <template>
@@ -557,8 +563,8 @@ function onPresetChange() {
             :title="primaryColor.name"
             @click="updateColors('primary', primaryColor)"
             :class="[
-              'border-none w-5 h-5 rounded-full p-0 cursor-pointer outline-none outline-offset-1',
-              { 'outline-primary': layoutConfig.primary === primaryColor.name },
+              'border-none w-5 h-5 rounded-full p-0 cursor-pointer outline-offset-1',
+              { 'outline outline-primary': layoutConfig.primary === primaryColor.name },
             ]"
             :style="{
               backgroundColor: `${primaryColor.name === 'noir' ? 'var(--text-color)' : primaryColor.palette['500']}`,
@@ -576,9 +582,9 @@ function onPresetChange() {
             :title="surface.name"
             @click="updateColors('surface', surface)"
             :class="[
-              'border-none w-5 h-5 rounded-full p-0 cursor-pointer outline-none outline-offset-1',
+              'border-none w-5 h-5 rounded-full p-0 cursor-pointer outline-offset-1',
               {
-                'outline-primary': layoutConfig.surface
+                'outline outline-primary': layoutConfig.surface
                   ? layoutConfig.surface === surface.name
                   : isDarkTheme
                     ? surface.name === 'zinc'
@@ -598,7 +604,7 @@ function onPresetChange() {
           :allowEmpty="false"
         />
       </div>
-      <div class="flex flex-col gap-2">
+      <!-- <div class="flex flex-col gap-2">
         <span class="text-sm text-muted-color font-semibold">Menu</span>
         <SelectButton
           v-model="menuMode"
@@ -608,7 +614,7 @@ function onPresetChange() {
           optionLabel="label"
           optionValue="value"
         />
-      </div>
+      </div> -->
     </div>
   </div>
 </template>

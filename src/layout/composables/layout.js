@@ -1,12 +1,5 @@
 import { computed, reactive } from 'vue'
-
-const layoutConfig = reactive({
-  preset: 'Aura',
-  primary: 'emerald',
-  surface: null,
-  darkTheme: false,
-  menuMode: 'static',
-})
+import { useLayoutStore } from '@/stores/layout.store'
 
 const layoutState = reactive({
   staticMenuInactive: false,
@@ -20,6 +13,10 @@ const layoutState = reactive({
 })
 
 export function useLayout() {
+  const { config } = useLayoutStore()
+
+  const layoutConfig = config
+
   const toggleDarkMode = () => {
     if (!document.startViewTransition) {
       executeDarkModeToggle()
