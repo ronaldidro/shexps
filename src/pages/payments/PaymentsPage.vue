@@ -31,7 +31,7 @@
               icon="pi pi-file-pdf"
               rounded
               severity="contrast"
-              :loading="reporting"
+              :loading="activeParam === payment.id"
               @click="handleReport(payment.id)"
             />
             <Button icon="pi pi-eye" rounded @click="openDrawer(payment.id)" />
@@ -92,7 +92,7 @@ const search = ref('')
 const confirm = useConfirm()
 const { user } = useAuthStore()
 const { showToast } = useNotification()
-const { reporting, handleReport } = useReport(paymentsService.getReport)
+const { handleReport, activeParam } = useReport(paymentsService.getReport)
 
 const {
   items: payments,
