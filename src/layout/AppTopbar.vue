@@ -1,9 +1,13 @@
 <script setup>
+import { reactive } from 'vue'
 import { useLayout } from '@/layout/composables/layout'
 import AppUserMenu from '@/layout/AppUserMenu.vue'
+import { APP_NAME } from '@/utils/vite.ts'
 import AppConfigurator from './AppConfigurator.vue'
 
 const { toggleMenu, toggleDarkMode, isDarkTheme } = useLayout()
+
+const appName = reactive(APP_NAME)
 </script>
 
 <template>
@@ -44,7 +48,7 @@ const { toggleMenu, toggleDarkMode, isDarkTheme } = useLayout()
             />
           </g>
         </svg>
-        <span>Splitty</span>
+        <span>{{ appName }}</span>
       </router-link>
     </div>
     <div class="layout-topbar-actions">

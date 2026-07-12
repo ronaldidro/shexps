@@ -50,7 +50,7 @@
               </g>
             </svg>
             <div class="text-surface-900 dark:text-surface-0 text-3xl font-medium mb-4">
-              Bienvenido a Splitty
+              Bienvenido a {{ appName }}
             </div>
             <span class="text-muted-color font-medium"> Inicia sesión para continuar </span>
           </div>
@@ -103,9 +103,10 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
+import { reactive, ref } from 'vue'
 import { authResolver } from '@/resolvers/auth.resolver'
 import { useRouter } from 'vue-router'
+import { APP_NAME } from '@/utils'
 import { useAuthStore } from '@/stores/auth.store'
 import type { FormSubmitEvent } from '@primevue/forms'
 import type { SignInPayload } from '@/types/auth'
@@ -118,6 +119,7 @@ const { signIn } = useAuthStore()
 const { showToast } = useNotification()
 
 const loading = ref(false)
+const appName = reactive(APP_NAME)
 
 const onSubmit = async (form: FormSubmitEvent) => {
   if (!form.valid) return
