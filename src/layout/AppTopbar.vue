@@ -1,13 +1,11 @@
 <script setup>
-import { reactive } from 'vue'
 import { useLayout } from '@/layout/composables/layout'
 import AppUserMenu from '@/layout/AppUserMenu.vue'
-import { APP_NAME } from '@/utils/vite.ts'
+import { useConfig } from '@/composables/useConfig.ts'
 import AppConfigurator from './AppConfigurator.vue'
 
 const { toggleMenu, toggleDarkMode, isDarkTheme } = useLayout()
-
-const appName = reactive(APP_NAME)
+const { appName } = useConfig()
 </script>
 
 <template>

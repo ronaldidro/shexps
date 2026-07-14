@@ -1,8 +1,7 @@
 <script setup>
-import { reactive } from 'vue'
-import { APP_NAME } from '@/utils'
+import { useConfig } from '@/composables/useConfig'
 
-const appName = reactive(APP_NAME)
+const { appName } = useConfig()
 </script>
 
 <template>

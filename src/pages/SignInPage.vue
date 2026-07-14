@@ -103,23 +103,23 @@
 </template>
 
 <script setup lang="ts">
-import { reactive, ref } from 'vue'
+import { ref } from 'vue'
 import { authResolver } from '@/resolvers/auth.resolver'
 import { useRouter } from 'vue-router'
-import { APP_NAME } from '@/utils'
 import { useAuthStore } from '@/stores/auth.store'
 import type { FormSubmitEvent } from '@primevue/forms'
 import type { SignInPayload } from '@/types/auth'
 import FloatingConfigurator from '@/components/FloatingConfigurator.vue'
 import { useNotification } from '@/composables/useNotification'
+import { useConfig } from '@/composables/useConfig'
 import { getErrorMessage } from '@/services/axios'
 
 const router = useRouter()
 const { signIn } = useAuthStore()
 const { showToast } = useNotification()
+const { appName } = useConfig()
 
 const loading = ref(false)
-const appName = reactive(APP_NAME)
 
 const onSubmit = async (form: FormSubmitEvent) => {
   if (!form.valid) return
