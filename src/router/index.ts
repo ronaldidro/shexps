@@ -1,8 +1,14 @@
-import { createRouter, createWebHistory } from 'vue-router'
+import { createRouter, createWebHistory, type RouteRecordRaw } from 'vue-router'
 import AppLayout from '@/layout/AppLayout.vue'
 import { useAuthStore } from '@/stores/auth.store'
 
-const routes = [
+const routes: RouteRecordRaw[] = [
+  {
+    path: '/',
+    name: 'landing',
+    component: () => import('@/pages/LandingPage.vue'),
+    meta: { requiresAuth: false },
+  },
   {
     path: '/sign-in',
     name: 'sign-in',
@@ -10,59 +16,59 @@ const routes = [
     meta: { requiresAuth: false },
   },
   {
-    path: '/',
+    path: '/_layout',
     component: AppLayout,
     children: [
       {
-        path: '',
+        path: '/dashboard',
         name: 'dashboard',
         component: () => import('@/pages/DashboardPage.vue'),
         meta: { requiresAuth: true },
       },
       {
-        path: 'expenses',
+        path: '/expenses',
         name: 'expenses',
         component: () => import('@/pages/expenses/ExpensesPage.vue'),
         meta: { requiresAuth: true },
       },
       {
-        path: 'expenses/new',
+        path: '/expenses/new',
         name: 'new-expense',
         component: () => import('@/pages/expenses/ExpensePage.vue'),
         meta: { requiresAuth: true },
       },
       {
-        path: 'debts',
+        path: '/debts',
         name: 'debts',
         component: () => import('@/pages/DebtsPage.vue'),
         meta: { requiresAuth: true },
       },
       {
-        path: 'payments',
+        path: '/payments',
         name: 'payments',
         component: () => import('@/pages/payments/PaymentsPage.vue'),
         meta: { requiresAuth: true },
       },
       {
-        path: 'payments/new',
+        path: '/payments/new',
         name: 'new-payment',
         component: () => import('@/pages/payments/PaymentPage.vue'),
         meta: { requiresAuth: true },
       },
       {
-        path: 'groups',
+        path: '/groups',
         name: 'groups',
         component: () => import('@/pages/groups/GroupsPage.vue'),
         meta: { requiresAuth: true },
       },
       {
-        path: 'groups/:id',
+        path: '/groups/:id',
         name: 'group',
         component: () => import('@/pages/groups/GroupPage.vue'),
         meta: { requiresAuth: true },
       },
       {
-        path: 'account',
+        path: '/account',
         name: 'account',
         component: () => import('@/pages/AccountPage.vue'),
         meta: { requiresAuth: true },
@@ -86,7 +92,7 @@ router.beforeEach((to) => {
 
   if (requiresAuth && !user.token) return '/sign-in'
 
-  if (to.path === '/sign-in' && user.token) return '/'
+  if (to.path === '/sign-in' && user.token) return '/dashboard'
 })
 
 export default router

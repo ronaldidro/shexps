@@ -38,12 +38,7 @@ defineProps<{ message: string }>()
             <span class="text-muted-color mb-8">
               {{ message }}
             </span>
-            <img
-              src="https://sakai.primevue.org/demo/images/error/asset-error.svg"
-              alt="Error"
-              class="mb-8"
-              width="80%"
-            />
+            <img src="/images/error/asset-error.svg" alt="Error" class="mb-8" width="80%" />
           </div>
         </div>
       </div>
