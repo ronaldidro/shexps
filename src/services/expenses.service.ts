@@ -42,4 +42,9 @@ export const expensesService = {
     const { data } = await api.delete<Expense>(`/expenses/${id}`)
     return data
   },
+
+  async removeAll() {
+    const { data } = await api.delete<Expense[]>('/expenses')
+    return data
+  },
 }

@@ -5,7 +5,12 @@
       <SearchField v-model="search" @search="handleSearch" />
     </template>
     <template #end>
-      <Button label="Nuevo" icon="pi pi-plus" @click="router.push({ name: 'new-expense' })" />
+      <SplitButton
+        label="Nuevo"
+        icon="pi pi-plus"
+        @click="router.push({ name: 'new-expense' })"
+        :model="items"
+      />
     </template>
   </Toolbar>
   <FilterPanel
@@ -39,7 +44,7 @@
               icon="pi pi-times"
               severity="danger"
               rounded
-              @click="openConfirmDialog(expense.id)"
+              @click="openDeleteDialog(expense.id)"
             />
           </div>
         </div>
@@ -73,7 +78,7 @@
 import { ref, useTemplateRef } from 'vue'
 import { useConfirm } from 'primevue'
 import { expensesService } from '@/services/expenses.service'
-import { getErrorMessage } from '@/services/axios'
+import { getError, getErrorMessage } from '@/services/axios'
 import type { Expense } from '@/types/expense'
 import type { QueryParams } from '@/types/pagination'
 import AppBreadcrumb from '@/layout/AppBreadcrumb.vue'
@@ -90,6 +95,10 @@ const el = useTemplateRef('el')
 const selectedId = ref<string | null>(null)
 const showDrawer = ref(false)
 const search = ref('')
+
+const items = [
+  { label: 'Borrar mis gastos', icon: 'pi pi-times', command: () => openDeleteAllDialog() },
+]
 
 const confirm = useConfirm()
 const { showToast } = useNotification()
@@ -119,7 +128,7 @@ const handleFilters = async (values: QueryParams) => {
 
 const handleClear = async () => await reload()
 
-const openConfirmDialog = (id: string) => {
+const openDeleteDialog = (id: string) => {
   confirm.require({
     header: 'Eliminar gasto',
     message: '¿Está seguro de que desea continuar?',
@@ -130,6 +139,16 @@ const openConfirmDialog = (id: string) => {
   })
 }
 
+const openDeleteAllDialog = () =>
+  confirm.require({
+    header: 'Borrar mis gastos registrados',
+    message: '¿Está seguro de que desea continuar?',
+    icon: 'pi pi-info-circle',
+    rejectProps: { label: 'No', severity: 'secondary', icon: 'pi pi-times', text: true },
+    acceptProps: { label: 'Sí', severity: 'danger', icon: 'pi pi-check', outlined: true },
+    accept: handleDeleteAll,
+  })
+
 const handleDelete = async (id: string) => {
   try {
     await expensesService.remove(id)
@@ -138,6 +157,25 @@ const handleDelete = async (id: string) => {
 
     await reload()
   } catch (err) {
+    showToast({ severity: 'error', summary: 'Error', detail: getErrorMessage(err) })
+  }
+}
+
+const handleDeleteAll = async () => {
+  try {
+    await expensesService.removeAll()
+
+    showToast({ severity: 'success', summary: 'Gastos borrados correctamente' })
+
+    await reload()
+  } catch (err) {
+    const error = getError(err)
+
+    if (error && error.status === 404) {
+      showToast({ severity: 'warn', summary: 'No se encontraron gastos' })
+      return
+    }
+
     showToast({ severity: 'error', summary: 'Error', detail: getErrorMessage(err) })
   }
 }
