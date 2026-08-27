@@ -30,7 +30,7 @@
             <Button
               icon="pi pi-file-pdf"
               rounded
-              severity="contrast"
+              severity="secondary"
               :loading="activeParam === payment.id"
               @click="handleReport(payment.id)"
             />
@@ -44,11 +44,9 @@
             />
           </div>
         </div>
-        <div class="flex items-center gap-2 mt-2">
-          <span>De</span>
+        <div class="flex justify-between mt-2">
           <Tag :value="payment.payer.firstName" />
-          <span>para</span>
-          <Tag :value="payment.user.firstName" severity="secondary" />
+          <Tag :value="payment.group.name" severity="secondary" />
         </div>
       </div>
       <p v-if="loading" class="text-center pt-5">
