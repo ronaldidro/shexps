@@ -19,7 +19,7 @@
       </div>
       <span class="text-2xl font-semibold">S/{{ expense.amount }}</span>
     </div>
-    <Tag severity="warn" value="Detalle" />
+    <Tag severity="warn" value="Miembros" />
     <ul class="pt-5">
       <li v-for="detail in expense.details" :key="detail.id">
         <div vi class="flex justify-between">

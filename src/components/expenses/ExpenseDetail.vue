@@ -1,6 +1,6 @@
 <template>
   <div class="flex items-center justify-between mb-2">
-    <span>Detalle</span>
+    <span>Miembros</span>
     <Button
       type="button"
       icon="pi pi-plus"

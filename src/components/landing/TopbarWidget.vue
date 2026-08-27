@@ -90,8 +90,8 @@
     <div class="flex border-t lg:border-t-0 border-surface py-4 lg:py-0 mt-4 lg:mt-0 gap-2">
       <Button v-if="user.token" label="Dashboard" text as="router-link" to="/dashboard" rounded />
       <div v-else>
-        <Button label="Login" text as="router-link" to="/sign-in" rounded />
-        <Button label="Register" rounded />
+        <Button label="Sign In" text as="router-link" to="/sign-in" rounded />
+        <Button label="Sign Up" rounded />
       </div>
       <div class="flex items-center gap-5 ml-auto md:ml-5">
         <button class="cursor-pointer" @click="toggleDarkMode">
