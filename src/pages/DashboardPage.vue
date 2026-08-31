@@ -64,13 +64,6 @@
         <div class="text-surface-900 dark:text-surface-0 font-medium text-xl">
           S/{{ summary.debts }} en total
         </div>
-        <div class="flex justify-end">
-          <Button asChild v-slot="slotProps" text>
-            <RouterLink :class="slotProps.class" :to="{ name: 'debts' }">
-              <i class="pi pi-eye" /> Ver
-            </RouterLink>
-          </Button>
-        </div>
       </div>
       <div v-if="summary.creditors.length" class="card mb-0! flex flex-col gap-4">
         <div class="flex items-center justify-between">
