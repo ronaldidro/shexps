@@ -38,12 +38,6 @@ const routes: RouteRecordRaw[] = [
         meta: { requiresAuth: true },
       },
       {
-        path: '/debts',
-        name: 'debts',
-        component: () => import('@/pages/DebtsPage.vue'),
-        meta: { requiresAuth: true },
-      },
-      {
         path: '/payments',
         name: 'payments',
         component: () => import('@/pages/payments/PaymentsPage.vue'),
