@@ -7,9 +7,9 @@ export const useNavItems = () => {
   const items = [
     { label: 'Resumen', icon: 'pi pi-fw pi-chart-bar', to: '/dashboard' },
     { label: 'Gastos', icon: 'pi pi-fw pi-dollar', to: '/expenses' },
-    { label: 'Deudas', icon: 'pi pi-fw pi-credit-card', to: '/debts' },
-    { label: 'Pagos', icon: 'pi pi-fw pi-paypal', to: '/payments' },
+    { label: 'Pagos', icon: 'pi pi-fw pi-wallet', to: '/payments' },
     { label: 'Grupos', icon: 'pi pi-fw pi-users', to: '/groups' },
+    { label: 'Perfil', icon: 'pi pi-fw pi-user', to: '/account' },
   ]
 
   const getActivePath = (path: string) => {

@@ -40,8 +40,6 @@ const userLabel = computed(() =>
 const menu = ref()
 
 const items = reactive([
-  { label: 'Mi perfil', icon: 'pi pi-fw pi-user', route: '/account' },
-  { separator: true },
   { label: 'Cerrar sesión', icon: 'pi pi-fw pi-sign-out', command: () => logout() },
 ])
 </script>
