@@ -41,6 +41,7 @@
           <div class="flex gap-3">
             <Button icon="pi pi-eye" rounded @click="openDrawer(expense.id)" />
             <Button
+              v-if="expense.user.id === user.id"
               icon="pi pi-times"
               severity="danger"
               rounded
@@ -48,13 +49,9 @@
             />
           </div>
         </div>
-        <div class="flex gap-2 mt-2 flex-wrap">
-          <Tag
-            v-for="detail of expense.details"
-            :key="detail.id"
-            :value="detail.user.firstName"
-            severity="info"
-          />
+        <div class="flex justify-between mt-2">
+          <Tag :value="expense.user.firstName" severity="info" />
+          <Tag :value="expense.group.name" severity="secondary" />
         </div>
       </div>
       <p v-if="loading" class="text-center pt-5">
@@ -88,6 +85,7 @@ import FilterPanel from '@/components/FilterPanel.vue'
 import { useScrollPagination } from '@/composables/useScrollPagination'
 import { useNotification } from '@/composables/useNotification'
 import { useReport } from '@/composables/useReport'
+import { useAuthStore } from '@/stores/auth.store'
 import router from '@/router'
 
 const el = useTemplateRef('el')
@@ -101,6 +99,7 @@ const items = [
 ]
 
 const confirm = useConfirm()
+const { user } = useAuthStore()
 const { showToast } = useNotification()
 const { handleReport, reporting } = useReport(expensesService.getReport)
 
