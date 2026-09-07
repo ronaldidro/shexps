@@ -59,7 +59,6 @@
         <label for="splitted">Incluirme en gasto</label>
       </div>
       <div class="flex flex-col gap-2 max-w-30">
-        <label for="amount">Monto total</label>
         <Field id="amount" name="amount" v-slot="{ field, errorMessage }">
           <InputGroup>
             <InputGroupAddon>S/</InputGroupAddon>
