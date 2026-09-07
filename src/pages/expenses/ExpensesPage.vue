@@ -5,18 +5,14 @@
       <SearchField v-model="search" @search="handleSearch" />
     </template>
     <template #end>
-      <SplitButton
-        label="Nuevo"
-        icon="pi pi-plus"
-        @click="router.push({ name: 'new-expense' })"
-        :model="items"
-      />
+      <Button label="Nuevo" icon="pi pi-plus" @click="router.push({ name: 'new-expense' })" />
     </template>
   </Toolbar>
   <FilterPanel
     @submit="handleFilters"
     @report="handleReport"
     @clear="handleClear"
+    @delete="openDeleteFilterDialog"
     :showAuthUser="true"
     :reporting
   />
@@ -94,10 +90,6 @@ const selectedId = ref<string | null>(null)
 const showDrawer = ref(false)
 const search = ref('')
 
-const items = [
-  { label: 'Borrar mis gastos', icon: 'pi pi-times', command: () => openDeleteAllDialog() },
-]
-
 const confirm = useConfirm()
 const { user } = useAuthStore()
 const { showToast } = useNotification()
@@ -120,10 +112,7 @@ const handleSearch = async (value: string) => {
   await setFilters({ search: value })
 }
 
-const handleFilters = async (values: QueryParams) => {
-  if (Object.values(values).every((value) => !value)) return
-  await setFilters({ ...values })
-}
+const handleFilters = async (values: QueryParams) => await setFilters({ ...values })
 
 const handleClear = async () => await reload()
 
@@ -138,14 +127,14 @@ const openDeleteDialog = (id: string) => {
   })
 }
 
-const openDeleteAllDialog = () =>
+const openDeleteFilterDialog = (values: QueryParams) =>
   confirm.require({
-    header: 'Borrar mis gastos registrados',
+    header: 'Eliminar gastos filtrados',
     message: '¿Está seguro de que desea continuar?',
     icon: 'pi pi-info-circle',
     rejectProps: { label: 'No', severity: 'secondary', icon: 'pi pi-times', text: true },
     acceptProps: { label: 'Sí', severity: 'danger', icon: 'pi pi-check', outlined: true },
-    accept: handleDeleteAll,
+    accept: () => handleDeleteFilter(values),
   })
 
 const handleDelete = async (id: string) => {
@@ -160,11 +149,11 @@ const handleDelete = async (id: string) => {
   }
 }
 
-const handleDeleteAll = async () => {
+const handleDeleteFilter = async (values: QueryParams) => {
   try {
-    await expensesService.removeAll()
+    await expensesService.removeAll(values)
 
-    showToast({ severity: 'success', summary: 'Gastos borrados correctamente' })
+    showToast({ severity: 'success', summary: 'Gastos eliminados correctamente' })
 
     await reload()
   } catch (err) {

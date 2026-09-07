@@ -79,10 +79,7 @@ const handleSearch = async (value: string) => {
   await setFilters({ search: value })
 }
 
-const handleFilters = async (values: QueryParams) => {
-  if (Object.values(values).every((value) => !value)) return
-  await setFilters({ ...values })
-}
+const handleFilters = async (values: QueryParams) => await setFilters({ ...values })
 
 const handleClear = async () => await reload()
 

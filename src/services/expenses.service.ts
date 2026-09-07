@@ -43,8 +43,8 @@ export const expensesService = {
     return data
   },
 
-  async removeAll() {
-    const { data } = await api.delete<Expense[]>('/expenses')
+  async removeAll(params: QueryParams) {
+    const { data } = await api.delete<Expense[]>('/expenses', { params })
     return data
   },
 }
