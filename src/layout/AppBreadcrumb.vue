@@ -23,5 +23,5 @@ import { ref } from 'vue'
 
 defineProps<{ items: { label: string; route?: string }[] }>()
 
-const home = ref({ icon: 'pi pi-home', route: '/' })
+const home = ref({ icon: 'pi pi-home', route: '/dashboard' })
 </script>
