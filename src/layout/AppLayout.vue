@@ -1,14 +1,21 @@
 <script setup>
+import { computed, onErrorCaptured, reactive, watch } from 'vue'
+import { useEventSource } from '@vueuse/core'
 import { useLayout } from '@/layout/composables/layout'
-import { computed, onErrorCaptured, reactive } from 'vue'
-import AppFooter from './AppFooter.vue'
-import AppSidebar from './AppSidebar.vue'
-import AppTopbar from './AppTopbar.vue'
-import ErrorPage from '@/pages/ErrorPage.vue'
-import CardSkeleton from '@/components/CardSkeleton.vue'
 import AppTabMenu from '@/layout/AppTabMenu.vue'
+import ErrorPage from '@/pages/ErrorPage.vue'
+import { useNotification } from '@/composables/useNotification.ts'
+import CardSkeleton from '@/components/CardSkeleton.vue'
+import { useAuthStore } from '@/stores/auth.store.ts'
+import { API_URL, IS_DEV_ENV } from '@/utils/vite.ts'
+import AppTopbar from './AppTopbar.vue'
+import AppSidebar from './AppSidebar.vue'
+import AppFooter from './AppFooter.vue'
 
 const { layoutConfig, layoutState, hideMobileMenu } = useLayout()
+const { showToast } = useNotification()
+const { user } = useAuthStore()
+const { data } = useEventSource(`${API_URL}/notifications/stream?token=${user.token}`)
 
 const containerClass = computed(() => {
   return {
@@ -23,11 +30,18 @@ const containerClass = computed(() => {
 const error = reactive({ exists: false, message: '' })
 
 onErrorCaptured(({ message, stack }) => {
-  if (import.meta.env.DEV) console.error(stack)
+  if (IS_DEV_ENV) console.error(stack)
 
   error.exists = true
   error.message = message
   return false
+})
+
+watch(data, (newData) => {
+  if (newData) {
+    const notification = JSON.parse(newData)
+    showToast({ severity: 'info', summary: notification.title, detail: notification.description })
+  }
 })
 </script>
 
