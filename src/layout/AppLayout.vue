@@ -12,10 +12,12 @@ import AppTopbar from './AppTopbar.vue'
 import AppSidebar from './AppSidebar.vue'
 import AppFooter from './AppFooter.vue'
 
+const SSE_URL = `${API_URL}/notifications/stream`
+
 const { layoutConfig, layoutState, hideMobileMenu } = useLayout()
 const { showToast } = useNotification()
 const { user } = useAuthStore()
-const { data } = useEventSource(`${API_URL}/notifications/stream?token=${user.token}`)
+const { data, event } = useEventSource(`${SSE_URL}?token=${user.token}`, ['info', 'error'])
 
 const containerClass = computed(() => {
   return {
@@ -38,10 +40,9 @@ onErrorCaptured(({ message, stack }) => {
 })
 
 watch(data, (newData) => {
-  if (newData) {
-    const notification = JSON.parse(newData)
-    showToast({ severity: 'info', summary: notification.title, detail: notification.description })
-  }
+  if (!newData) return
+  const { title, description } = JSON.parse(newData)
+  showToast({ severity: event.value, summary: title, detail: description, life: 0 })
 })
 </script>
 
