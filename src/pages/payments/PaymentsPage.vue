@@ -16,38 +16,14 @@
         class="mx-6 py-6"
         :class="{ 'border-t border-surface': index !== 0 }"
       >
-        <div class="flex justify-between">
-          <div class="flex flex-col">
-            <p class="font-medium text-surface-500 dark:text-surface-400 text-sm">
-              {{ payment.createdAt }}
-            </p>
-            <span class="text-xl font-semibold">S/{{ payment.amount }}</span>
-            <span class="font-medium text-surface-500 dark:text-surface-400 text-lg line-clamp-1">
-              {{ payment.description }}
-            </span>
-          </div>
-          <div class="flex gap-3">
-            <Button
-              icon="pi pi-file-pdf"
-              rounded
-              severity="secondary"
-              :loading="activeParam === payment.id"
-              @click="handleReport(payment.id)"
-            />
-            <Button icon="pi pi-eye" rounded @click="openDrawer(payment.id)" />
-            <Button
-              v-if="payment.user.id === user.id"
-              icon="pi pi-times"
-              severity="danger"
-              rounded
-              @click="openConfirmDialog(payment.id)"
-            />
-          </div>
-        </div>
-        <div class="flex justify-between mt-2">
-          <Tag :value="payment.payer.firstName" />
-          <Tag :value="payment.group.name" severity="secondary" />
-        </div>
+        <PaymentItem
+          :payment="payment"
+          :showDeleteButton="payment.user.id === user.id"
+          :loadingReportButton="activeParam === payment.id"
+          @report="handleReport"
+          @show="openDrawer"
+          @delete="openConfirmDialog"
+        />
       </div>
       <p v-if="loading" class="text-center pt-5">
         <ProgressSpinner style="width: 50px; height: 50px" />
@@ -72,6 +48,7 @@ import { useConfirm } from 'primevue'
 import type { Payment } from '@/types/payment'
 import AppBreadcrumb from '@/layout/AppBreadcrumb.vue'
 import PaymentDrawer from '@/components/payments/PaymentDrawer.vue'
+import PaymentItem from '@/components/payments/PaymentItem.vue'
 import SearchField from '@/components/SearchField.vue'
 import { useScrollPagination } from '@/composables/useScrollPagination'
 import { useNotification } from '@/composables/useNotification'
