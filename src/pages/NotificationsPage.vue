@@ -53,17 +53,19 @@
 </template>
 
 <script setup lang="ts">
-import { computed, ref, useTemplateRef } from 'vue'
+import { computed, ref, useTemplateRef, watch } from 'vue'
 import type { Notification } from '@/types/notification'
 import AppBreadcrumb from '@/layout/AppBreadcrumb.vue'
 import { useNotification } from '@/composables/useNotification'
 import { useScrollPagination } from '@/composables/useScrollPagination'
 import { notificationsService } from '@/services/notifications.service'
 import { getErrorMessage } from '@/services/axios'
+import { useAuthStore } from '@/stores/auth.store'
 
 const el = useTemplateRef('el')
 
 const { showToast } = useNotification()
+const { setHasNotifications } = useAuthStore()
 
 const menu = ref()
 const selected = ref<Notification | null>(null)
@@ -89,12 +91,21 @@ const items = computed(() => {
 
 const {
   items: notifications,
+  meta,
   loading,
   reload,
 } = useScrollPagination<Notification>({
   el,
   fetcher: notificationsService.getAll,
 })
+
+watch(
+  () => meta.value?.unread,
+  (unread) => {
+    if (typeof unread !== 'number') return
+    setHasNotifications(unread > 0)
+  },
+)
 
 const toggle = (event: Event, notification: Notification) => {
   selected.value = notification

@@ -1,9 +1,10 @@
 import { ref, type Ref } from 'vue'
 import { useInfiniteScroll } from '@vueuse/core'
-import type { QueryParams, ScrollPaginationOptions } from '@/types/pagination'
+import type { PaginatedData, QueryParams, ScrollPaginationOptions } from '@/types/pagination'
 
 export const useScrollPagination = <T>({ el, fetcher }: ScrollPaginationOptions<T>) => {
   const items: Ref = ref<T[]>([])
+  const meta = ref<PaginatedData<T>['meta'] | null>(null)
   const loading = ref(false)
   const hasMore = ref(true)
   const query = ref<QueryParams>({ page: 1, limit: 10 })
@@ -20,6 +21,8 @@ export const useScrollPagination = <T>({ el, fetcher }: ScrollPaginationOptions<
       })
 
       items.value.push(...response.data)
+
+      meta.value = response.meta
 
       hasMore.value = response.meta.page < response.meta.lastPage
 
@@ -44,5 +47,5 @@ export const useScrollPagination = <T>({ el, fetcher }: ScrollPaginationOptions<
     canLoadMore: () => hasMore.value && !loading.value,
   })
 
-  return { items, loading, reload, setFilters }
+  return { items, meta, loading, reload, setFilters }
 }

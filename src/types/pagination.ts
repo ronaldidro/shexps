@@ -6,6 +6,7 @@ export interface PaginatedData<T> {
     total: number
     page: number
     lastPage: number
+    [key: string]: unknown
   }
 }
 
