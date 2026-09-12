@@ -5,6 +5,7 @@ export interface User {
   fullName: string
   email: string
   role: string
+  notificationsCount: number
 }
 
 export interface UpdateUserPayload {

@@ -16,7 +16,7 @@ const SSE_URL = `${API_URL}/notifications/stream`
 
 const { layoutConfig, layoutState, hideMobileMenu } = useLayout()
 const { showToast } = useNotification()
-const { user } = useAuthStore()
+const { user, setHasNotifications } = useAuthStore()
 const { data, event } = useEventSource(`${SSE_URL}?token=${user.token}`, ['info', 'error'])
 
 const containerClass = computed(() => {
@@ -41,7 +41,11 @@ onErrorCaptured(({ message, stack }) => {
 
 watch(data, (newData) => {
   if (!newData) return
+
   const { title, description } = JSON.parse(newData)
+
+  setHasNotifications(true)
+
   showToast({ severity: event.value, summary: title, detail: description, life: 0 })
 })
 </script>

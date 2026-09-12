@@ -2,10 +2,12 @@
 import { useLayout } from '@/layout/composables/layout'
 import AppUserMenu from '@/layout/AppUserMenu.vue'
 import { useConfig } from '@/composables/useConfig.ts'
+import { useAuthStore } from '@/stores/auth.store.ts'
 import AppConfigurator from './AppConfigurator.vue'
 
 const { toggleMenu, toggleDarkMode, isDarkTheme } = useLayout()
 const { appName } = useConfig()
+const { user } = useAuthStore()
 </script>
 
 <template>
@@ -71,8 +73,16 @@ const { appName } = useConfig()
           </button>
           <AppConfigurator />
         </div>
+        <OverlayBadge
+          severity="danger"
+          :pt="{ pcBadge: { root: { class: { '!hidden': !user.hasNotifications } } } }"
+        >
+          <router-link to="notifications" class="layout-topbar-action">
+            <i class="pi pi-bell" style="font-size: 1.5rem" />
+          </router-link>
+        </OverlayBadge>
+        <AppUserMenu />
       </div>
-      <AppUserMenu />
     </div>
   </div>
 </template>

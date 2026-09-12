@@ -11,4 +11,5 @@ export interface AuthUser {
   id: string | null
   name: string | null
   token: string | null
+  hasNotifications: boolean
 }

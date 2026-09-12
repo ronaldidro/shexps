@@ -8,7 +8,7 @@ import router from '@/router'
 export const useAuthStore = defineStore(
   'auth',
   () => {
-    const user = reactive<AuthUser>({ id: null, name: null, token: null })
+    const user = reactive<AuthUser>({ id: null, name: null, token: null, hasNotifications: false })
 
     const signIn = async (payload: SignInPayload) => {
       const response = await authService.signIn(payload)
@@ -17,6 +17,7 @@ export const useAuthStore = defineStore(
       const me = await authService.me()
       user.id = me.id
       user.name = me.firstName
+      user.hasNotifications = me.notificationsCount > 0
 
       router.push({ name: 'dashboard' })
     }
@@ -34,7 +35,9 @@ export const useAuthStore = defineStore(
       user.name = firstName
     }
 
-    return { user, signIn, logout, setAuthUser }
+    const setHasNotifications = (status: boolean) => (user.hasNotifications = status)
+
+    return { user, signIn, logout, setAuthUser, setHasNotifications }
   },
   { persist: true },
 )
