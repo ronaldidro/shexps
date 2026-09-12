@@ -52,6 +52,7 @@ declare module 'vue' {
     Message: typeof import('primevue/message')['default']
     MovementPreview: typeof import('./src/components/previews/MovementPreview.vue')['default']
     MultiSelect: typeof import('primevue/multiselect')['default']
+    OverlayBadge: typeof import('primevue/overlaybadge')['default']
     Panel: typeof import('primevue/panel')['default']
     Password: typeof import('primevue/password')['default']
     PasswordPanel: typeof import('./src/components/account/PasswordPanel.vue')['default']
