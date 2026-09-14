@@ -1,6 +1,13 @@
 <template>
   <AppBreadcrumb :items="[{ label: 'Notificaciones' }]" />
   <div class="card p-2!">
+    <Tabs v-model:value="tab">
+      <TabList>
+        <Tab value="all">Todas</Tab>
+        <Tab value="read">Leídas</Tab>
+        <Tab value="unread">No leídas</Tab>
+      </TabList>
+    </Tabs>
     <div ref="el" class="overflow-y-auto h-dvh">
       <div
         v-for="(notification, index) in notifications"
@@ -8,32 +15,7 @@
         class="p-3 rounded-md"
         :class="{ 'mt-2': index !== 0, 'bg-gray-100 dark:bg-gray-700': !notification.isRead }"
       >
-        <div class="flex items-center justify-between">
-          <div class="flex items-center gap-2">
-            <i
-              class="pi pi-fw"
-              :class="{
-                'pi-check-circle text-green-500': notification.type.includes('created'),
-                'pi-times-circle text-red-500': notification.type.includes('deleted'),
-              }"
-            />
-            <p class="font-semibold text-lg">{{ notification.title }}</p>
-          </div>
-          <Button
-            type="button"
-            icon="pi pi-ellipsis-v"
-            @click="(e) => toggle(e, notification)"
-            class="p-button-text p-button-plain w-5!"
-            aria-haspopup="true"
-            aria-controls="overlay_menu"
-          />
-        </div>
-        <div class="text-surface-900 dark:text-surface-0 leading-normal">
-          {{ notification.description }}
-        </div>
-        <div class="text-muted-color text-sm">
-          {{ notification.createdAt }}
-        </div>
+        <NotificationItem :notification @toggle="toggle" />
       </div>
       <p v-if="loading" class="text-center pt-5">
         <ProgressSpinner style="width: 50px; height: 50px" />
@@ -59,6 +41,7 @@ import AppBreadcrumb from '@/layout/AppBreadcrumb.vue'
 import { useNotification } from '@/composables/useNotification'
 import { useScrollPagination } from '@/composables/useScrollPagination'
 import { notificationsService } from '@/services/notifications.service'
+import NotificationItem from '@/components/notifications/NotificationItem.vue'
 import { getErrorMessage } from '@/services/axios'
 import { useAuthStore } from '@/stores/auth.store'
 
@@ -68,6 +51,7 @@ const { showToast } = useNotification()
 const { setHasNotifications } = useAuthStore()
 
 const menu = ref()
+const tab = ref<'read' | 'unread' | 'all'>('all')
 const selected = ref<Notification | null>(null)
 
 const items = computed(() => {
@@ -94,6 +78,7 @@ const {
   meta,
   loading,
   reload,
+  setFilters,
 } = useScrollPagination<Notification>({
   el,
   fetcher: notificationsService.getAll,
@@ -106,6 +91,11 @@ watch(
     setHasNotifications(unread > 0)
   },
 )
+
+watch(tab, async (tabValue) => {
+  const filter = tabValue === 'all' ? { status: undefined } : { status: tabValue }
+  await setFilters(filter)
+})
 
 const toggle = (event: Event, notification: Notification) => {
   selected.value = notification
@@ -121,6 +111,8 @@ const handleChangeStatus = async ({ id, isRead }: Notification) => {
     showToast({ severity: 'success', summary: `Notificación marcada como ${readStatus}` })
 
     await reload()
+
+    tab.value = 'all'
   } catch (err) {
     showToast({ severity: 'error', summary: 'Error', detail: getErrorMessage(err) })
   }
@@ -133,6 +125,8 @@ const handleDelete = async (id: string) => {
     showToast({ severity: 'success', summary: 'Notificación eliminada correctamente' })
 
     await reload()
+
+    tab.value = 'all'
   } catch (err) {
     showToast({ severity: 'error', summary: 'Error', detail: getErrorMessage(err) })
   }

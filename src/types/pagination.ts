@@ -18,6 +18,7 @@ export interface QueryParams {
   endDate?: string
   page: number
   limit: number
+  [key: string]: unknown
 }
 
 export interface ScrollPaginationOptions<T> {
