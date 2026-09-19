@@ -12,16 +12,29 @@
     <div class="flex gap-3">
       <Button
         icon="pi pi-file-pdf"
-        rounded
         severity="secondary"
+        size="small"
+        raised
+        text
+        rounded
         :loading="loadingReportButton"
         @click="$emit('report', payment.id)"
       />
-      <Button icon="pi pi-eye" rounded @click="$emit('show', payment.id)" />
+      <Button
+        icon="pi pi-eye"
+        size="small"
+        raised
+        text
+        rounded
+        @click="$emit('show', payment.id)"
+      />
       <Button
         v-if="showDeleteButton"
         icon="pi pi-times"
         severity="danger"
+        size="small"
+        raised
+        text
         rounded
         @click="$emit('delete', payment.id)"
       />

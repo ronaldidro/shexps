@@ -18,7 +18,7 @@
           {{ group.name }}
         </p>
         <div v-if="group.user.id === user.id" class="flex gap-3">
-          <Button asChild v-slot="slotProps" rounded>
+          <Button asChild v-slot="slotProps" size="small" rounded raised text>
             <RouterLink :class="slotProps.class" :to="{ name: 'group', params: { id: group.id } }">
               <i class="pi pi-pencil" />
             </RouterLink>
@@ -26,7 +26,10 @@
           <Button
             icon="pi pi-times"
             severity="danger"
+            size="small"
             rounded
+            raised
+            text
             @click="openConfirmDialog(group.id)"
           />
         </div>
