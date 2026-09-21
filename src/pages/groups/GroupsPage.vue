@@ -8,22 +8,42 @@
       </InputGroup>
     </template>
     <template #end>
-      <Button label="Nuevo" icon="pi pi-plus" @click="showDialog = true" />
+      <Button label="Nuevo" icon="pi pi-plus" @click="showDialog.group = true" />
     </template>
   </Toolbar>
-  <div class="grid grid-cols-1 md:grid-cols-3 gap-7">
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
     <div v-for="(group, index) in groups" :key="index" class="card mb-0!">
-      <div class="flex items-center justify-between gap-10">
+      <div class="flex items-center justify-between">
         <p class="text-xl font-medium mb-0!">
           {{ group.name }}
         </p>
-        <div v-if="group.user.id === user.id" class="flex gap-3">
-          <Button asChild v-slot="slotProps" size="small" rounded raised text>
+        <div class="flex gap-2">
+          <Button
+            icon="pi pi-id-card"
+            severity="contrast"
+            size="small"
+            rounded
+            raised
+            text
+            @click="openMembershipDialog(group.memberships)"
+          />
+          <Button
+            asChild
+            v-if="group.user.id === user.id"
+            v-slot="slotProps"
+            class="flex gap-2"
+            size="small"
+            rounded
+            raised
+            text
+          >
             <RouterLink :class="slotProps.class" :to="{ name: 'group', params: { id: group.id } }">
               <i class="pi pi-pencil" />
             </RouterLink>
           </Button>
           <Button
+            v-if="group.user.id === user.id"
+            class="flex gap-2"
             icon="pi pi-times"
             severity="danger"
             size="small"
@@ -51,22 +71,34 @@
       </Accordion>
     </div>
   </div>
-  <GroupDialog v-model:visible="showDialog" @onSubmit="handleCreate" />
+  <GroupDialog v-model:visible="showDialog.group" @onSubmit="handleCreate" />
+  <MembershipDialog
+    v-model:visible="showDialog.membership"
+    :initialValues="{ budget: membershipSelected.budget }"
+    @submit="handleUpdateMembership"
+  />
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
+import { reactive, ref } from 'vue'
 import { useConfirm } from 'primevue'
 import type { Group, GroupPayload } from '@/types/group'
+import type { Membership, MembershipPayload } from '@/types/membership'
 import GroupDialog from '@/components/groups/GroupDialog.vue'
+import MembershipDialog from '@/components/groups/MembershipDialog.vue'
 import AppBreadcrumb from '@/layout/AppBreadcrumb.vue'
-import { groupsService } from '@/services/groups.service'
 import { getErrorMessage } from '@/services/axios'
+import { groupsService } from '@/services/groups.service'
+import { membershipsService } from '@/services/memberships.service'
 import { useNotification } from '@/composables/useNotification'
 import { useAuthStore } from '@/stores/auth.store'
 
 const groups = ref<Group[]>(await groupsService.getAll())
-const showDialog = ref(false)
+const showDialog = reactive({ group: false, membership: false })
+const membershipSelected = reactive<{ id: string | null; budget: number | null }>({
+  id: null,
+  budget: null,
+})
 
 const { showToast } = useNotification()
 const { user } = useAuthStore()
@@ -81,6 +113,33 @@ const openConfirmDialog = (id: string) => {
     acceptProps: { label: 'Sí', severity: 'danger', icon: 'pi pi-check', outlined: true },
     accept: () => handleDelete(id),
   })
+}
+
+const openMembershipDialog = (memberships: Membership[]) => {
+  const membership = memberships.find((membership) => membership.user.id === user.id)
+
+  if (!membership) return
+
+  membershipSelected.id = membership.id
+  membershipSelected.budget = membership.budget
+
+  showDialog.membership = true
+}
+
+const handleUpdateMembership = async (values: MembershipPayload) => {
+  const membershipId = membershipSelected.id
+
+  if (!membershipId) return
+
+  try {
+    await membershipsService.update(membershipId, values)
+
+    groups.value = await groupsService.getAll()
+
+    showToast({ severity: 'success', summary: 'Membresía actualizada correctamente' })
+  } catch (err) {
+    showToast({ severity: 'error', summary: 'Error', detail: getErrorMessage(err) })
+  }
 }
 
 const handleCreate = async (values: GroupPayload) => {
@@ -99,9 +158,9 @@ const handleDelete = async (id: string) => {
   try {
     await groupsService.remove(id)
 
-    showToast({ severity: 'success', summary: 'Grupo eliminado correctamente' })
-
     groups.value = await groupsService.getAll()
+
+    showToast({ severity: 'success', summary: 'Grupo eliminado correctamente' })
   } catch (err) {
     showToast({ severity: 'error', summary: 'Error', detail: getErrorMessage(err) })
   }

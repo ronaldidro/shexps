@@ -48,6 +48,7 @@ declare module 'vue' {
     InputIcon: typeof import('primevue/inputicon')['default']
     InputNumber: typeof import('primevue/inputnumber')['default']
     InputText: typeof import('primevue/inputtext')['default']
+    MembershipDialog: typeof import('./src/components/groups/MembershipDialog.vue')['default']
     Menu: typeof import('primevue/menu')['default']
     Message: typeof import('primevue/message')['default']
     MovementPreview: typeof import('./src/components/previews/MovementPreview.vue')['default']
