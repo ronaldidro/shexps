@@ -1,13 +1,7 @@
 <template>
   <div class="flex items-center justify-between">
     <div class="flex items-center gap-2">
-      <i
-        class="pi pi-fw"
-        :class="{
-          'pi-check-circle text-green-500': notification.type.includes('created'),
-          'pi-times-circle text-red-500': notification.type.includes('deleted'),
-        }"
-      />
+      <i class="pi pi-fw" :class="iconClass[notification.type]" />
       <p class="font-semibold text-lg">{{ notification.title }}</p>
     </div>
     <Button
@@ -28,9 +22,21 @@
 </template>
 
 <script setup lang="ts">
-import type { Notification } from '@/types/notification'
+import type { Notification, NotificationType } from '@/types/notification'
 
 defineProps<{ notification: Notification }>()
 
 defineEmits<{ toggle: [event: Event, notification: Notification] }>()
+
+const successClass = 'pi-check-circle text-green-500'
+const dangerClass = 'pi-times-circle text-red-500'
+const warnClass = 'pi-exclamation-circle text-blue-500'
+
+const iconClass: Record<NotificationType, string> = {
+  expense_created: successClass,
+  payment_created: successClass,
+  expense_deleted: dangerClass,
+  budget_exceeded: dangerClass,
+  budget_tight: warnClass,
+}
 </script>
