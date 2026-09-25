@@ -2,9 +2,9 @@ import type { Group, GroupPayload } from '@/types/group'
 import api, { getErrorMessage } from '@/services/axios'
 
 export const groupsService = {
-  async getAll() {
+  async getAll(params?: { search: string }) {
     try {
-      const response = await api.get<Group[]>('/groups')
+      const response = await api.get<Group[]>('/groups', { params })
       return response.data
     } catch (error) {
       throw new Error(getErrorMessage(error))

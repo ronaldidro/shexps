@@ -2,10 +2,7 @@
   <AppBreadcrumb :items="[{ label: 'Grupos' }]" />
   <Toolbar class="mb-7">
     <template #start>
-      <InputGroup>
-        <InputText placeholder="Buscar" />
-        <Button icon="pi pi-search" />
-      </InputGroup>
+      <SearchField v-model="search" @search="handleSearch" />
     </template>
     <template #end>
       <Button label="Nuevo" icon="pi pi-plus" @click="showDialog.group = true" />
@@ -86,6 +83,7 @@ import type { Group, GroupPayload } from '@/types/group'
 import type { Membership, MembershipPayload } from '@/types/membership'
 import GroupDialog from '@/components/groups/GroupDialog.vue'
 import MembershipDialog from '@/components/groups/MembershipDialog.vue'
+import SearchField from '@/components/SearchField.vue'
 import AppBreadcrumb from '@/layout/AppBreadcrumb.vue'
 import { getErrorMessage } from '@/services/axios'
 import { groupsService } from '@/services/groups.service'
@@ -94,6 +92,8 @@ import { useNotification } from '@/composables/useNotification'
 import { useAuthStore } from '@/stores/auth.store'
 
 const groups = ref<Group[]>(await groupsService.getAll())
+const search = ref('')
+
 const showDialog = reactive({ group: false, membership: false })
 const membershipSelected = reactive<{ id: string | null; budget: number | null }>({
   id: null,
@@ -124,6 +124,11 @@ const openMembershipDialog = (memberships: Membership[]) => {
   membershipSelected.budget = membership.budget
 
   showDialog.membership = true
+}
+
+const handleSearch = async (value: string) => {
+  search.value = value
+  groups.value = await groupsService.getAll({ search: value })
 }
 
 const handleUpdateMembership = async (values: MembershipPayload) => {
