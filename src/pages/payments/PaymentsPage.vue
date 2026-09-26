@@ -43,7 +43,8 @@
 </template>
 
 <script setup lang="ts">
-import { ref, useTemplateRef } from 'vue'
+import { nextTick, ref, useTemplateRef, watch } from 'vue'
+import { useRoute } from 'vue-router'
 import { useConfirm } from 'primevue'
 import type { Payment } from '@/types/payment'
 import AppBreadcrumb from '@/layout/AppBreadcrumb.vue'
@@ -59,6 +60,7 @@ import { useAuthStore } from '@/stores/auth.store'
 import router from '@/router'
 
 const el = useTemplateRef('el')
+const route = useRoute()
 
 const selectedId = ref<string | null>(null)
 const showDrawer = ref(false)
@@ -79,6 +81,8 @@ const {
 const openDrawer = (id: string) => {
   selectedId.value = id
   showDrawer.value = true
+
+  if (route.params.id !== id) router.replace({ name: 'payments', params: { id } })
 }
 
 const handleSearch = async (value: string) => {
@@ -108,4 +112,21 @@ const handleDelete = async (id: string) => {
     showToast({ severity: 'error', summary: 'Error', detail: getErrorMessage(err) })
   }
 }
+
+watch(
+  () => route.params.id,
+  async (id) => {
+    if (!id) return
+    await nextTick()
+    openDrawer(id as string)
+  },
+  { immediate: true },
+)
+
+watch(showDrawer, (isVisible) => {
+  if (!isVisible && route.params.id) {
+    selectedId.value = null
+    router.replace({ name: 'payments' })
+  }
+})
 </script>
