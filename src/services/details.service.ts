@@ -14,7 +14,7 @@ export const detailsService = {
     }
   },
 
-  async getSum(params: { debtor: string; group: string }) {
+  async getSum(params: { debtor: string; group: string; closedAt: string }) {
     const { data } = await api.get<number>('/details/sum', { params })
     return data
   },

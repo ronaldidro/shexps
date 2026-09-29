@@ -4,6 +4,7 @@
     v-slot="$form"
     :resolver="paymentResolver"
     :initialValues="{
+      closedAt: new Date(),
       group: '',
       payer: '',
       debt: null,
@@ -12,41 +13,79 @@
       description: '',
     }"
     @submit="onSubmit"
-    class="flex flex-col gap-4"
+    class="md:max-w-sm"
   >
-    <div class="flex flex-col gap-2">
-      <label for="group">Grupo</label>
-      <Select
-        id="group"
-        name="group"
-        :options="groups"
-        @change="handleGroupChange"
-        optionLabel="name"
-        optionValue="id"
-        placeholder="Selecciona grupo"
-        fluid
-      />
-      <Message v-if="$form.group?.invalid" severity="error" variant="simple">
-        {{ $form.group.error?.message }}
-      </Message>
+    <div class="card p-5! flex flex-col gap-4 mb-4!">
+      <div class="flex flex-col gap-2">
+        <label for="group">Grupo</label>
+        <Select
+          id="group"
+          name="group"
+          :options="groups"
+          @change="showMore = false"
+          optionLabel="name"
+          optionValue="id"
+          placeholder="Selecciona grupo"
+          fluid
+        />
+        <Message v-if="$form.group?.invalid" severity="error" variant="simple">
+          {{ $form.group.error?.message }}
+        </Message>
+      </div>
+      <div class="flex flex-col gap-2">
+        <label for="payer">Miembro</label>
+        <Select
+          id="payer"
+          name="payer"
+          :options="members"
+          @change="showMore = false"
+          optionLabel="firstName"
+          optionValue="id"
+          placeholder="Selecciona miembro"
+          fluid
+        />
+        <Message v-if="$form.payer?.invalid" severity="error" variant="simple">
+          {{ $form.payer.error?.message }}
+        </Message>
+      </div>
+      <div class="flex flex-col gap-2">
+        <label for="closedAt">Fecha de cierre</label>
+        <DatePicker
+          id="closedAt"
+          name="closedAt"
+          v-model="closedAtValue"
+          @update:modelValue="showMore = false"
+          dateFormat="dd/mm/yy"
+          :maxDate="new Date()"
+          :manualInput="false"
+          showIcon
+          showButtonBar
+          placeholder="Selecciona fecha"
+          fluid
+        />
+        <Message v-if="$form.closedAt?.invalid" severity="error" variant="simple">
+          {{ $form.closedAt.error?.message }}
+        </Message>
+      </div>
+      <div class="flex items-center justify-between">
+        <Button
+          v-if="!showMore"
+          type="button"
+          label="Regresar"
+          severity="secondary"
+          @click="router.push({ name: 'payments' })"
+        />
+        <Button
+          type="button"
+          label="Limpiar"
+          icon="pi pi-eraser"
+          severity="info"
+          @click="handleClean"
+        />
+        <Button type="button" label="Buscar" icon="pi pi-search" @click="handleSearch" />
+      </div>
     </div>
-    <div class="flex flex-col gap-2">
-      <label for="payer">Miembro</label>
-      <Select
-        id="payer"
-        name="payer"
-        :options="members"
-        @change="handlePayerChange"
-        optionLabel="firstName"
-        optionValue="id"
-        placeholder="Selecciona miembro"
-        fluid
-      />
-      <Message v-if="$form.payer?.invalid" severity="error" variant="simple">
-        {{ $form.payer.error?.message }}
-      </Message>
-    </div>
-    <div v-show="showMore" class="flex flex-col gap-4">
+    <div v-show="showMore" class="card p-5! flex flex-col gap-4">
       <div class="flex gap-3">
         <div class="flex flex-col gap-2">
           <label for="debt">Deuda</label>
@@ -120,21 +159,12 @@
         <Button type="submit" label="Verificar" icon="pi pi-arrow-up-right" iconPos="right" />
       </div>
     </div>
-    <Button
-      v-if="!showMore"
-      type="button"
-      label="Regresar"
-      severity="secondary"
-      class="mr-auto"
-      @click="router.push({ name: 'payments' })"
-    />
   </Form>
 </template>
 
 <script setup lang="ts">
 import { reactive, ref } from 'vue'
 import type { FormInstance, FormSubmitEvent } from '@primevue/forms'
-import type { SelectChangeEvent } from 'primevue'
 import type { Group } from '@/types/group'
 import type { PaymentPayload } from '@/types/payment'
 import { groupsService } from '@/services/groups.service'
@@ -152,6 +182,7 @@ const emit = defineEmits<{
 const showMore = ref(false)
 const formRef = ref<FormInstance | null>(null)
 const groups = reactive<Group[]>(await groupsService.getAll())
+const closedAtValue = ref(new Date())
 
 const members = useGroupMembers(() => formRef.value?.states.group?.value)
 const { showToast } = useNotification()
@@ -173,21 +204,33 @@ const getPreview = (values: PaymentPayload) => {
   }
 }
 
-const handleGroupChange = () => {
-  formRef.value?.setFieldValue('payer', '')
-  formRef.value?.setFieldValue('debt', null)
+const handleClean = () => {
+  const form = formRef.value
+
+  if (!form) return
+
+  closedAtValue.value = new Date()
+  form.reset()
+
   showMore.value = false
 }
 
-const handlePayerChange = async (e: SelectChangeEvent) => {
-  const sum = await detailsService.getSum({
-    debtor: e.value,
-    group: formRef.value?.states.group?.value,
-  })
+const handleSearch = async () => {
+  const form = formRef.value
+
+  if (!form) return
+
+  const payer = form.states.payer?.value
+  const group = form.states.group?.value
+  const closedAt = form.states.closedAt?.value
+
+  if (!payer || !group || !closedAt) return
+
+  const sum = await detailsService.getSum({ debtor: payer, group, closedAt })
 
   if (sum) {
     showMore.value = true
-    formRef.value?.setFieldValue('debt', sum)
+    form.setFieldValue('debt', sum)
     return
   }
 

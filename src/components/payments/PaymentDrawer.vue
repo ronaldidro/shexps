@@ -12,14 +12,19 @@
         <Tag severity="contrast" :value="PAY_DESCRIPTION[payment.method]" />
         <Tag :value="payment.group.name" />
       </div>
-      <div class="flex justify-between items-center">
-        <p class="font-medium text-xl mb-0!">
-          {{ payment.description }}
-        </p>
-        <p class="font-medium text-surface-500 dark:text-surface-400">
-          {{ payment.createdAt }}
-        </p>
+      <div class="flex justify-between">
+        <div class="flex flex-col gap-1">
+          <div class="text-surface-900 dark:text-surface-0 font-medium">Registro</div>
+          <div class="text-muted-color">{{ payment.createdAt }}</div>
+        </div>
+        <div class="flex flex-col gap-1">
+          <div class="text-surface-900 dark:text-surface-0 font-medium text-right">Cierre</div>
+          <div class="text-muted-color">{{ payment.closedAt }}</div>
+        </div>
       </div>
+      <span class="font-medium text-xl">
+        {{ payment.description }}
+      </span>
       <div class="flex justify-between items-center">
         <div class="flex items-center gap-4">
           <Tag :value="payment.payer.firstName" />
@@ -33,8 +38,8 @@
         <span class="font-semibold text-lg">S/{{ payment.remaining }}</span>
       </div>
       <div class="flex justify-between items-center">
-        <span class="text-muted-color">Deuda acumulada</span>
-        <span class="text-muted-color">S/{{ payment.debt }}</span>
+        <span class="font-medium dark:font-normal">Deuda acumulada</span>
+        <span class="font-medium dark:font-normal">S/{{ payment.debt }}</span>
       </div>
     </div>
   </Drawer>

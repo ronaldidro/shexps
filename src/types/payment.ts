@@ -10,6 +10,7 @@ export interface Payment {
   amount: string
   remaining: string
   createdAt: string
+  closedAt: string
   method: PayMethod
   group: Group
   user: User
@@ -24,4 +25,5 @@ export interface PaymentPayload {
   method: PayMethod
   group: string
   payer: string
+  closedAt: string
 }

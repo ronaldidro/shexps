@@ -4,6 +4,13 @@ import z from 'zod'
 export const paymentResolver = zodResolver(
   z
     .object({
+      closedAt: z.preprocess(
+        (val) => {
+          if (val === '' || val === null || !(val instanceof Date)) return
+          return val.toISOString()
+        },
+        z.string().min(1, 'Fecha es requerida'),
+      ),
       group: z.string().min(1, 'Grupo es requerido'),
       payer: z.string().min(1, 'Miembro es requerido'),
       amount: z

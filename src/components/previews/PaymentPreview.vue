@@ -8,6 +8,15 @@
   </div>
   <div class="flex items-center justify-between">
     <article class="flex items-center gap-2">
+      <i class="pi pi-calendar" />
+      <span class="text-lg">Fecha cierre</span>
+    </article>
+    <span class="text-muted-color font-medium">
+      {{ new Date(payment.closedAt).toLocaleDateString() }}
+    </span>
+  </div>
+  <div class="flex items-center justify-between">
+    <article class="flex items-center gap-2">
       <i class="pi pi-user-minus" />
       <span class="text-lg">Paga</span>
     </article>
@@ -40,7 +49,7 @@
   <span class="text-muted-color font-medium">{{ payment.description }}</span>
   <div class="flex items-center justify-between">
     <article class="flex items-center gap-2">
-      <i class="pi pi-money-bill" />
+      <i class="pi pi-dollar" />
       <span class="text-lg">Deuda</span>
     </article>
     <span class="text-muted-color font-medium"> S/{{ payment.debt.toFixed(2) }} </span>
@@ -54,7 +63,7 @@
   </div>
   <div class="flex items-center justify-between">
     <article class="flex items-center gap-2">
-      <i class="pi pi-money-bill" />
+      <i class="pi pi-credit-card" />
       <span class="text-lg">Pendiente</span>
     </article>
     <span class="text-muted-color font-medium"> S/{{ payment.remaining.toFixed(2) }} </span>

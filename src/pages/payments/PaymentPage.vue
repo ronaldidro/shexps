@@ -1,8 +1,6 @@
 <template>
   <AppBreadcrumb :items="[{ label: 'Pagos', route: '/payments' }, { label: 'Nuevo' }]" />
-  <div class="card p-5! md:max-w-sm">
-    <PaymentForm @submit="onSubmit" />
-  </div>
+  <PaymentForm @submit="onSubmit" />
 </template>
 
 <script setup lang="ts">
