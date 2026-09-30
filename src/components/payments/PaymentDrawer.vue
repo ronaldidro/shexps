@@ -14,17 +14,21 @@
       </div>
       <div class="flex justify-between">
         <div class="flex flex-col gap-1">
-          <div class="text-surface-900 dark:text-surface-0 font-medium">Registro</div>
+          <div class="text-surface-900 dark:text-surface-0 font-medium">Fecha registro</div>
           <div class="text-muted-color">{{ payment.createdAt }}</div>
         </div>
         <div class="flex flex-col gap-1">
-          <div class="text-surface-900 dark:text-surface-0 font-medium text-right">Cierre</div>
+          <div class="text-surface-900 dark:text-surface-0 font-medium text-right">
+            Fecha cierre
+          </div>
           <div class="text-muted-color">{{ payment.closedAt }}</div>
         </div>
       </div>
-      <span class="font-medium text-xl">
-        {{ payment.description }}
-      </span>
+      <hr class="m-0!" />
+      <div class="flex justify-between items-center">
+        <span class="font-semibold text-lg">Deuda acumulada</span>
+        <span class="font-semibold text-lg">S/{{ payment.debt }}</span>
+      </div>
       <div class="flex justify-between items-center">
         <div class="flex items-center gap-4">
           <Tag :value="payment.payer.firstName" />
@@ -34,12 +38,13 @@
         <span class="text-2xl font-semibold">S/{{ payment.amount }}</span>
       </div>
       <div v-if="Number(payment.remaining) > 0" class="flex justify-between items-center">
-        <span class="font-semibold text-lg">Saldo pendiente de pago</span>
-        <span class="font-semibold text-lg">S/{{ payment.remaining }}</span>
+        <span class="font-medium dark:font-normal">Saldo pendiente de pago</span>
+        <span class="font-medium dark:font-normal">S/{{ payment.remaining }}</span>
       </div>
-      <div class="flex justify-between items-center">
-        <span class="font-medium dark:font-normal">Deuda acumulada</span>
-        <span class="font-medium dark:font-normal">S/{{ payment.debt }}</span>
+      <hr class="m-0!" />
+      <div class="flex flex-col gap-1">
+        <div class="text-surface-900 dark:text-surface-0 font-medium">Descripción</div>
+        <div class="text-muted-color">{{ payment.description }}</div>
       </div>
     </div>
   </Drawer>
