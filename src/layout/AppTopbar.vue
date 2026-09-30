@@ -77,7 +77,7 @@ const { user } = useAuthStore()
           severity="danger"
           :pt="{ pcBadge: { root: { class: { '!hidden': !user.hasNotifications } } } }"
         >
-          <router-link to="notifications" class="layout-topbar-action">
+          <router-link to="/notifications" class="layout-topbar-action">
             <i class="pi pi-bell" style="font-size: 1.5rem" />
           </router-link>
         </OverlayBadge>
