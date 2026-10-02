@@ -218,7 +218,7 @@ const chartData = computed<ChartData<'bar'>>(() => {
     datasets: [
       {
         type: 'bar',
-        label: 'Gasto individual',
+        label: 'Gasto asignado',
         backgroundColor: documentStyle.getPropertyValue('--p-cyan-500'),
         data: summary.value.chart.debtsData,
         grouped: false,
