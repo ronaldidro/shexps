@@ -1,6 +1,6 @@
 import axios, { isAxiosError } from 'axios'
 import { useAuthStore } from '@/stores/auth.store'
-import { API_URL } from '@/utils'
+import { API_URL, HTTP_STATUS_CODE } from '@/utils'
 
 const api = axios.create({
   baseURL: API_URL,
@@ -21,7 +21,7 @@ api.interceptors.response.use(
     const { logout } = useAuthStore()
     const status = error.response?.status
 
-    if (status === 401) logout()
+    if (status === HTTP_STATUS_CODE.UNAUTHORIZED) logout()
 
     return Promise.reject(error)
   },

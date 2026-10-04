@@ -1,6 +1,7 @@
 import { ref } from 'vue'
 import { useNotification } from '@/composables/useNotification'
 import { getError, getErrorMessage } from '@/services/axios'
+import { HTTP_STATUS_CODE } from '@/utils'
 
 export const useReport = <T>(reporter: (params: T) => Promise<Blob>) => {
   const { showToast } = useNotification()
@@ -21,7 +22,7 @@ export const useReport = <T>(reporter: (params: T) => Promise<Blob>) => {
     } catch (err) {
       const error = getError(err)
 
-      if (error && error.status === 404) {
+      if (error && error.status === HTTP_STATUS_CODE.NOT_FOUND) {
         showToast({ severity: 'warn', summary: 'No se encontraron resultados' })
         return
       }
