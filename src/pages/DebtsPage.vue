@@ -44,7 +44,7 @@
       />
     </div>
   </div>
-  <ExpenseDrawer v-model:visible="showDrawer" :id="selectedId" />
+  <!-- <ExpenseDrawer v-model:visible="showDrawer" :id="selectedId" /> -->
 </template>
 
 <script setup lang="ts">
@@ -53,7 +53,7 @@ import AppBreadcrumb from '@/layout/AppBreadcrumb.vue'
 import { detailsService } from '@/services/details.service'
 import type { ExpenseDetail } from '@/types/expense'
 import type { QueryParams } from '@/types/pagination'
-import ExpenseDrawer from '@/components/expenses/ExpenseDrawer.vue'
+// import ExpenseDrawer from '@/components/expenses/ExpenseDrawer.vue'
 import SearchField from '@/components/SearchField.vue'
 import FilterPanel from '@/components/FilterPanel.vue'
 import { useScrollPagination } from '@/composables/useScrollPagination'
