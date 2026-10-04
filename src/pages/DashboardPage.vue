@@ -1,7 +1,7 @@
 <template>
   <AppBreadcrumb :items="[{ label: 'Resumen' }]" />
   <div class="card px-5! pb-5! pt-2!">
-    <Fieldset legend="Filtros" :toggleable="true">
+    <Fieldset legend="Filtros">
       <div class="grid gap-4 md:flex md:gap-8">
         <FloatLabel variant="on">
           <Select
@@ -57,7 +57,8 @@
         </div>
         <div>
           <span class="text-muted-color">Presupuesto </span>
-          <span class="text-primary font-medium">S/{{ summary.budget }}</span>
+          <span v-if="summary.budget" class="text-primary font-medium">S/{{ summary.budget }}</span>
+          <span v-else class="text-muted-color">no establecido</span>
         </div>
       </div>
       <div v-if="summary.debtors.length" class="card mb-0! flex flex-col gap-4">
