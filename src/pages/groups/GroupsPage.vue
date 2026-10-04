@@ -121,7 +121,7 @@ const openMembershipDialog = (memberships: Membership[]) => {
   if (!membership) return
 
   membershipSelected.id = membership.id
-  membershipSelected.budget = membership.budget
+  membershipSelected.budget = membership.budget ? Number(membership.budget) : membership.budget
 
   showDialog.membership = true
 }

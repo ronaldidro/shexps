@@ -52,4 +52,5 @@ export interface ExpenseSummary {
   debtors: ExpenseSummaryDetail[]
   creditors: ExpenseSummaryDetail[]
   chart: ChartData
+  budget: number | null
 }

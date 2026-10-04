@@ -55,17 +55,9 @@
           <span class="font-medium">{{ summary.user }}</span>
           <Chip :label="`S/${summary.amount}`" />
         </div>
-        <div class="flex justify-between">
-          <Button asChild v-slot="slotProps" text raised>
-            <RouterLink :class="slotProps.class" :to="{ name: 'new-expense' }">
-              <i class="pi pi-plus" /> Nuevo
-            </RouterLink>
-          </Button>
-          <Button asChild v-slot="slotProps" text raised>
-            <RouterLink :class="slotProps.class" :to="{ name: 'expenses' }">
-              <i class="pi pi-eye" /> Ver
-            </RouterLink>
-          </Button>
+        <div>
+          <span class="text-muted-color">Presupuesto </span>
+          <span class="text-primary font-medium">S/{{ summary.budget }}</span>
         </div>
       </div>
       <div v-if="summary.debtors.length" class="card mb-0! flex flex-col gap-4">
