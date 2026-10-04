@@ -45,7 +45,7 @@
       />
     </div>
   </div>
-  <ExpenseDrawer v-model:visible="showDrawer" :id="selectedId" />
+  <ExpenseDrawer v-model:visible="showDrawer" :expense />
 </template>
 
 <script setup lang="ts">
@@ -65,12 +65,13 @@ import { useScrollPagination } from '@/composables/useScrollPagination'
 import { useNotification } from '@/composables/useNotification'
 import { useReport } from '@/composables/useReport'
 import { useAuthStore } from '@/stores/auth.store'
+import { HTTP_STATUS_CODE } from '@/utils'
 import router from '@/router'
 
 const el = useTemplateRef('el')
 const route = useRoute()
 
-const selectedId = ref<string | null>(null)
+const expense = ref<Expense | null>(null)
 const showDrawer = ref(false)
 const search = ref('')
 
@@ -86,11 +87,25 @@ const {
   setFilters,
 } = useScrollPagination<Expense>({ el, fetcher: expensesService.getAll })
 
-const openDrawer = (id: string) => {
-  selectedId.value = id
-  showDrawer.value = true
+const openDrawer = async (id: string) => {
+  try {
+    expense.value = await expensesService.get(id)
 
-  if (route.params.id !== id) router.replace({ name: 'expenses', params: { id } })
+    if (route.params.id !== id) router.replace({ name: 'expenses', params: { id } })
+
+    showDrawer.value = true
+  } catch (err) {
+    router.replace({ name: 'expenses' })
+
+    const error = getError(err)
+
+    if (error && error.status === HTTP_STATUS_CODE.NOT_FOUND) {
+      showToast({ severity: 'warn', summary: 'Gasto no encontrado' })
+      return
+    }
+
+    showToast({ severity: 'error', summary: 'Error', detail: getErrorMessage(err) })
+  }
 }
 
 const handleSearch = async (value: string) => {
@@ -145,7 +160,7 @@ const handleDeleteFilter = async (values: QueryParams) => {
   } catch (err) {
     const error = getError(err)
 
-    if (error && error.status === 404) {
+    if (error && error.status === HTTP_STATUS_CODE.NOT_FOUND) {
       showToast({ severity: 'warn', summary: 'No se encontraron gastos' })
       return
     }
@@ -166,7 +181,7 @@ watch(
 
 watch(showDrawer, (isVisible) => {
   if (!isVisible && route.params.id) {
-    selectedId.value = null
+    expense.value = null
     router.replace({ name: 'expenses' })
   }
 })

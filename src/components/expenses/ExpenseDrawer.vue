@@ -2,7 +2,7 @@
   <Drawer
     v-if="expense"
     :visible="visible"
-    @update:visible="close"
+    @update:visible="$emit('update:visible', false)"
     header="Gasto"
     position="bottom"
     style="height: auto"
@@ -32,22 +32,9 @@
 </template>
 
 <script setup lang="ts">
-import { ref, watch } from 'vue'
-import { expensesService } from '@/services/expenses.service'
 import type { Expense } from '@/types/expense'
 
-const props = defineProps<{ visible: boolean; id: string | null }>()
-const emit = defineEmits<{ (e: 'update:visible', value: boolean): void }>()
+defineProps<{ visible: boolean; expense: Expense | null }>()
 
-const expense = ref<Expense>()
-
-const close = () => emit('update:visible', false)
-
-watch(
-  () => props.visible,
-  async (isVisible) => {
-    if (!isVisible || !props.id) return
-    expense.value = await expensesService.get(props.id)
-  },
-)
+defineEmits<{ (e: 'update:visible', value: boolean): void }>()
 </script>
