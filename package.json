@@ -12,7 +12,8 @@
     "preview": "vite preview",
     "eslint": "eslint .",
     "eslint:fix": "eslint . --fix --cache",
-    "format": "prettier --write --experimental-cli src/"
+    "format": "prettier --write --experimental-cli src/",
+    "deploy": "npx tsx --env-file=.env deploy.ts"
   },
   "dependencies": {
     "@primeuix/themes": "^2.0.3",
