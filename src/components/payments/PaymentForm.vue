@@ -226,7 +226,7 @@ const handleSearch = async () => {
 
   if (!payer || !group || !closedAt) return
 
-  const sum = await expensesService.getDebts({ debtor: payer, group, closedAt })
+  const sum = await expensesService.getDebts({ user: payer, group, closedAt })
 
   if (sum) {
     showMore.value = true

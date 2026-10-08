@@ -23,7 +23,7 @@ export const expensesService = {
     }
   },
 
-  async getDebts(params: { debtor: string; group: string; closedAt: string }) {
+  async getDebts(params: Partial<QueryParams>) {
     const { data } = await api.get<number>('/expenses/debts', { params })
     return data
   },
