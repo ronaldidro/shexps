@@ -23,6 +23,11 @@ export const expensesService = {
     }
   },
 
+  async getDebts(params: { debtor: string; group: string; closedAt: string }) {
+    const { data } = await api.get<number>('/expenses/debts', { params })
+    return data
+  },
+
   async getReport(params: QueryParams) {
     const { data } = await api.get<Blob>('/expenses/report', { params, responseType: 'blob' })
     return data

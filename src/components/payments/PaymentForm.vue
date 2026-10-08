@@ -168,7 +168,7 @@ import type { FormInstance, FormSubmitEvent } from '@primevue/forms'
 import type { Group } from '@/types/group'
 import type { PaymentPayload } from '@/types/payment'
 import { groupsService } from '@/services/groups.service'
-import { detailsService } from '@/services/details.service'
+import { expensesService } from '@/services/expenses.service'
 import { paymentResolver } from '@/resolvers/payment.resolver'
 import { useGroupMembers } from '@/composables/useGroupMembers'
 import { useNotification } from '@/composables/useNotification'
@@ -226,7 +226,7 @@ const handleSearch = async () => {
 
   if (!payer || !group || !closedAt) return
 
-  const sum = await detailsService.getSum({ debtor: payer, group, closedAt })
+  const sum = await expensesService.getDebts({ debtor: payer, group, closedAt })
 
   if (sum) {
     showMore.value = true
