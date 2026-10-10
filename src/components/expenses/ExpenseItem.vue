@@ -27,7 +27,7 @@
 <script setup lang="ts">
 import type { Expense } from '@/types/expense'
 
-defineProps<{ expense: Expense; showDeleteButton: boolean }>()
+defineProps<{ expense: Expense }>()
 
 defineEmits<{ toggle: [event: Event, expense: Expense] }>()
 </script>

@@ -24,11 +24,7 @@
         class="mx-6 py-6"
         :class="{ 'border-t border-surface': index !== 0 }"
       >
-        <ExpenseItem
-          :expense="expense"
-          :showDeleteButton="expense.user.id === user.id"
-          @toggle="toggleMenu"
-        />
+        <ExpenseItem :expense="expense" @toggle="toggleMenu" />
       </div>
       <p v-if="loading" class="text-center pt-5">
         <ProgressSpinner style="width: 50px; height: 50px" />
@@ -102,6 +98,7 @@ const items = computed(() => {
     {
       label: 'Eliminar',
       icon: 'pi pi-fw pi-times',
+      visible: selected.user.id === user.id,
       command: () => openDeleteDialog(selected.id),
     },
   ]
