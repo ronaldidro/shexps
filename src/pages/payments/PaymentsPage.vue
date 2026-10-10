@@ -42,7 +42,7 @@
       </div>
     </template>
   </Menu>
-  <PaymentDrawer v-model:visible="showDrawer" :id="selectedId" />
+  <PaymentDrawer v-model:visible="showDrawer" :payment />
 </template>
 
 <script setup lang="ts">
@@ -59,14 +59,14 @@ import { useScrollPagination } from '@/composables/useScrollPagination'
 import { useNotification } from '@/composables/useNotification'
 import { useReport } from '@/composables/useReport'
 import { paymentsService } from '@/services/payments.service'
-import { getErrorMessage } from '@/services/axios'
+import { getError, getErrorMessage } from '@/services/axios'
 import { useAuthStore } from '@/stores/auth.store'
+import { HTTP_STATUS_CODE } from '@/utils'
 import router from '@/router'
 
 const el = useTemplateRef('el')
 const route = useRoute()
 
-const selectedId = ref<string | null>(null)
 const payment = ref<Payment | null>(null)
 const showDrawer = ref(false)
 const search = ref('')
@@ -121,11 +121,25 @@ const handleMenuClick = async (event: Event, item: MenuItem) => {
   menu.value?.hide()
 }
 
-const openDrawer = (id: string) => {
-  selectedId.value = id
-  showDrawer.value = true
+const openDrawer = async (id: string) => {
+  try {
+    payment.value = await paymentsService.get(id)
 
-  if (route.params.id !== id) router.replace({ name: 'payments', params: { id } })
+    if (route.params.id !== id) router.replace({ name: 'payments', params: { id } })
+
+    showDrawer.value = true
+  } catch (err) {
+    router.replace({ name: 'payments' })
+
+    const error = getError(err)
+
+    if (error && error.status === HTTP_STATUS_CODE.NOT_FOUND) {
+      showToast({ severity: 'warn', summary: 'Pago no encontrado' })
+      return
+    }
+
+    showToast({ severity: 'error', summary: 'Error', detail: getErrorMessage(err) })
+  }
 }
 
 const handleSearch = async (value: string) => {
@@ -168,7 +182,7 @@ watch(
 
 watch(showDrawer, (isVisible) => {
   if (!isVisible && route.params.id) {
-    selectedId.value = null
+    payment.value = null
     router.replace({ name: 'payments' })
   }
 })

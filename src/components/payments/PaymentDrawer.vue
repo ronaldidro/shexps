@@ -2,7 +2,7 @@
   <Drawer
     v-if="payment"
     :visible="visible"
-    @update:visible="close"
+    @update:visible="$emit('update:visible', false)"
     header="Pago"
     position="bottom"
     style="height: auto"
@@ -51,29 +51,10 @@
 </template>
 
 <script setup lang="ts">
-import { ref, watch } from 'vue'
 import type { Payment } from '@/types/payment'
-import { paymentsService } from '@/services/payments.service'
 import { PAY_DESCRIPTION } from '@/utils'
 
-const props = defineProps<{
-  visible: boolean
-  id: string | null
-}>()
+defineProps<{ visible: boolean; payment: Payment | null }>()
 
-const emit = defineEmits<{
-  (e: 'update:visible', value: boolean): void
-}>()
-
-const close = () => emit('update:visible', false)
-
-const payment = ref<Payment>()
-
-watch(
-  () => props.visible,
-  async (isVisible) => {
-    if (!isVisible || !props.id) return
-    payment.value = await paymentsService.get(props.id)
-  },
-)
+defineEmits<{ (e: 'update:visible', value: boolean): void }>()
 </script>
