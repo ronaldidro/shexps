@@ -3,26 +3,14 @@
     <span class="font-medium text-surface-500 dark:text-surface-400 text-sm">
       {{ expense.expensedAt }}
     </span>
-    <div class="flex gap-2">
-      <Button
-        icon="pi pi-eye"
-        size="small"
-        raised
-        text
-        rounded
-        @click="$emit('show', expense.id)"
-      />
-      <Button
-        v-if="showDeleteButton"
-        icon="pi pi-times"
-        severity="danger"
-        size="small"
-        raised
-        text
-        rounded
-        @click="$emit('delete', expense.id)"
-      />
-    </div>
+    <Button
+      type="button"
+      icon="pi pi-ellipsis-v"
+      @click="$emit('toggle', $event, expense)"
+      class="p-button-text p-button-plain w-5!"
+      aria-haspopup="true"
+      aria-controls="overlay_menu"
+    />
   </div>
   <div>
     <span class="text-xl font-semibold">S/{{ expense.amount }}</span>
@@ -41,8 +29,5 @@ import type { Expense } from '@/types/expense'
 
 defineProps<{ expense: Expense; showDeleteButton: boolean }>()
 
-defineEmits<{
-  (e: 'show', value: string): void
-  (e: 'delete', value: string): void
-}>()
+defineEmits<{ toggle: [event: Event, expense: Expense] }>()
 </script>

@@ -27,8 +27,7 @@
         <ExpenseItem
           :expense="expense"
           :showDeleteButton="expense.user.id === user.id"
-          @show="openDrawer"
-          @delete="openDeleteDialog"
+          @toggle="toggleMenu"
         />
       </div>
       <p v-if="loading" class="text-center pt-5">
@@ -45,11 +44,12 @@
       />
     </div>
   </div>
+  <Menu ref="menu" id="overlay_menu" :model="items" :popup="true" />
   <ExpenseDrawer v-model:visible="showDrawer" :expense />
 </template>
 
 <script setup lang="ts">
-import { nextTick, ref, useTemplateRef, watch } from 'vue'
+import { computed, nextTick, ref, useTemplateRef, watch } from 'vue'
 import { useRoute } from 'vue-router'
 import { useConfirm } from 'primevue'
 import { expensesService } from '@/services/expenses.service'
@@ -74,6 +74,7 @@ const route = useRoute()
 const expense = ref<Expense | null>(null)
 const showDrawer = ref(false)
 const search = ref('')
+const menu = ref()
 
 const confirm = useConfirm()
 const { user } = useAuthStore()
@@ -86,6 +87,30 @@ const {
   reload,
   setFilters,
 } = useScrollPagination<Expense>({ el, fetcher: expensesService.getAll })
+
+const items = computed(() => {
+  const selected = expense.value
+
+  if (!selected) return []
+
+  return [
+    {
+      label: 'Ver',
+      icon: 'pi pi-fw pi-eye',
+      command: () => openDrawer(selected.id),
+    },
+    {
+      label: 'Eliminar',
+      icon: 'pi pi-fw pi-times',
+      command: () => openDeleteDialog(selected.id),
+    },
+  ]
+})
+
+const toggleMenu = (event: Event, selected: Expense) => {
+  expense.value = selected
+  menu.value.toggle(event)
+}
 
 const openDrawer = async (id: string) => {
   try {

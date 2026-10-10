@@ -15,7 +15,7 @@
         class="p-3 rounded-md"
         :class="{ 'mt-2': index !== 0, 'bg-gray-100 dark:bg-gray-700': !notification.isRead }"
       >
-        <NotificationItem :notification @toggle="toggle" />
+        <NotificationItem :notification @toggle="toggleMenu" />
       </div>
       <p v-if="loading" class="text-center pt-5">
         <ProgressSpinner style="width: 50px; height: 50px" />
@@ -97,7 +97,7 @@ watch(tab, async (tabValue) => {
   await setFilters(filter)
 })
 
-const toggle = (event: Event, notification: Notification) => {
+const toggleMenu = (event: Event, notification: Notification) => {
   selected.value = notification
   menu.value.toggle(event)
 }
