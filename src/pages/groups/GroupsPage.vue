@@ -10,64 +10,10 @@
   </Toolbar>
   <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
     <div v-for="(group, index) in groups" :key="index" class="card mb-0!">
-      <div class="flex items-center justify-between">
-        <p class="text-xl font-medium mb-0!">
-          {{ group.name }}
-        </p>
-        <div class="flex gap-2">
-          <Button
-            icon="pi pi-id-card"
-            severity="contrast"
-            size="small"
-            rounded
-            raised
-            text
-            @click="openMembershipDialog(group.memberships)"
-          />
-          <Button
-            asChild
-            v-if="group.user.id === user.id"
-            v-slot="slotProps"
-            class="flex gap-2"
-            size="small"
-            rounded
-            raised
-            text
-          >
-            <RouterLink :class="slotProps.class" :to="{ name: 'group', params: { id: group.id } }">
-              <i class="pi pi-pencil" />
-            </RouterLink>
-          </Button>
-          <Button
-            v-if="group.user.id === user.id"
-            class="flex gap-2"
-            icon="pi pi-times"
-            severity="danger"
-            size="small"
-            rounded
-            raised
-            text
-            @click="openConfirmDialog(group.id)"
-          />
-        </div>
-      </div>
-      <p class="text-primary font-medium">{{ group.members }} miembro(s)</p>
-      <p class="text-muted-color font-medium">Creado el {{ group.createdAt }}</p>
-      <Accordion>
-        <AccordionPanel value="0">
-          <AccordionHeader class="px-0!">Miembros</AccordionHeader>
-          <AccordionContent unstyled class="pb-4">
-            <div class="flex flex-wrap gap-2">
-              <Tag v-for="membership in group.memberships" :key="membership.id">
-                {{ membership.user.firstName }}
-                <span v-if="membership.user.id === group.user.id">(C)</span>
-              </Tag>
-            </div>
-          </AccordionContent>
-        </AccordionPanel>
-      </Accordion>
+      <GroupItem :group="group" @toggle="toggleMenu" />
     </div>
   </div>
+  <Menu ref="menu" id="overlay_menu" :model="items" :popup="true" />
   <GroupDialog v-model:visible="showDialog.group" @onSubmit="handleCreate" />
   <MembershipDialog
     v-model:visible="showDialog.membership"
@@ -77,10 +23,11 @@
 </template>
 
 <script setup lang="ts">
-import { reactive, ref } from 'vue'
+import { computed, reactive, ref } from 'vue'
 import { useConfirm } from 'primevue'
 import type { Group, GroupPayload } from '@/types/group'
 import type { Membership, MembershipPayload } from '@/types/membership'
+import GroupItem from '@/components/groups/GroupItem.vue'
 import GroupDialog from '@/components/groups/GroupDialog.vue'
 import MembershipDialog from '@/components/groups/MembershipDialog.vue'
 import SearchField from '@/components/SearchField.vue'
@@ -90,9 +37,12 @@ import { groupsService } from '@/services/groups.service'
 import { membershipsService } from '@/services/memberships.service'
 import { useNotification } from '@/composables/useNotification'
 import { useAuthStore } from '@/stores/auth.store'
+import router from '@/router'
 
 const groups = ref<Group[]>(await groupsService.getAll())
+const group = ref<Group | null>(null)
 const search = ref('')
+const menu = ref()
 
 const showDialog = reactive({ group: false, membership: false })
 const membershipSelected = reactive<{ id: string | null; budget: number | null }>({
@@ -104,7 +54,38 @@ const { showToast } = useNotification()
 const { user } = useAuthStore()
 const confirm = useConfirm()
 
-const openConfirmDialog = (id: string) => {
+const items = computed(() => {
+  const selected = group.value
+
+  if (!selected) return []
+
+  return [
+    {
+      label: 'Membresía',
+      icon: 'pi pi-fw pi-id-card',
+      command: () => openMembershipDialog(selected.memberships),
+    },
+    {
+      label: 'Editar',
+      icon: 'pi pi-fw pi-pencil',
+      visible: selected.user.id === user.id,
+      command: () => router.push({ name: 'group', params: { id: selected.id } }),
+    },
+    {
+      label: 'Eliminar',
+      icon: 'pi pi-fw pi-times',
+      visible: selected.user.id === user.id,
+      command: () => openDeleteDialog(selected.id),
+    },
+  ]
+})
+
+const toggleMenu = (event: Event, selected: Group) => {
+  group.value = selected
+  menu.value.toggle(event)
+}
+
+const openDeleteDialog = (id: string) => {
   confirm.require({
     header: 'Eliminar grupo',
     message: '¿Está seguro de que desea continuar?',

@@ -42,6 +42,7 @@ declare module 'vue' {
     Form: typeof import('@primevue/forms/form')['default']
     GroupDialog: typeof import('./src/components/groups/GroupDialog.vue')['default']
     GroupForm: typeof import('./src/components/groups/GroupForm.vue')['default']
+    GroupItem: typeof import('./src/components/groups/GroupItem.vue')['default']
     HeroWidget: typeof import('./src/components/landing/HeroWidget.vue')['default']
     HighlightsWidget: typeof import('./src/components/landing/HighlightsWidget.vue')['default']
     IconField: typeof import('primevue/iconfield')['default']
