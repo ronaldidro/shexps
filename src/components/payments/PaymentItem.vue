@@ -1,45 +1,21 @@
 <template>
   <div class="flex justify-between">
-    <div class="flex flex-col">
-      <p class="font-medium text-surface-500 dark:text-surface-400 text-sm">
-        {{ payment.createdAt }}
-      </p>
-      <span class="text-xl font-semibold">S/{{ payment.amount }}</span>
-      <span class="font-medium text-surface-500 dark:text-surface-400 text-lg line-clamp-1">
-        {{ payment.description }}
-      </span>
-    </div>
-    <div class="flex gap-3">
-      <Button
-        icon="pi pi-file-pdf"
-        severity="secondary"
-        size="small"
-        raised
-        text
-        rounded
-        :loading="loadingReportButton"
-        @click="$emit('report', payment.id)"
-      />
-      <Button
-        icon="pi pi-eye"
-        size="small"
-        raised
-        text
-        rounded
-        @click="$emit('show', payment.id)"
-      />
-      <Button
-        v-if="showDeleteButton"
-        icon="pi pi-times"
-        severity="danger"
-        size="small"
-        raised
-        text
-        rounded
-        @click="$emit('delete', payment.id)"
-      />
-    </div>
+    <span class="font-medium text-surface-500 dark:text-surface-400 text-sm">
+      {{ payment.createdAt }}
+    </span>
+    <Button
+      type="button"
+      icon="pi pi-ellipsis-v"
+      @click="$emit('toggle', $event, payment)"
+      class="p-button-text p-button-plain w-5!"
+      aria-haspopup="true"
+      aria-controls="overlay_menu"
+    />
   </div>
+  <span class="text-xl font-semibold">S/{{ payment.amount }}</span>
+  <span class="font-medium text-surface-500 dark:text-surface-400 text-lg line-clamp-1">
+    {{ payment.description }}
+  </span>
   <div class="flex justify-between mt-2">
     <Tag :value="payment.payer.firstName" />
     <Tag :value="payment.group.name" severity="secondary" />
@@ -49,11 +25,7 @@
 <script setup lang="ts">
 import type { Payment } from '@/types/payment'
 
-defineProps<{ payment: Payment; showDeleteButton: boolean; loadingReportButton: boolean }>()
+defineProps<{ payment: Payment }>()
 
-defineEmits<{
-  (e: 'report', value: string): void
-  (e: 'show', value: string): void
-  (e: 'delete', value: string): void
-}>()
+defineEmits<{ toggle: [event: Event, payment: Payment] }>()
 </script>

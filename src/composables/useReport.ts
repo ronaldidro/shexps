@@ -6,12 +6,10 @@ import { HTTP_STATUS_CODE } from '@/utils'
 export const useReport = <T>(reporter: (params: T) => Promise<Blob>) => {
   const { showToast } = useNotification()
   const reporting = ref(false)
-  const activeParam = ref<T | null>(null)
 
   const handleReport = async (values: T) => {
     try {
       reporting.value = true
-      activeParam.value = values
 
       const blob = await reporter(values)
       const url = URL.createObjectURL(blob)
@@ -30,9 +28,8 @@ export const useReport = <T>(reporter: (params: T) => Promise<Blob>) => {
       showToast({ severity: 'error', summary: 'Error', detail: getErrorMessage(err) })
     } finally {
       reporting.value = false
-      activeParam.value = null
     }
   }
 
-  return { handleReport, reporting, activeParam }
+  return { handleReport, reporting }
 }

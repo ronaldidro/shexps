@@ -12,12 +12,10 @@
       aria-controls="overlay_menu"
     />
   </div>
-  <div>
-    <span class="text-xl font-semibold">S/{{ expense.amount }}</span>
-    <span class="font-medium text-surface-500 dark:text-surface-400 text-lg line-clamp-1">
-      {{ expense.description }}
-    </span>
-  </div>
+  <span class="text-xl font-semibold">S/{{ expense.amount }}</span>
+  <span class="font-medium text-surface-500 dark:text-surface-400 text-lg line-clamp-1">
+    {{ expense.description }}
+  </span>
   <div class="flex justify-between mt-2">
     <Tag :value="expense.user.firstName" severity="info" />
     <Tag :value="expense.group.name" severity="secondary" />

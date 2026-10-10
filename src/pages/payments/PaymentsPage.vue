@@ -16,14 +16,7 @@
         class="mx-6 py-6"
         :class="{ 'border-t border-surface': index !== 0 }"
       >
-        <PaymentItem
-          :payment="payment"
-          :showDeleteButton="payment.user.id === user.id"
-          :loadingReportButton="activeParam === payment.id"
-          @report="handleReport"
-          @show="openDrawer"
-          @delete="openConfirmDialog"
-        />
+        <PaymentItem :payment="payment" @toggle="toggleMenu" />
       </div>
       <p v-if="loading" class="text-center pt-5">
         <ProgressSpinner style="width: 50px; height: 50px" />
@@ -39,13 +32,24 @@
       />
     </div>
   </div>
+  <Menu ref="menu" id="overlay_menu" :model="items" :popup="true">
+    <template #item="{ item, props }">
+      <div @click.capture.stop="handleMenuClick($event, item)">
+        <a v-bind="props.action" class="p-menu-item-link">
+          <span class="p-menu-item-icon" :class="item.icon" />
+          <span class="p-menu-item-label">{{ item.label }}</span>
+        </a>
+      </div>
+    </template>
+  </Menu>
   <PaymentDrawer v-model:visible="showDrawer" :id="selectedId" />
 </template>
 
 <script setup lang="ts">
-import { nextTick, ref, useTemplateRef, watch } from 'vue'
+import { computed, nextTick, ref, useTemplateRef, watch } from 'vue'
 import { useRoute } from 'vue-router'
 import { useConfirm } from 'primevue'
+import type { MenuItem } from 'primevue/menuitem'
 import type { Payment } from '@/types/payment'
 import AppBreadcrumb from '@/layout/AppBreadcrumb.vue'
 import PaymentDrawer from '@/components/payments/PaymentDrawer.vue'
@@ -63,13 +67,15 @@ const el = useTemplateRef('el')
 const route = useRoute()
 
 const selectedId = ref<string | null>(null)
+const payment = ref<Payment | null>(null)
 const showDrawer = ref(false)
 const search = ref('')
+const menu = ref()
 
 const confirm = useConfirm()
 const { user } = useAuthStore()
 const { showToast } = useNotification()
-const { handleReport, activeParam } = useReport(paymentsService.getReport)
+const { handleReport, reporting } = useReport(paymentsService.getReport)
 
 const {
   items: payments,
@@ -77,6 +83,43 @@ const {
   reload,
   setFilters,
 } = useScrollPagination<Payment>({ el, fetcher: paymentsService.getAll })
+
+const items = computed(() => {
+  const selected = payment.value
+
+  if (!selected) return []
+
+  return [
+    {
+      label: 'Reporte',
+      icon: reporting.value ? 'pi pi-fw pi-spinner pi-spin' : 'pi pi-fw pi-file-pdf',
+      disabled: reporting.value,
+      command: () => handleReport(selected.id),
+    },
+    {
+      label: 'Ver',
+      icon: 'pi pi-fw pi-eye',
+      command: () => openDrawer(selected.id),
+    },
+    {
+      label: 'Eliminar',
+      icon: 'pi pi-fw pi-times',
+      visible: selected.user.id === user.id,
+      command: () => openDeleteDialog(selected.id),
+    },
+  ]
+})
+
+const toggleMenu = (event: Event, selected: Payment) => {
+  payment.value = selected
+  menu.value.toggle(event)
+}
+
+const handleMenuClick = async (event: Event, item: MenuItem) => {
+  if (item.disabled) return
+  if (item.command) await item.command({ originalEvent: event, item })
+  menu.value?.hide()
+}
 
 const openDrawer = (id: string) => {
   selectedId.value = id
@@ -90,7 +133,7 @@ const handleSearch = async (value: string) => {
   await setFilters({ search: value })
 }
 
-const openConfirmDialog = (id: string) => {
+const openDeleteDialog = (id: string) => {
   confirm.require({
     header: 'Eliminar pago',
     message: '¿Está seguro de que desea continuar?',
