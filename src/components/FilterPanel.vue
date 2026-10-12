@@ -55,12 +55,10 @@
           @click="onReport"
           :loading="reporting"
         />
-        <Button type="submit" label="Filtrar" icon="pi pi-filter" />
         <SplitButton
-          label="Limpiar"
-          severity="info"
-          icon="pi pi-eraser"
-          @click="onClear"
+          label="Filtrar"
+          icon="pi pi-filter"
+          :buttonProps="{ type: 'submit' }"
           :model="buttonItems"
         />
       </div>
@@ -93,7 +91,10 @@ const groups = reactive<Group[]>(await groupsService.getAll())
 
 const members = useGroupMembers(() => formRef.value?.states.group?.value, props.showAuthUser)
 
-const buttonItems = [{ label: 'Eliminar', icon: 'pi pi-times', command: () => onDelete() }]
+const buttonItems = [
+  { label: 'Limpiar', icon: 'pi pi-eraser', command: () => onClear() },
+  { label: 'Eliminar', icon: 'pi pi-times', command: () => onDelete() },
+]
 
 const validateForm = async () => {
   const form = formRef.value
