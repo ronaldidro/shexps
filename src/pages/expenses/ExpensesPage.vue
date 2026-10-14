@@ -5,7 +5,13 @@
       <SearchField v-model="search" @search="handleSearch" />
     </template>
     <template #end>
-      <Button label="Nuevo" icon="pi pi-plus" @click="router.push({ name: 'new-expense' })" />
+      <SplitButton
+        label="Nuevo"
+        @click="router.push({ name: 'new-expense' })"
+        :model="[
+          { label: 'Procesar imagen', icon: 'pi pi-image', command: () => (show.dialog = true) },
+        ]"
+      />
     </template>
   </Toolbar>
   <FilterPanel
@@ -41,11 +47,16 @@
     </div>
   </div>
   <Menu ref="menu" id="overlay_menu" :model="items" :popup="true" />
-  <ExpenseDrawer v-model:visible="showDrawer" :expense />
+  <ExpenseDrawer v-model:visible="show.drawer" :expense />
+  <ExpenseFileDialog
+    v-model:visible="show.dialog"
+    @upload="handleUpload"
+    @error="handleUploadError"
+  />
 </template>
 
 <script setup lang="ts">
-import { computed, nextTick, ref, useTemplateRef, watch } from 'vue'
+import { computed, nextTick, reactive, ref, useTemplateRef, watch } from 'vue'
 import { useRoute } from 'vue-router'
 import { useConfirm } from 'primevue'
 import { expensesService } from '@/services/expenses.service'
@@ -53,6 +64,7 @@ import { getError, getErrorMessage } from '@/services/axios'
 import type { Expense } from '@/types/expense'
 import type { QueryParams } from '@/types/pagination'
 import AppBreadcrumb from '@/layout/AppBreadcrumb.vue'
+import ExpenseFileDialog from '@/components/expenses/ExpenseFileDialog.vue'
 import ExpenseDrawer from '@/components/expenses/ExpenseDrawer.vue'
 import ExpenseItem from '@/components/expenses/ExpenseItem.vue'
 import SearchField from '@/components/SearchField.vue'
@@ -68,7 +80,7 @@ const el = useTemplateRef('el')
 const route = useRoute()
 
 const expense = ref<Expense | null>(null)
-const showDrawer = ref(false)
+const show = reactive({ drawer: false, dialog: false })
 const search = ref('')
 const menu = ref()
 
@@ -115,7 +127,7 @@ const openDrawer = async (id: string) => {
 
     if (route.params.id !== id) router.replace({ name: 'expenses', params: { id } })
 
-    showDrawer.value = true
+    show.drawer = true
   } catch (err) {
     router.replace({ name: 'expenses' })
 
@@ -191,6 +203,12 @@ const handleDeleteFilter = async (values: QueryParams) => {
   }
 }
 
+const handleUpload = (response: { description: string; amount: number }) =>
+  router.push({ name: 'new-expense', query: response })
+
+const handleUploadError = (response: { statusCode: number; message: string }) =>
+  showToast({ severity: 'error', summary: 'Ocurrió un error', detail: response.message })
+
 watch(
   () => route.params.id,
   async (id) => {
@@ -201,8 +219,8 @@ watch(
   { immediate: true },
 )
 
-watch(showDrawer, (isVisible) => {
-  if (!isVisible && route.params.id) {
+watch(show, (isVisible) => {
+  if (!isVisible.drawer && route.params.id) {
     expense.value = null
     router.replace({ name: 'expenses' })
   }
