@@ -103,6 +103,10 @@ import { useGroupMembers } from '@/composables/useGroupMembers.ts'
 import ExpenseDetail from './ExpenseDetail.vue'
 import router from '@/router'
 
+const { initialData } = defineProps<{
+  initialData?: { description: string; amount: number | null }
+}>()
+
 const emit = defineEmits<{
   (e: 'submit', payload: ExpensePayload, preview: ExpensePayload): void
 }>()
@@ -114,8 +118,8 @@ const { handleSubmit, errors, values, setFieldValue } = useForm({
   initialValues: {
     group: groups[0]?.id,
     expensedAt: new Date(),
-    description: '',
-    amount: null,
+    description: initialData?.description,
+    amount: initialData?.amount,
     splitted: false,
     details: [{ user: '', amount: null }],
   },

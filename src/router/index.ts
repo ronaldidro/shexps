@@ -26,27 +26,27 @@ const routes: RouteRecordRaw[] = [
         meta: { requiresAuth: true },
       },
       {
-        path: '/expenses/:id?',
-        name: 'expenses',
-        component: () => import('@/pages/expenses/ExpensesPage.vue'),
-        meta: { requiresAuth: true },
-      },
-      {
         path: '/expenses/new',
         name: 'new-expense',
         component: () => import('@/pages/expenses/ExpensePage.vue'),
         meta: { requiresAuth: true },
       },
       {
-        path: '/payments/:id?',
-        name: 'payments',
-        component: () => import('@/pages/payments/PaymentsPage.vue'),
+        path: '/expenses/:id?',
+        name: 'expenses',
+        component: () => import('@/pages/expenses/ExpensesPage.vue'),
         meta: { requiresAuth: true },
       },
       {
         path: '/payments/new',
         name: 'new-payment',
         component: () => import('@/pages/payments/PaymentPage.vue'),
+        meta: { requiresAuth: true },
+      },
+      {
+        path: '/payments/:id?',
+        name: 'payments',
+        component: () => import('@/pages/payments/PaymentsPage.vue'),
         meta: { requiresAuth: true },
       },
       {
