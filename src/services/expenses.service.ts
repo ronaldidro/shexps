@@ -15,12 +15,8 @@ export const expensesService = {
   },
 
   async getSummary(params: Partial<QueryParams>) {
-    try {
-      const response = await api.get<ExpenseSummary>('/expenses/summary', { params })
-      return response.data
-    } catch (error) {
-      throw new Error(getErrorMessage(error))
-    }
+    const response = await api.get<ExpenseSummary>('/expenses/summary', { params })
+    return response.data
   },
 
   async getDebts(params: Partial<QueryParams>) {

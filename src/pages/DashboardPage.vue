@@ -9,8 +9,6 @@
             inputId="group"
             :options="groups"
             optionLabel="name"
-            optionValue="id"
-            :defaultValue="currentGroup"
             fluid
           />
           <label for="group">Grupo</label>
@@ -52,13 +50,34 @@
           S/{{ summary.expenses }} en total
         </div>
         <div v-if="summary.amount" class="flex items-center justify-between">
-          <span class="font-medium">{{ summary.user }}</span>
+          <span class="font-medium">{{ summary.firstName }}</span>
           <Chip :label="`S/${summary.amount}`" />
         </div>
-        <div>
-          <span class="text-muted-color">Presupuesto </span>
-          <span v-if="summary.budget" class="text-primary font-medium">S/{{ summary.budget }}</span>
-          <span v-else class="text-muted-color">no establecido</span>
+      </div>
+      <div class="card mb-0! flex flex-col gap-4">
+        <div class="flex items-center justify-between">
+          <span class="block text-muted-color font-medium text-xl">Presupuesto</span>
+          <div
+            class="flex items-center justify-center bg-teal-100 dark:bg-teal-400/10 rounded-border"
+            style="width: 2.5rem; height: 2.5rem"
+          >
+            <i class="pi pi-calculator text-teal-500 text-xl!"></i>
+          </div>
+        </div>
+        <ProgressBar
+          :value="summary.percent"
+          :pt="{ value: { class: { 'bg-red-500!': summary.percent >= 100 } } }"
+        />
+        <div class="flex items-center justify-between">
+          <span class="font-medium">{{ currentGroup?.name }}</span>
+          <Chip :label="`S/${summary.budget?.toFixed(2)}`" />
+        </div>
+        <div class="flex items-center justify-between">
+          <span class="font-medium">Gasto total</span>
+          <Tag
+            :severity="`${summary.percent >= 100 ? 'danger' : 'success'}`"
+            :value="`S/${summary.total.toFixed(2)}`"
+          />
         </div>
       </div>
       <div v-if="summary.debtors.length" class="card mb-0! flex flex-col gap-4">
@@ -133,6 +152,10 @@ import type { QueryParams } from '@/types/pagination'
 import AppBreadcrumb from '@/layout/AppBreadcrumb.vue'
 import { expensesService } from '@/services/expenses.service'
 import { groupsService } from '@/services/groups.service'
+import { getErrorMessage } from '@/services/axios'
+import { useNotification } from '@/composables/useNotification'
+
+const { showToast } = useNotification()
 
 const groups = reactive<Group[]>(await groupsService.getAll())
 
@@ -144,15 +167,15 @@ const dateRange = ref<[Date | null, Date | null]>([
 ])
 
 const summary = ref<ExpenseSummary | undefined>()
-const currentGroup = ref<string | undefined>(groups[0]?.id)
+const currentGroup = ref<Group | undefined>(groups[0])
 const loading = ref(false)
 
 const getSummary = async (params: Partial<QueryParams>): Promise<ExpenseSummary | undefined> => {
   loading.value = true
   try {
     return await expensesService.getSummary(params)
-  } catch (error) {
-    console.log('error', error)
+  } catch (err) {
+    showToast({ severity: 'error', summary: 'Error', detail: getErrorMessage(err) })
     return
   } finally {
     loading.value = false
@@ -169,7 +192,7 @@ watch(
     if (!from || !to) return
 
     summary.value = await getSummary({
-      group: newGroup,
+      group: newGroup.id,
       startDate: from.toISOString(),
       endDate: to.toISOString(),
     })

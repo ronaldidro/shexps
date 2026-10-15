@@ -45,7 +45,7 @@ interface ChartData {
 }
 
 export interface ExpenseSummary {
-  user: string
+  firstName: string
   expenses: number
   amount: number
   debts: number
@@ -53,4 +53,6 @@ export interface ExpenseSummary {
   creditors: ExpenseSummaryDetail[]
   chart: ChartData
   budget: number | null
+  total: number
+  percent: number
 }

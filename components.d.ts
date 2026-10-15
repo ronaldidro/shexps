@@ -69,6 +69,7 @@ declare module 'vue' {
     PaymentItem: typeof import('./src/components/payments/PaymentItem.vue')['default']
     PaymentPreview: typeof import('./src/components/previews/PaymentPreview.vue')['default']
     PricingWidget: typeof import('./src/components/landing/PricingWidget.vue')['default']
+    ProgressBar: typeof import('primevue/progressbar')['default']
     ProgressSpinner: typeof import('primevue/progressspinner')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
