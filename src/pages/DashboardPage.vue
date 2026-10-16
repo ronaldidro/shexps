@@ -36,102 +36,35 @@
   </div>
   <div v-else-if="summary?.creditors.length || summary?.debtors.length">
     <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-      <div class="card mb-0! flex flex-col gap-4">
-        <div class="flex items-center justify-between">
-          <span class="block text-muted-color font-medium text-xl">Gastos</span>
-          <div
-            class="flex items-center justify-center bg-orange-100 dark:bg-orange-400/10 rounded-border"
-            style="width: 2.5rem; height: 2.5rem"
-          >
-            <i class="pi pi-dollar text-orange-500 text-xl!"></i>
-          </div>
-        </div>
-        <div class="text-surface-900 dark:text-surface-0 font-medium text-xl">
-          S/{{ summary.expenses }} en total
-        </div>
-        <div v-if="summary.amount" class="flex items-center justify-between">
-          <span class="font-medium">{{ summary.firstName }}</span>
-          <Chip :label="`S/${summary.amount}`" />
-        </div>
-      </div>
-      <div class="card mb-0! flex flex-col gap-4">
-        <div class="flex items-center justify-between">
-          <span class="block text-muted-color font-medium text-xl">Presupuesto</span>
-          <div
-            class="flex items-center justify-center bg-teal-100 dark:bg-teal-400/10 rounded-border"
-            style="width: 2.5rem; height: 2.5rem"
-          >
-            <i class="pi pi-calculator text-teal-500 text-xl!"></i>
-          </div>
-        </div>
-        <ProgressBar
-          :value="summary.percent"
-          :pt="{ value: { class: { 'bg-red-500!': summary.percent >= 100 } } }"
-        />
-        <div class="flex items-center justify-between">
-          <span class="font-medium">{{ currentGroup?.name }}</span>
-          <Chip :label="`S/${summary.budget?.toFixed(2)}`" />
-        </div>
-        <div class="flex items-center justify-between">
-          <span class="font-medium">Gasto total</span>
-          <Tag
-            :severity="`${summary.percent >= 100 ? 'danger' : 'success'}`"
-            :value="`S/${summary.total.toFixed(2)}`"
-          />
-        </div>
-      </div>
-      <div v-if="summary.debtors.length" class="card mb-0! flex flex-col gap-4">
-        <div class="flex items-center justify-between">
-          <span class="block text-muted-color font-medium text-xl">Te deben</span>
-          <div
-            class="flex items-center justify-center bg-cyan-100 dark:bg-cyan-400/10 rounded-border"
-            style="width: 2.5rem; height: 2.5rem"
-          >
-            <i class="pi pi-money-bill text-cyan-500 text-xl!"></i>
-          </div>
-        </div>
-        <div
-          v-for="(debtor, index) in summary.debtors"
-          :key="index"
-          class="flex items-center justify-between"
-        >
-          <span class="font-medium">{{ debtor.firstName }}</span>
-          <Chip :label="`S/${debtor.amount}`" />
-        </div>
-      </div>
-      <div class="card mb-0! flex flex-col gap-4">
-        <div class="flex items-center justify-between">
-          <span class="block text-muted-color font-medium text-xl">Deudas</span>
-          <div
-            class="flex items-center justify-center bg-blue-100 dark:bg-blue-400/10 rounded-border"
-            style="width: 2.5rem; height: 2.5rem"
-          >
-            <i class="pi pi-credit-card text-blue-500 text-xl!"></i>
-          </div>
-        </div>
-        <div class="text-surface-900 dark:text-surface-0 font-medium text-xl">
-          S/{{ summary.debts }} en total
-        </div>
-      </div>
-      <div v-if="summary.creditors.length" class="card mb-0! flex flex-col gap-4">
-        <div class="flex items-center justify-between">
-          <span class="block text-muted-color font-medium text-xl">Le debes</span>
-          <div
-            class="flex items-center justify-center bg-purple-100 dark:bg-purple-400/10 rounded-border"
-            style="width: 2.5rem; height: 2.5rem"
-          >
-            <i class="pi pi-wallet text-purple-500 text-xl!"></i>
-          </div>
-        </div>
-        <div
-          v-for="(creditor, index) in summary.creditors"
-          :key="index"
-          class="flex items-center justify-between"
-        >
-          <span class="font-medium">{{ creditor.firstName }}</span>
-          <Chip :label="`S/${creditor.amount}`" />
-        </div>
-      </div>
+      <AmountCard
+        title="Gastos"
+        variant="orange"
+        icon="pi-dollar"
+        :total="summary.expenses"
+        :amount="summary.amount"
+        :firstName="summary.firstName"
+      />
+      <BudgetCard
+        :budget="summary.budget"
+        :total="summary.total"
+        :percent="summary.percent"
+        :group="currentGroup?.name"
+      />
+      <MembersCard
+        v-if="summary.debtors.length"
+        title="Te deben"
+        variant="cyan"
+        icon="pi-money-bill"
+        :members="summary.debtors"
+      />
+      <AmountCard title="Deudas" variant="blue" icon="pi-credit-card" :total="summary.debts" />
+      <MembersCard
+        v-if="summary.creditors.length"
+        title="Le debes"
+        variant="purple"
+        icon="pi-wallet"
+        :members="summary.creditors"
+      />
     </div>
     <div class="card mt-8">
       <Chart type="bar" :data="chartData" :options="chartOptions" class="h-120" />
@@ -154,6 +87,9 @@ import { expensesService } from '@/services/expenses.service'
 import { groupsService } from '@/services/groups.service'
 import { getErrorMessage } from '@/services/axios'
 import { useNotification } from '@/composables/useNotification'
+import MembersCard from '@/components/dashboard/MembersCard.vue'
+import AmountCard from '@/components/dashboard/AmountCard.vue'
+import BudgetCard from '@/components/dashboard/BudgetCard.vue'
 
 const { showToast } = useNotification()
 
