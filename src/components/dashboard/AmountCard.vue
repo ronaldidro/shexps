@@ -2,7 +2,7 @@
   <div class="card mb-0! flex flex-col gap-4">
     <CardHeader :title :variant :icon />
     <div class="text-surface-900 dark:text-surface-0 font-medium text-xl">
-      S/{{ total }} en total
+      S/{{ total.toFixed(2) }} en total
     </div>
     <div v-if="amount" class="flex items-center justify-between">
       <span class="font-medium">{{ firstName }}</span>

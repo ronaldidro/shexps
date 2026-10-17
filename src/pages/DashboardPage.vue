@@ -150,6 +150,7 @@ const setChartOptions = (): ChartOptions<'bar'> => {
         mode: 'index',
         intersect: false,
         itemSort: (a, b) => b.datasetIndex - a.datasetIndex,
+        filter: (item) => (item.raw as number) > 0,
       },
       legend: { labels: { color: textColor } },
     },
@@ -170,14 +171,14 @@ const chartData = computed<ChartData<'bar'>>(() => {
     datasets: [
       {
         type: 'bar',
-        label: 'Gasto asignado',
+        label: 'Asignado',
         backgroundColor: documentStyle.getPropertyValue('--p-cyan-500'),
         data: summary.value.chart.debtsData,
         grouped: false,
       },
       {
         type: 'bar',
-        label: 'Gasto total',
+        label: 'Total',
         backgroundColor: documentStyle.getPropertyValue('--p-gray-500'),
         data: summary.value.chart.expensesData,
       },
