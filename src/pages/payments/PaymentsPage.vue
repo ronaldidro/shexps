@@ -8,6 +8,7 @@
       <Button label="Nuevo" icon="pi pi-plus" @click="router.push({ name: 'new-payment' })" />
     </template>
   </Toolbar>
+  <FilterPanel @submit="handleFilters" @clear="handleClear" :showAuthUser="true" />
   <div class="card p-1!">
     <div ref="el" class="overflow-y-auto h-dvh">
       <div
@@ -50,6 +51,7 @@ import { computed, nextTick, ref, useTemplateRef, watch } from 'vue'
 import { useRoute } from 'vue-router'
 import { useConfirm } from 'primevue'
 import type { MenuItem } from 'primevue/menuitem'
+import type { QueryParams } from '@/types/pagination'
 import type { Payment } from '@/types/payment'
 import AppBreadcrumb from '@/layout/AppBreadcrumb.vue'
 import PaymentDrawer from '@/components/payments/PaymentDrawer.vue'
@@ -147,6 +149,10 @@ const handleSearch = async (value: string) => {
   await setFilters({ search: value })
 }
 
+const handleFilters = async (values: QueryParams) => await setFilters({ ...values })
+
+const handleClear = async () => await reload()
+
 const openDeleteDialog = (id: string) => {
   confirm.require({
     header: 'Eliminar pago',
@@ -164,7 +170,7 @@ const handleDelete = async (id: string) => {
 
     showToast({ severity: 'success', summary: 'Pago eliminado correctamente' })
 
-    await reload()
+    handleClear()
   } catch (err) {
     showToast({ severity: 'error', summary: 'Error', detail: getErrorMessage(err) })
   }

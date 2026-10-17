@@ -46,8 +46,12 @@
           </Message>
         </div>
       </div>
-      <div class="flex justify-between md:justify-end gap-1 md:gap-2">
+      <div
+        class="flex md:justify-end gap-1 md:gap-2"
+        :class="showReportButton ? 'justify-between' : 'justify-end'"
+      >
         <Button
+          v-if="showReportButton"
           type="button"
           label="Reporte"
           severity="secondary"
@@ -68,22 +72,29 @@
 
 <script setup lang="ts">
 import { reactive, ref } from 'vue'
+import type { FormInstance, FormSubmitEvent } from '@primevue/forms'
+import type { MenuItem } from 'primevue/menuitem'
 import type { Group } from '@/types/group'
 import type { QueryParams } from '@/types/pagination'
-import type { FormInstance, FormSubmitEvent } from '@primevue/forms'
 import { groupsService } from '@/services/groups.service'
 import { useGroupMembers } from '@/composables/useGroupMembers'
 import { filterResolver } from '@/resolvers/filter.resolver'
 
-const props = withDefaults(defineProps<{ reporting: boolean; showAuthUser?: boolean }>(), {
-  showAuthUser: false,
-})
+const props = withDefaults(
+  defineProps<{
+    showReportButton?: boolean
+    reporting?: boolean
+    showAuthUser?: boolean
+    showDeleteOption?: boolean
+  }>(),
+  { showReportButton: false, showAuthUser: false, showDeleteOption: false },
+)
 
 const emit = defineEmits<{
-  (e: 'submit', payload: QueryParams): void
-  (e: 'report', payload: QueryParams): void
-  (e: 'delete', payload: QueryParams): void
-  (e: 'clear'): void
+  submit: [payload: QueryParams]
+  report: [payload: QueryParams]
+  delete: [payload: QueryParams]
+  clear: []
 }>()
 
 const formRef = ref<FormInstance | null>(null)
@@ -91,9 +102,14 @@ const groups = reactive<Group[]>(await groupsService.getAll())
 
 const members = useGroupMembers(() => formRef.value?.states.group?.value, props.showAuthUser)
 
-const buttonItems = [
+const buttonItems: MenuItem[] = [
   { label: 'Limpiar', icon: 'pi pi-eraser', command: () => onClear() },
-  { label: 'Eliminar', icon: 'pi pi-times', command: () => onDelete() },
+  {
+    label: 'Eliminar',
+    icon: 'pi pi-times',
+    command: () => onDelete(),
+    visible: props.showDeleteOption,
+  },
 ]
 
 const validateForm = async () => {

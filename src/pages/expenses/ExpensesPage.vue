@@ -16,11 +16,13 @@
   </Toolbar>
   <FilterPanel
     @submit="handleFilters"
-    @report="handleReport"
     @clear="handleClear"
     @delete="openDeleteFilterDialog"
-    :showAuthUser="true"
+    @report="handleReport"
+    :showReportButton="true"
     :reporting
+    :showAuthUser="true"
+    :showDeleteOption="true"
   />
   <div class="card p-1!">
     <div ref="el" class="overflow-y-auto h-dvh">
@@ -178,7 +180,7 @@ const handleDelete = async (id: string) => {
 
     showToast({ severity: 'success', summary: 'Gasto eliminado correctamente' })
 
-    await reload()
+    handleClear()
   } catch (err) {
     showToast({ severity: 'error', summary: 'Error', detail: getErrorMessage(err) })
   }
@@ -190,7 +192,7 @@ const handleDeleteFilter = async (values: QueryParams) => {
 
     showToast({ severity: 'success', summary: 'Gastos eliminados correctamente' })
 
-    await reload()
+    handleClear()
   } catch (err) {
     const error = getError(err)
 
