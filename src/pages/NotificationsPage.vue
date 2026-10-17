@@ -1,13 +1,26 @@
 <template>
   <AppBreadcrumb :items="[{ label: 'Notificaciones' }]" />
+  <div class="flex justify-between mb-2">
+    <SelectButton
+      v-model="option"
+      :options="[
+        { label: 'Todas', value: 'all' },
+        { label: 'Leídas', value: 'read' },
+        { label: 'No leídas', value: 'unread' },
+      ]"
+      optionLabel="label"
+      optionValue="value"
+    />
+    <Button
+      type="button"
+      icon="pi pi-ellipsis-v"
+      @click="toggleTopMenu"
+      class="p-button-text p-button-plain w-5!"
+      aria-haspopup="true"
+      aria-controls="overlay_menu"
+    />
+  </div>
   <div class="card p-2!">
-    <Tabs v-model:value="tab">
-      <TabList>
-        <Tab value="all">Todas</Tab>
-        <Tab value="read">Leídas</Tab>
-        <Tab value="unread">No leídas</Tab>
-      </TabList>
-    </Tabs>
     <div ref="el" class="overflow-y-auto h-dvh">
       <div
         v-for="(notification, index) in notifications"
@@ -15,7 +28,7 @@
         class="p-3 rounded-md"
         :class="{ 'mt-2': index !== 0, 'bg-gray-100 dark:bg-gray-700': !notification.isRead }"
       >
-        <NotificationItem :notification @toggle="toggleMenu" />
+        <NotificationItem :notification @toggle="toggleMenuItem" />
       </div>
       <p v-if="loading" class="text-center pt-5">
         <ProgressSpinner style="width: 50px; height: 50px" />
@@ -51,26 +64,27 @@ const { showToast } = useNotification()
 const { setHasNotifications } = useAuthStore()
 
 const menu = ref()
-const tab = ref<'read' | 'unread' | 'all'>('all')
+const option = ref<'read' | 'unread' | 'all'>('all')
 const selected = ref<Notification | null>(null)
 
 const items = computed(() => {
   const notification = selected.value
 
-  if (!notification) return []
+  if (notification)
+    return [
+      {
+        label: notification.isRead ? 'Marcar como no leída' : 'Marcar como leída',
+        icon: 'pi pi-fw pi-check',
+        command: () => handleChangeStatus(notification),
+      },
+      {
+        label: 'Eliminar',
+        icon: 'pi pi-fw pi-times',
+        command: () => handleDelete(notification.id),
+      },
+    ]
 
-  return [
-    {
-      label: notification.isRead ? 'Marcar como no leída' : 'Marcar como leída',
-      icon: 'pi pi-fw pi-check',
-      command: () => handleChangeStatus(notification),
-    },
-    {
-      label: 'Eliminar',
-      icon: 'pi pi-fw pi-times',
-      command: () => handleDelete(notification.id),
-    },
-  ]
+  return [{ label: 'Marcar todas como leídas', icon: 'pi pi-fw pi-check', command: handleReadAll }]
 })
 
 const {
@@ -92,13 +106,18 @@ watch(
   },
 )
 
-watch(tab, async (tabValue) => {
-  const filter = tabValue === 'all' ? { status: undefined } : { status: tabValue }
+watch(option, async (optionValue) => {
+  const filter = optionValue === 'all' ? { status: undefined } : { status: optionValue }
   await setFilters(filter)
 })
 
-const toggleMenu = (event: Event, notification: Notification) => {
+const toggleMenuItem = (event: Event, notification: Notification) => {
   selected.value = notification
+  menu.value.toggle(event)
+}
+
+const toggleTopMenu = (event: Event) => {
+  selected.value = null
   menu.value.toggle(event)
 }
 
@@ -112,7 +131,21 @@ const handleChangeStatus = async ({ id, isRead }: Notification) => {
 
     await reload()
 
-    tab.value = 'all'
+    option.value = 'all'
+  } catch (err) {
+    showToast({ severity: 'error', summary: 'Error', detail: getErrorMessage(err) })
+  }
+}
+
+const handleReadAll = async () => {
+  try {
+    await notificationsService.updateAll({ isRead: true })
+
+    showToast({ severity: 'success', summary: `Notificaciones marcadas como leídas` })
+
+    await reload()
+
+    option.value = 'all'
   } catch (err) {
     showToast({ severity: 'error', summary: 'Error', detail: getErrorMessage(err) })
   }
@@ -126,7 +159,7 @@ const handleDelete = async (id: string) => {
 
     await reload()
 
-    tab.value = 'all'
+    option.value = 'all'
   } catch (err) {
     showToast({ severity: 'error', summary: 'Error', detail: getErrorMessage(err) })
   }

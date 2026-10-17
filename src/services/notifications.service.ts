@@ -5,9 +5,7 @@ import type { PaginatedData, QueryParams } from '@/types/pagination'
 export const notificationsService = {
   async getAll(params: QueryParams) {
     try {
-      const response = await api.get<PaginatedData<Notification>>('/notifications', {
-        params,
-      })
+      const response = await api.get<PaginatedData<Notification>>('/notifications', { params })
       return response.data
     } catch (error) {
       throw new Error(getErrorMessage(error))
@@ -16,6 +14,11 @@ export const notificationsService = {
 
   async update(id: string, payload: NotificationPayload) {
     const { data } = await api.patch<Notification>(`/notifications/${id}`, payload)
+    return data
+  },
+
+  async updateAll(payload: NotificationPayload) {
+    const { data } = await api.patch<Notification>('/notifications', payload)
     return data
   },
 
