@@ -61,7 +61,7 @@ import { useAuthStore } from '@/stores/auth.store'
 const el = useTemplateRef('el')
 
 const { showToast } = useNotification()
-const { setHasNotifications } = useAuthStore()
+const { user, setHasNotifications } = useAuthStore()
 
 const menu = ref()
 const option = ref<'read' | 'unread' | 'all'>('all')
@@ -84,7 +84,14 @@ const items = computed(() => {
       },
     ]
 
-  return [{ label: 'Marcar todas como leídas', icon: 'pi pi-fw pi-check', command: handleReadAll }]
+  return [
+    {
+      label: 'Marcar todas como leídas',
+      icon: 'pi pi-fw pi-check',
+      command: handleReadAll,
+      disabled: !user.hasNotifications,
+    },
+  ]
 })
 
 const {
