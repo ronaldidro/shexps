@@ -52,28 +52,28 @@
       <i class="pi pi-dollar" />
       <span class="text-lg">Deuda</span>
     </article>
-    <span class="text-muted-color font-medium"> S/{{ payment.debt.toFixed(2) }} </span>
+    <span class="text-muted-color font-medium">{{ formatCurrency(payment.debt) }}</span>
   </div>
   <div class="flex items-center justify-between">
     <article class="flex items-center gap-2">
       <i class="pi pi-money-bill" />
       <span class="text-lg">Pago</span>
     </article>
-    <span class="text-muted-color font-medium"> S/{{ payment.amount.toFixed(2) }} </span>
+    <span class="text-muted-color font-medium">{{ formatCurrency(payment.amount) }}</span>
   </div>
   <div class="flex items-center justify-between">
     <article class="flex items-center gap-2">
       <i class="pi pi-credit-card" />
       <span class="text-lg">Pendiente</span>
     </article>
-    <span class="text-muted-color font-medium"> S/{{ payment.remaining.toFixed(2) }} </span>
+    <span class="text-muted-color font-medium">{{ formatCurrency(payment.remaining) }}</span>
   </div>
 </template>
 
 <script setup lang="ts">
 import type { AuthUser } from '@/types/auth'
 import type { PaymentPayload } from '@/types/payment'
-import { PAY_DESCRIPTION } from '@/utils'
+import { formatCurrency, PAY_DESCRIPTION } from '@/utils'
 
 defineProps<{
   payment: PaymentPayload & { remaining: number } & { user: AuthUser }

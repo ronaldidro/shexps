@@ -27,7 +27,7 @@
       <hr class="m-0!" />
       <div class="flex justify-between items-center">
         <span class="font-semibold text-lg">Deuda acumulada</span>
-        <span class="font-semibold text-lg">S/{{ payment.debt }}</span>
+        <span class="font-semibold text-lg">{{ formatCurrency(payment.debt) }}</span>
       </div>
       <div class="flex justify-between items-center">
         <div class="flex items-center gap-4">
@@ -35,11 +35,11 @@
           <i class="pi pi-arrow-right" />
           <Tag :value="payment.user.firstName" severity="secondary" />
         </div>
-        <span class="text-2xl font-semibold">S/{{ payment.amount }}</span>
+        <span class="text-2xl font-semibold">{{ formatCurrency(payment.amount) }}</span>
       </div>
       <div v-if="Number(payment.remaining) > 0" class="flex justify-between items-center">
         <span class="font-medium dark:font-normal">Saldo pendiente de pago</span>
-        <span class="font-medium dark:font-normal">S/{{ payment.remaining }}</span>
+        <span class="font-medium dark:font-normal">{{ formatCurrency(payment.remaining) }}</span>
       </div>
       <hr class="m-0!" />
       <div class="flex flex-col gap-1">
@@ -52,7 +52,7 @@
 
 <script setup lang="ts">
 import type { Payment } from '@/types/payment'
-import { PAY_DESCRIPTION } from '@/utils'
+import { formatCurrency, PAY_DESCRIPTION } from '@/utils'
 
 defineProps<{ visible: boolean; payment: Payment | null }>()
 
