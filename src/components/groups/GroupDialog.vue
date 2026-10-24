@@ -1,12 +1,17 @@
 <template>
   <Dialog
     :visible="visible"
-    @update:visible="close"
+    @update:visible="$emit('update:visible', false)"
     :style="{ width: '300px' }"
     header="Nuevo grupo"
     :modal="true"
   >
-    <GroupForm @submit="submit" leftButtonLabel="Cancelar" @click:leftButton="close" />
+    <GroupForm
+      @submit="submit"
+      leftButtonLabel="Cancelar"
+      @click:leftButton="$emit('update:visible', false)"
+      :loading
+    />
   </Dialog>
 </template>
 
@@ -14,17 +19,9 @@
 import type { GroupPayload } from '@/types/group.ts'
 import GroupForm from './GroupForm.vue'
 
-defineProps<{ visible: boolean }>()
+defineProps<{ visible: boolean; loading: boolean }>()
 
-const emit = defineEmits<{
-  (e: 'update:visible', value: boolean): void
-  (e: 'onSubmit', values: GroupPayload): void
-}>()
+const emit = defineEmits<{ 'update:visible': [value: boolean]; submit: [values: GroupPayload] }>()
 
-const submit = (values: GroupPayload) => {
-  emit('onSubmit', values)
-  emit('update:visible', false)
-}
-
-const close = () => emit('update:visible', false)
+const submit = (values: GroupPayload) => emit('submit', values)
 </script>

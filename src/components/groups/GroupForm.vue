@@ -36,7 +36,7 @@
         severity="secondary"
         @click="$emit('click:leftButton')"
       />
-      <Button type="submit" label="Guardar" icon="pi pi-check" />
+      <Button type="submit" label="Guardar" icon="pi pi-check" :loading />
     </div>
   </Form>
 </template>
@@ -54,6 +54,7 @@ withDefaults(
   defineProps<{
     initialValues?: { name: string; members: string[] }
     leftButtonLabel: string
+    loading: boolean
   }>(),
   {
     initialValues: () => ({ name: '', members: [] }),
@@ -61,8 +62,8 @@ withDefaults(
 )
 
 const emit = defineEmits<{
-  (e: 'submit', values: GroupPayload): void
-  (e: 'click:leftButton'): void
+  submit: [values: GroupPayload]
+  'click:leftButton': [void]
 }>()
 
 const { user: authUser } = useAuthStore()

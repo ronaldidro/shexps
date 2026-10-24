@@ -8,16 +8,19 @@
       <Button label="Nuevo" icon="pi pi-plus" @click="showDialog.group = true" />
     </template>
   </Toolbar>
-  <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+  <div v-if="fetching" class="text-center pt-5">
+    <ProgressSpinner style="width: 50px; height: 50px" />
+  </div>
+  <div v-else class="grid grid-cols-1 md:grid-cols-2 gap-8">
     <div v-for="(group, index) in groups" :key="index" class="card mb-0!">
       <GroupItem :group="group" @toggle="toggleMenu" />
     </div>
   </div>
   <Menu ref="menu" id="overlay_menu" :model="items" :popup="true" />
-  <GroupDialog v-model:visible="showDialog.group" @onSubmit="handleCreate" />
+  <GroupDialog v-model:visible="showDialog.group" @submit="handleCreate" :loading="creating" />
   <MembershipDialog
     v-model:visible="showDialog.membership"
-    :initialValues="{ budget: membershipSelected.budget }"
+    :initialValues="{ budget: membershipSelected.budget! }"
     @submit="handleUpdateMembership"
   />
 </template>
@@ -32,27 +35,28 @@ import GroupDialog from '@/components/groups/GroupDialog.vue'
 import MembershipDialog from '@/components/groups/MembershipDialog.vue'
 import SearchField from '@/components/SearchField.vue'
 import AppBreadcrumb from '@/layout/AppBreadcrumb.vue'
-import { getErrorMessage } from '@/services/axios'
-import { groupsService } from '@/services/groups.service'
-import { membershipsService } from '@/services/memberships.service'
 import { useNotification } from '@/composables/useNotification'
+import { useGroupQuery } from '@/composables/query/useGroupQuery'
 import { useAuthStore } from '@/stores/auth.store'
 import router from '@/router'
 
-const groups = ref<Group[]>(await groupsService.getAll())
+const confirm = useConfirm()
+const { user } = useAuthStore()
+const { showToast } = useNotification()
+const { findAll, create, updateMembership, remove } = useGroupQuery()
+
 const group = ref<Group | null>(null)
-const search = ref('')
 const menu = ref()
+const search = ref('')
+const params = ref({ search: '' })
+
+const { data: groups, isLoading: fetching } = findAll(params)
+const { mutate: createGroup, isPending: creating } = create()
+const { mutate: removeGroup } = remove()
+const { mutate: editMembership } = updateMembership()
 
 const showDialog = reactive({ group: false, membership: false })
-const membershipSelected = reactive<{ id: string | null; budget: number | null }>({
-  id: null,
-  budget: null,
-})
-
-const { showToast } = useNotification()
-const { user } = useAuthStore()
-const confirm = useConfirm()
+const membershipSelected = reactive<MembershipPayload>({ id: '', budget: null })
 
 const items = computed(() => {
   const selected = group.value
@@ -109,7 +113,7 @@ const openMembershipDialog = (memberships: Membership[]) => {
 
 const handleSearch = async (value: string) => {
   search.value = value
-  groups.value = await groupsService.getAll({ search: value })
+  params.value = { search: value }
 }
 
 const handleUpdateMembership = async (values: MembershipPayload) => {
@@ -117,38 +121,25 @@ const handleUpdateMembership = async (values: MembershipPayload) => {
 
   if (!membershipId) return
 
-  try {
-    await membershipsService.update(membershipId, values)
-
-    groups.value = await groupsService.getAll()
-
-    showToast({ severity: 'success', summary: 'Membresía actualizada correctamente' })
-  } catch (err) {
-    showToast({ severity: 'error', summary: 'Error', detail: getErrorMessage(err) })
-  }
+  editMembership(
+    { id: membershipId, payload: values },
+    {
+      onSuccess: () =>
+        showToast({ severity: 'success', summary: 'Membresía actualizada correctamente' }),
+    },
+  )
 }
 
-const handleCreate = async (values: GroupPayload) => {
-  try {
-    await groupsService.create(values)
+const handleCreate = async (values: GroupPayload) =>
+  createGroup(values, {
+    onSuccess: () => {
+      showToast({ severity: 'success', summary: 'Grupo registrado correctamente' })
+      showDialog.group = false
+    },
+  })
 
-    groups.value = await groupsService.getAll()
-
-    showToast({ severity: 'success', summary: 'Grupo registrado correctamente' })
-  } catch (err) {
-    showToast({ severity: 'error', summary: 'Error', detail: getErrorMessage(err) })
-  }
-}
-
-const handleDelete = async (id: string) => {
-  try {
-    await groupsService.remove(id)
-
-    groups.value = await groupsService.getAll()
-
-    showToast({ severity: 'success', summary: 'Grupo eliminado correctamente' })
-  } catch (err) {
-    showToast({ severity: 'error', summary: 'Error', detail: getErrorMessage(err) })
-  }
-}
+const handleDelete = async (id: string) =>
+  removeGroup(id, {
+    onSuccess: () => showToast({ severity: 'success', summary: 'Grupo eliminado correctamente' }),
+  })
 </script>
