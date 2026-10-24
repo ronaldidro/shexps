@@ -17,14 +17,14 @@
           {{ expense.expensedAt }}
         </p>
       </div>
-      <span class="text-2xl font-semibold">S/{{ expense.amount }}</span>
+      <span class="text-2xl font-semibold">{{ formatCurrency(expense.amount) }}</span>
     </div>
     <Tag severity="warn" value="Miembros" />
     <ul class="pt-5">
       <li v-for="detail in expense.details" :key="detail.id">
         <div vi class="flex justify-between">
           <span class="text-lg">{{ detail.user.firstName }}</span>
-          <span class="text-lg font-semibold">S/{{ detail.amount }}</span>
+          <span class="text-lg font-semibold">{{ formatCurrency(detail.amount) }}</span>
         </div>
       </li>
     </ul>
@@ -33,6 +33,7 @@
 
 <script setup lang="ts">
 import type { Expense } from '@/types/expense'
+import { formatCurrency } from '@/utils'
 
 defineProps<{ visible: boolean; expense: Expense | null }>()
 

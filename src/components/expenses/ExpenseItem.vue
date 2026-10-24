@@ -12,7 +12,7 @@
       aria-controls="overlay_menu"
     />
   </div>
-  <span class="text-xl font-semibold">S/{{ expense.amount }}</span>
+  <span class="text-xl font-semibold">{{ formatCurrency(expense.amount) }}</span>
   <span class="font-medium text-surface-500 dark:text-surface-400 text-lg line-clamp-1">
     {{ expense.description }}
   </span>
@@ -24,6 +24,7 @@
 
 <script setup lang="ts">
 import type { Expense } from '@/types/expense'
+import { formatCurrency } from '@/utils'
 
 defineProps<{ expense: Expense }>()
 
