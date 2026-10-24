@@ -1,5 +1,5 @@
 <template>
-  <AppBreadcrumb :items="[{ label: 'Mi perfil' }]" />
+  <AppBreadcrumb :items="[{ label: 'Perfil' }]" />
   <div class="card p-2! md:max-w-sm">
     <Tabs value="0">
       <TabList>

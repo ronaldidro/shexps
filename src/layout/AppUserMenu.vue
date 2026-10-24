@@ -24,10 +24,12 @@
 </template>
 
 <script setup lang="ts">
-import { computed, reactive, ref } from 'vue'
+import { computed, ref } from 'vue'
 import { useAuthStore } from '@/stores/auth.store'
 
 const { user, logout } = useAuthStore()
+
+const menu = ref()
 
 const userLabel = computed(() =>
   user.name
@@ -37,9 +39,7 @@ const userLabel = computed(() =>
     .toUpperCase(),
 )
 
-const menu = ref()
-
-const items = reactive([
+const items = computed(() => [
   { label: user.name ?? 'Perfil', icon: 'pi pi-fw pi-user', route: '/account' },
   { separator: true },
   { label: 'Cerrar sesión', icon: 'pi pi-fw pi-sign-out', command: () => logout() },
