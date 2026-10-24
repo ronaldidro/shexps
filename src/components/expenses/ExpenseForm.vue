@@ -116,7 +116,7 @@ const groups = reactive<Group[]>(await groupsService.getAll())
 const { handleSubmit, errors, values, setFieldValue } = useForm({
   validationSchema: expenseSchema,
   initialValues: {
-    group: groups[0]?.id,
+    group: groups.length === 1 ? groups[0]?.id : '',
     expensedAt: new Date(),
     description: initialData?.description,
     amount: initialData?.amount,

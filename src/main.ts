@@ -1,14 +1,15 @@
 import { createApp } from 'vue'
 import { createPinia } from 'pinia'
 import piniaPluginPersistedstate from 'pinia-plugin-persistedstate'
+import { VueQueryPlugin } from '@tanstack/vue-query'
 import PrimeVue from 'primevue/config'
 import ToastService from 'primevue/toastservice'
 import ConfirmationService from 'primevue/confirmationservice'
 import DialogService from 'primevue/dialogservice'
 import { es } from 'primelocale/js/es.js'
 import Aura from '@primeuix/themes/aura'
-import router from './router'
-import App from './App.vue'
+import router from '@/router'
+import App from '@/App.vue'
 
 import '@/assets/tailwind.css'
 import '@/assets/styles.scss'
@@ -33,5 +34,6 @@ app.use(PrimeVue, {
 app.use(ToastService)
 app.use(ConfirmationService)
 app.use(DialogService)
+app.use(VueQueryPlugin)
 
 app.mount('#app')

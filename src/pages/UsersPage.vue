@@ -24,14 +24,15 @@
     </Toolbar>
     <DataTable
       ref="dt"
-      v-model:selection="selectedUsers"
-      :value="users"
       dataKey="id"
+      v-model:selection="selectedUsers"
+      :loading="fetching"
+      :value="users"
       :paginator="true"
       :rows="10"
       :filters="filters"
-      paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
       :rowsPerPageOptions="[5, 10, 25]"
+      paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
       currentPageReportTemplate="Mostrando del {first} al {last} de {totalRecords} usuarios"
     >
       <template #header>
@@ -77,7 +78,7 @@
     v-model:visible="dialog.visible"
     :header="dialog.header"
     :initialValues="initial"
-    :loading
+    :loading="creating || updating"
     @submit="onSubmit"
   />
 </template>
@@ -88,14 +89,10 @@ import { useConfirm } from 'primevue'
 import { FilterMatchMode } from '@primevue/core/api'
 import type { Role, User, UserPayload } from '@/types/user'
 import AppBreadcrumb from '@/layout/AppBreadcrumb.vue'
-import { usersService } from '@/services/users.service'
-import { getErrorMessage } from '@/services/axios'
 import UserDialog from '@/components/users/UserDialog.vue'
 import { useNotification } from '@/composables/useNotification'
+import { useUserQuery } from '@/composables/query/useUserQuery'
 import { USER_ROLE } from '@/utils'
-
-const confirm = useConfirm()
-const { showToast } = useNotification()
 
 const emptyUser: UserPayload = {
   firstName: '',
@@ -105,10 +102,17 @@ const emptyUser: UserPayload = {
   role: 'guest',
 }
 
+const confirm = useConfirm()
+const { showToast } = useNotification()
+const { read, create, update, remove } = useUserQuery()
+
+const { data: users, isLoading: fetching } = read()
+const { mutate: createUser, isPending: creating } = create()
+const { mutate: updateUser, isPending: updating } = update()
+const { mutate: removeUser } = remove()
+
 const dt = ref()
-const users = ref<User[]>(await usersService.getAll())
 const selectedUsers = ref<User[]>([])
-const loading = ref(false)
 const filters = ref({ global: { value: null, matchMode: FilterMatchMode.CONTAINS } })
 const initial = ref<UserPayload>(emptyUser)
 const dialog = reactive({ header: '', visible: false })
@@ -126,23 +130,25 @@ const editUser = (user: UserPayload) => {
 }
 
 const onSubmit = async (values: UserPayload) => {
-  try {
-    const id = initial.value.id
+  const id = initial.value.id
 
-    if (id) {
-      await usersService.update(id, values)
-      users.value = await usersService.getAll()
-      showToast({ severity: 'success', summary: 'Usuario actualizado correctamente' })
-      dialog.visible = false
-      return
-    }
-
-    await usersService.create(values)
-    users.value = await usersService.getAll()
-    dialog.visible = false
-    showToast({ severity: 'success', summary: 'Usuario registrado correctamente' })
-  } catch (err) {
-    showToast({ severity: 'error', summary: 'Error', detail: getErrorMessage(err) })
+  if (id) {
+    updateUser(
+      { id, payload: values },
+      {
+        onSuccess: () => {
+          showToast({ severity: 'success', summary: 'Usuario actualizado correctamente' })
+          dialog.visible = false
+        },
+      },
+    )
+  } else {
+    createUser(values, {
+      onSuccess: () => {
+        showToast({ severity: 'success', summary: 'Usuario registrado correctamente' })
+        dialog.visible = false
+      },
+    })
   }
 }
 
@@ -158,15 +164,9 @@ const openDeleteDialog = (id: string) => {
 }
 
 const handleDelete = async (id: string) => {
-  try {
-    await usersService.remove(id)
-
-    users.value = await usersService.getAll()
-
-    showToast({ severity: 'success', summary: 'Usuario eliminado correctamente' })
-  } catch (err) {
-    showToast({ severity: 'error', summary: 'Error', detail: getErrorMessage(err) })
-  }
+  removeUser(id, {
+    onSuccess: () => showToast({ severity: 'success', summary: 'Usuario eliminado correctamente' }),
+  })
 }
 
 const openDeleteManyDialog = () => {
