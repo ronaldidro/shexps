@@ -1,10 +1,13 @@
-export * from './vite'
-
 export const PAY_DESCRIPTION = {
   transfer: 'Transferencia',
   cash: 'Efectivo',
   yape: 'Yape',
 }
+
+export const USER_ROLE = {
+  admin: 'Administrador',
+  guest: 'Invitado',
+} as const
 
 export const HTTP_STATUS_CODE = {
   UNAUTHORIZED: 401,
@@ -15,3 +18,7 @@ export const payMethods = Object.entries(PAY_DESCRIPTION).map(([value, label]) =
   label,
   value,
 }))
+
+export const roles = Object.entries(USER_ROLE).map(([value, label]) => ({ label, value }))
+
+export * from '@/utils/vite'

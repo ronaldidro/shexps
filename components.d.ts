@@ -25,7 +25,9 @@ declare module 'vue' {
     CardSkeleton: typeof import('./src/components/CardSkeleton.vue')['default']
     Chart: typeof import('primevue/chart')['default']
     Chip: typeof import('primevue/chip')['default']
+    Column: typeof import('primevue/column')['default']
     ConfirmDialog: typeof import('primevue/confirmdialog')['default']
+    DataTable: typeof import('primevue/datatable')['default']
     DatePicker: typeof import('primevue/datepicker')['default']
     Dialog: typeof import('primevue/dialog')['default']
     Divider: typeof import('primevue/divider')['default']
@@ -94,6 +96,8 @@ declare module 'vue' {
     ToggleSwitch: typeof import('primevue/toggleswitch')['default']
     Toolbar: typeof import('primevue/toolbar')['default']
     TopbarWidget: typeof import('./src/components/landing/TopbarWidget.vue')['default']
+    UserDialog: typeof import('./src/components/users/UserDialog.vue')['default']
+    UserForm: typeof import('./src/components/users/UserForm.vue')['default']
   }
   export interface GlobalDirectives {
     Ripple: typeof import('primevue/ripple')['default']

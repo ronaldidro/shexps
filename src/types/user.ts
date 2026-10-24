@@ -1,26 +1,23 @@
+import type { USER_ROLE } from '@/utils'
+
 export interface User {
   id: string
   firstName: string
   lastName: string
   fullName: string
   email: string
-  role: string
+  role: Role
   notificationsCount: number
 }
 
-export interface UpdateUserPayload {
-  firstName?: string
-  lastName?: string
-  email?: string
-  password?: string
-}
+export type UserPayload = Partial<User> & { password?: string }
 
 export interface UpdatePasswordPayload {
   current: string
   renewed: string
 }
 
-type Role = 'admin' | 'guest'
+export type Role = keyof typeof USER_ROLE
 
 export interface UserQueryParams {
   role?: Role
