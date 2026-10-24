@@ -56,38 +56,34 @@
         {{ $form.confirmed.error?.message }}
       </Message>
     </div>
-    <Button type="submit" label="Guardar" class="ml-auto" icon="pi pi-check" :loading />
+    <Button type="submit" label="Guardar" class="ml-auto" icon="pi pi-check" :loading="updating" />
   </Form>
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
 import type { FormSubmitEvent } from '@primevue/forms'
 import { passwordResolver } from '@/resolvers/password.resolver'
-import { usersService } from '@/services/users.service'
-import { getErrorMessage } from '@/services/axios'
 import { useNotification } from '@/composables/useNotification'
+import { useUserQuery } from '@/composables/query/useUserQuery'
 
 const { showToast } = useNotification()
+const { updatePassword } = useUserQuery()
 
-const loading = ref(false)
+const { mutate: changePassword, isPending: updating } = updatePassword()
 
 const onSubmit = async (form: FormSubmitEvent) => {
   if (!form.valid) return
 
-  loading.value = true
+  const { current, renewed } = form.values
 
-  try {
-    const { current, renewed } = form.values
-    await usersService.updatePassword({ current, renewed })
-
-    form.reset()
-
-    showToast({ severity: 'success', summary: 'Contraseña actualizada correctamente' })
-  } catch (err) {
-    showToast({ severity: 'error', summary: 'Error', detail: getErrorMessage(err) })
-  } finally {
-    loading.value = false
-  }
+  changePassword(
+    { payload: { current, renewed } },
+    {
+      onSuccess: () => {
+        form.reset()
+        showToast({ severity: 'success', summary: 'Contraseña actualizada correctamente' })
+      },
+    },
+  )
 }
 </script>

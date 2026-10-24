@@ -11,6 +11,15 @@ export const usersService = {
     }
   },
 
+  async get(id: string) {
+    try {
+      const response = await api.get<User>(`/users/${id}`)
+      return response.data
+    } catch (error) {
+      throw new Error(getErrorMessage(error))
+    }
+  },
+
   async create(payload: UserPayload) {
     const { data } = await api.post<User>('/users', payload)
     return data

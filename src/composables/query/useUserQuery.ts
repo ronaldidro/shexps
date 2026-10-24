@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/vue-query'
-import type { User, UserPayload } from '@/types/user'
+import type { UpdatePasswordPayload, User, UserPayload } from '@/types/user'
 import { usersService } from '@/services/users.service'
 import { useQueryMutation } from '@/composables/query/useQueryMutation'
 
@@ -8,18 +8,26 @@ export const useUserQuery = () => {
 
   const queryKey = ['users']
 
-  const read = () => useQuery({ queryKey, queryFn: () => usersService.getAll() })
+  const findAll = () => useQuery({ queryKey, queryFn: () => usersService.getAll() })
+
+  const findOne = (id: string) =>
+    useQuery({ queryKey: [...queryKey, id], queryFn: () => usersService.get(id) })
 
   const create = () =>
     mutation<User, UserPayload>((payload) => usersService.create(payload), queryKey)
 
-  const update = () =>
+  const update = ({ withKey = true }: { withKey?: boolean } = {}) =>
     mutation<User, { id: string; payload: UserPayload }>(
       ({ id, payload }) => usersService.update(id, payload),
-      queryKey,
+      withKey ? queryKey : undefined,
+    )
+
+  const updatePassword = () =>
+    mutation<User, { payload: UpdatePasswordPayload }>(({ payload }) =>
+      usersService.updatePassword(payload),
     )
 
   const remove = () => mutation<User, string>((id) => usersService.remove(id), queryKey)
 
-  return { read, create, update, remove }
+  return { findAll, findOne, create, update, updatePassword, remove }
 }

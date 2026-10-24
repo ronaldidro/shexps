@@ -104,9 +104,9 @@ const emptyUser: UserPayload = {
 
 const confirm = useConfirm()
 const { showToast } = useNotification()
-const { read, create, update, remove } = useUserQuery()
+const { findAll, create, update, remove } = useUserQuery()
 
-const { data: users, isLoading: fetching } = read()
+const { data: users, isLoading: fetching } = findAll()
 const { mutate: createUser, isPending: creating } = create()
 const { mutate: updateUser, isPending: updating } = update()
 const { mutate: removeUser } = remove()
@@ -163,11 +163,10 @@ const openDeleteDialog = (id: string) => {
   })
 }
 
-const handleDelete = async (id: string) => {
+const handleDelete = async (id: string) =>
   removeUser(id, {
     onSuccess: () => showToast({ severity: 'success', summary: 'Usuario eliminado correctamente' }),
   })
-}
 
 const openDeleteManyDialog = () => {
   confirm.require({

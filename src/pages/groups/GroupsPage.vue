@@ -20,7 +20,7 @@
   <GroupDialog v-model:visible="showDialog.group" @submit="handleCreate" :loading="creating" />
   <MembershipDialog
     v-model:visible="showDialog.membership"
-    :initialValues="{ budget: membershipSelected.budget! }"
+    :initialValues="{ budget: membershipSelected.budget as number }"
     @submit="handleUpdateMembership"
   />
 </template>
