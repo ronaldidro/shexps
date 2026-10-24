@@ -7,20 +7,18 @@
     />
     <div class="flex items-center justify-between">
       <span class="font-medium">{{ group }}</span>
-      <Chip :label="`S/${budget?.toFixed(2)}`" />
+      <Chip :label="formatCurrency(budget)" />
     </div>
     <div class="flex items-center justify-between">
       <span class="font-medium">Gasto total</span>
-      <Tag
-        :severity="`${percent >= 100 ? 'danger' : 'success'}`"
-        :value="`S/${total.toFixed(2)}`"
-      />
+      <Tag :severity="`${percent >= 100 ? 'danger' : 'success'}`" :value="formatCurrency(total)" />
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
 import CardHeader from '@/components/dashboard/CardHeader.vue'
+import { formatCurrency } from '@/utils'
 
 defineProps<{
   budget: number
