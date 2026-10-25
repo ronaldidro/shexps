@@ -77,7 +77,7 @@ import type { UserPayload } from '@/types/user'
 import { manageResolver, infoResolver } from '@/resolvers/user.resolver'
 import { roles } from '@/utils'
 
-defineProps<{ mode: 'info' | 'manage'; initialValues: UserPayload; loading: boolean }>()
+defineProps<{ mode: 'info' | 'manage'; initialValues?: UserPayload; loading: boolean }>()
 
 const emit = defineEmits<{ cancel: [void]; submit: [values: UserPayload] }>()
 

@@ -1,5 +1,8 @@
 <template>
-  <UserForm v-if="user" mode="info" :initialValues="user" :loading="updating" @submit="onSubmit" />
+  <div v-if="fetching" class="text-center pt-5">
+    <ProgressSpinner style="width: 50px; height: 50px" />
+  </div>
+  <UserForm v-else mode="info" :initialValues="user" :loading="updating" @submit="onSubmit" />
 </template>
 
 <script setup lang="ts">
@@ -13,7 +16,7 @@ const { showToast } = useNotification()
 const { user: authUser, setAuthUser } = useAuthStore()
 const { findOne, update } = useUserQuery()
 
-const { data: user } = findOne(authUser.id as string)
+const { data: user, isLoading: fetching } = findOne(authUser.id as string)
 const { mutate: updateUser, isPending: updating } = update({ withKey: false })
 
 const onSubmit = async (values: UserPayload) => {
