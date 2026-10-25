@@ -18,10 +18,11 @@
       <div class="flex flex-col gap-2">
         <MultiSelect
           name="members"
+          :showToggleAll="false"
           :options="users"
+          :loading="fetching"
           optionLabel="firstName"
           optionValue="id"
-          :showToggleAll="false"
           placeholder="Selecciona miembros"
         />
         <Message v-if="$form.members?.invalid" severity="error" variant="simple">
@@ -42,13 +43,12 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
-import { groupResolver } from '@/resolvers/group.resolver'
-import { usersService } from '@/services/users.service'
-import type { User } from '@/types/user'
-import type { GroupPayload } from '@/types/group'
+import { computed } from 'vue'
 import type { FormSubmitEvent } from '@primevue/forms'
+import type { GroupPayload } from '@/types/group'
+import { groupResolver } from '@/resolvers/group.resolver'
 import { useAuthStore } from '@/stores/auth.store'
+import { useUserQuery } from '@/composables/query/useUserQuery'
 
 withDefaults(
   defineProps<{
@@ -56,27 +56,23 @@ withDefaults(
     leftButtonLabel: string
     loading: boolean
   }>(),
-  {
-    initialValues: () => ({ name: '', members: [] }),
-  },
+  { initialValues: () => ({ name: '', members: [] }) },
 )
 
-const emit = defineEmits<{
-  submit: [values: GroupPayload]
-  'click:leftButton': [void]
-}>()
+const emit = defineEmits<{ submit: [values: GroupPayload]; 'click:leftButton': [void] }>()
 
 const { user: authUser } = useAuthStore()
+const { findAll } = useUserQuery()
+
+const { data: guestUsers, isLoading: fetching } = findAll({ role: 'guest' })
+
+const users = computed(() => {
+  if (!guestUsers.value?.length) return []
+  return guestUsers.value.filter((user) => user.id !== authUser.id)
+})
 
 const submit = (form: FormSubmitEvent) => {
   if (!form.valid) return
   emit('submit', form.values as GroupPayload)
 }
-
-const getUsers = async () => {
-  const users = await usersService.getAll({ role: 'guest' })
-  return users.filter((user) => user.id !== authUser.id)
-}
-
-const users = ref<User[]>(await getUsers())
 </script>

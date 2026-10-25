@@ -17,7 +17,7 @@
 
 <script setup lang="ts">
 import type { GroupPayload } from '@/types/group.ts'
-import GroupForm from './GroupForm.vue'
+import GroupForm from '@/components/groups/GroupForm.vue'
 
 defineProps<{ visible: boolean; loading: boolean }>()
 

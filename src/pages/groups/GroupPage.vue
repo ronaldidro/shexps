@@ -1,8 +1,11 @@
 <template>
   <AppBreadcrumb :items />
-  <div v-if="group" class="card md:max-w-sm">
+  <div v-if="fetching" class="text-center pt-5">
+    <ProgressSpinner style="width: 50px; height: 50px" />
+  </div>
+  <div v-else class="card md:max-w-sm">
     <GroupForm
-      :initialValues="{ name: group.name, members }"
+      :initialValues="{ name: group?.name as string, members }"
       :loading="updating"
       leftButtonLabel="Regresar"
       @click:leftButton="router.push({ name: 'groups' })"
@@ -25,7 +28,7 @@ const route = useRoute()
 const { showToast } = useNotification()
 const { findOne, update } = useGroupQuery()
 
-const { data: group } = findOne(route.params.id as string)
+const { data: group, isLoading: fetching } = findOne(route.params.id as string)
 const { mutate: updateGroup, isPending: updating } = update()
 
 const members = computed(() => {
@@ -37,8 +40,11 @@ const members = computed(() => {
 })
 
 const items = computed(() => {
-  if (!group.value) return []
-  return [{ label: 'Grupos', route: '/groups' }, { label: group.value.name }]
+  const baseItem = [{ label: 'Grupos', route: '/groups' }]
+
+  if (!group.value) return baseItem
+
+  return [...baseItem, { label: group.value.name }]
 })
 
 const handleUpdate = async (values: GroupPayload) => {
