@@ -8,14 +8,18 @@
       <Button label="Nuevo" icon="pi pi-plus" @click="showDialog.group = true" />
     </template>
   </Toolbar>
-  <div v-if="fetching" class="text-center pt-5">
-    <ProgressSpinner style="width: 50px; height: 50px" />
-  </div>
-  <div v-else class="grid grid-cols-1 md:grid-cols-2 gap-8">
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
     <div v-for="(group, index) in groups" :key="index" class="card mb-0!">
       <GroupItem :group="group" @toggle="toggleMenu" />
     </div>
   </div>
+  <div v-if="fetching" class="text-center pt-5">
+    <ProgressSpinner style="width: 50px; height: 50px" />
+  </div>
+  <p v-else-if="!groups?.length" class="text-center text-lg pt-5">
+    <i class="pi pi-info-circle pr-2" />
+    No se encontraron grupos
+  </p>
   <Menu ref="menu" id="overlay_menu" :model="items" :popup="true" />
   <GroupDialog v-model:visible="showDialog.group" @submit="handleCreate" :loading="creating" />
   <MembershipDialog
