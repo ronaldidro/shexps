@@ -6,7 +6,7 @@
       :pt="{ value: { class: { 'bg-red-500!': percent >= 100 } } }"
     />
     <div class="flex items-center justify-between">
-      <span class="font-medium">{{ group }}</span>
+      <span class="font-medium">Monto establecido</span>
       <Chip :label="formatCurrency(budget)" />
     </div>
     <div class="flex items-center justify-between">
@@ -20,10 +20,5 @@
 import CardHeader from '@/components/dashboard/CardHeader.vue'
 import { formatCurrency } from '@/utils'
 
-defineProps<{
-  budget: number
-  total: number
-  percent: number
-  group?: string
-}>()
+defineProps<{ budget: number; total: number; percent: number }>()
 </script>

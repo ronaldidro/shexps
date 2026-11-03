@@ -34,7 +34,7 @@
   <div v-if="loading" class="text-center pt-5">
     <ProgressSpinner style="width: 50px; height: 50px" />
   </div>
-  <div v-else-if="summary?.creditors.length || summary?.debtors.length">
+  <div v-else-if="summary">
     <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
       <AmountCard
         title="Gastos"
@@ -44,12 +44,7 @@
         :amount="summary.amount"
         :firstName="summary.firstName"
       />
-      <BudgetCard
-        :budget="summary.budget"
-        :total="summary.total"
-        :percent="summary.percent"
-        :group="currentGroup?.name"
-      />
+      <BudgetCard :budget="summary.budget" :total="summary.total" :percent="summary.percent" />
       <MembersCard
         v-if="summary.debtors.length"
         title="Te deben"
