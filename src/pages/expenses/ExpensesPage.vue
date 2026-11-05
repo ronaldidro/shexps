@@ -62,7 +62,7 @@ import { computed, nextTick, reactive, ref, useTemplateRef, watch } from 'vue'
 import { useRoute } from 'vue-router'
 import { useConfirm } from 'primevue'
 import { expensesService } from '@/services/expenses.service'
-import { getError, getErrorMessage } from '@/services/axios'
+import { getErrorMessage } from '@/services/axios'
 import type { Expense } from '@/types/expense'
 import type { QueryParams } from '@/types/pagination'
 import AppBreadcrumb from '@/layout/AppBreadcrumb.vue'
@@ -75,7 +75,6 @@ import { useScrollPagination } from '@/composables/useScrollPagination'
 import { useNotification } from '@/composables/useNotification'
 import { useReport } from '@/composables/useReport'
 import { useAuthStore } from '@/stores/auth.store'
-import { HTTP_STATUS_CODE } from '@/utils'
 import router from '@/router'
 
 const el = useTemplateRef('el')
@@ -132,14 +131,6 @@ const openDrawer = async (id: string) => {
     show.drawer = true
   } catch (err) {
     router.replace({ name: 'expenses' })
-
-    const error = getError(err)
-
-    if (error && error.status === HTTP_STATUS_CODE.NOT_FOUND) {
-      showToast({ severity: 'warn', summary: 'Gasto no encontrado' })
-      return
-    }
-
     showToast({ severity: 'error', summary: 'Error', detail: getErrorMessage(err) })
   }
 }
@@ -194,13 +185,6 @@ const handleDeleteFilter = async (values: QueryParams) => {
 
     handleClear()
   } catch (err) {
-    const error = getError(err)
-
-    if (error && error.status === HTTP_STATUS_CODE.NOT_FOUND) {
-      showToast({ severity: 'warn', summary: 'No se encontraron gastos' })
-      return
-    }
-
     showToast({ severity: 'error', summary: 'Error', detail: getErrorMessage(err) })
   }
 }
@@ -209,7 +193,7 @@ const handleUpload = (response: { description: string; amount: number }) =>
   router.push({ name: 'new-expense', query: response })
 
 const handleUploadError = (response: { statusCode: number; message: string }) =>
-  showToast({ severity: 'error', summary: 'Ocurrió un error', detail: response.message })
+  showToast({ severity: 'error', summary: 'Error', detail: response.message })
 
 watch(
   () => route.params.id,
