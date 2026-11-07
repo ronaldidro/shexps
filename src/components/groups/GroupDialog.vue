@@ -2,7 +2,7 @@
   <Dialog
     :visible="visible"
     @update:visible="$emit('update:visible', false)"
-    :style="{ width: '300px' }"
+    :style="{ width: '350px' }"
     header="Nuevo grupo"
     :modal="true"
   >

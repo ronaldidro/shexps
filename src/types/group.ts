@@ -1,5 +1,5 @@
-import type { Membership } from './membership'
-import type { User } from './user'
+import type { Membership } from '@/types/membership'
+import type { User } from '@/types/user'
 
 export interface Group {
   id: string
@@ -8,9 +8,11 @@ export interface Group {
   members: number
   user: User
   memberships: Membership[]
+  discordWebhook?: string
 }
 
 export interface GroupPayload {
   name: string
   members: string[]
+  discordWebhook?: string
 }

@@ -7,5 +7,6 @@ export const groupResolver = zodResolver(
     members: z
       .array(z.string().uuid('Miembro inválido'))
       .min(1, 'Debes seleccionar al menos un miembro'),
+    discordWebhook: z.string().url('URL no válida').or(z.literal('')).optional(),
   }),
 )

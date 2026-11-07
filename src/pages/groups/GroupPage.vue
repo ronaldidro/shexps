@@ -5,7 +5,7 @@
   </div>
   <div v-else class="card md:max-w-sm">
     <GroupForm
-      :initialValues="{ name: group?.name as string, members }"
+      :initialValues="{ name: group?.name, discordWebhook: group?.discordWebhook || '', members }"
       :loading="updating"
       leftButtonLabel="Regresar"
       @click:leftButton="router.push({ name: 'groups' })"

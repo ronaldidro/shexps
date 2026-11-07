@@ -30,6 +30,19 @@
         </Message>
       </div>
     </div>
+    <div class="flex flex-col gap-2">
+      <label for="discordWebhook">Discord webhook</label>
+      <InputText
+        id="discordWebhook"
+        name="discordWebhook"
+        type="text"
+        placeholder="URL webhook"
+        fluid
+      />
+      <Message v-if="$form.discordWebhook?.invalid" severity="error" variant="simple">
+        {{ $form.discordWebhook.error?.message }}
+      </Message>
+    </div>
     <div class="flex items-center justify-between">
       <Button
         type="button"
@@ -52,11 +65,11 @@ import { useUserQuery } from '@/composables/query/useUserQuery'
 
 withDefaults(
   defineProps<{
-    initialValues?: { name: string; members: string[] }
+    initialValues?: { name?: string; members: string[]; discordWebhook?: string }
     leftButtonLabel: string
     loading: boolean
   }>(),
-  { initialValues: () => ({ name: '', members: [] }) },
+  { initialValues: () => ({ name: '', members: [], discordWebhook: '' }) },
 )
 
 const emit = defineEmits<{ submit: [values: GroupPayload]; 'click:leftButton': [void] }>()

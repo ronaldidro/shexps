@@ -13,7 +13,10 @@
     />
   </div>
   <p class="text-primary font-medium">{{ group.members }} miembro(s)</p>
-  <p class="text-muted-color font-medium">Creado el {{ group.createdAt }}</p>
+  <div class="flex items-center justify-between mb-4">
+    <p class="text-muted-color font-medium mb-0!">Creado el {{ group.createdAt }}</p>
+    <i v-if="group.discordWebhook" class="pi pi-fw pi-discord" />
+  </div>
   <Accordion>
     <AccordionPanel value="0">
       <AccordionHeader class="px-0!">Miembros</AccordionHeader>
