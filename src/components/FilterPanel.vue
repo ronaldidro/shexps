@@ -1,5 +1,5 @@
 <template>
-  <Panel header="Filtros" toggleable collapsed class="mb-5">
+  <Panel :header="`Filtros (${total})`" toggleable collapsed class="mb-5">
     <Form ref="formRef" v-slot="$form" :resolver="filterResolver" @submit="onSubmit">
       <div class="flex flex-col md:flex-row gap-4 pb-4">
         <div class="flex flex-col flex-1 gap-2">
@@ -82,12 +82,13 @@ import { filterResolver } from '@/resolvers/filter.resolver'
 
 const props = withDefaults(
   defineProps<{
+    total?: number
     showReportButton?: boolean
     reporting?: boolean
     showAuthUser?: boolean
     showDeleteOption?: boolean
   }>(),
-  { showReportButton: false, showAuthUser: false, showDeleteOption: false },
+  { total: 0, showReportButton: false, showAuthUser: false, showDeleteOption: false },
 )
 
 const emit = defineEmits<{

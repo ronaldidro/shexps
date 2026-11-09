@@ -19,6 +19,7 @@
     @clear="handleClear"
     @delete="openDeleteFilterDialog"
     @report="handleReport"
+    :total="meta?.total"
     :showReportButton="true"
     :reporting
     :showAuthUser="true"
@@ -92,6 +93,7 @@ const { handleReport, reporting } = useReport(expensesService.getReport)
 
 const {
   items: expenses,
+  meta,
   loading,
   reload,
   setFilters,

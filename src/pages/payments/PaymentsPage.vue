@@ -8,7 +8,12 @@
       <Button label="Nuevo" icon="pi pi-plus" @click="router.push({ name: 'new-payment' })" />
     </template>
   </Toolbar>
-  <FilterPanel @submit="handleFilters" @clear="handleClear" :showAuthUser="true" />
+  <FilterPanel
+    @submit="handleFilters"
+    @clear="handleClear"
+    :total="meta?.total"
+    :showAuthUser="true"
+  />
   <div class="card p-1!">
     <div ref="el" class="overflow-y-auto h-dvh">
       <div
@@ -81,6 +86,7 @@ const { handleReport, reporting } = useReport(paymentsService.getReport)
 
 const {
   items: payments,
+  meta,
   loading,
   reload,
   setFilters,
