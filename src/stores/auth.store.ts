@@ -26,7 +26,7 @@ export const useAuthStore = defineStore(
       user.role = me.role
       user.hasNotifications = me.notificationsCount > 0
 
-      router.push({ name: 'dashboard' })
+      router.push({ name: hasRole(['admin']) ? 'dashboard-admin' : 'dashboard' })
     }
 
     const logout = () => {
@@ -46,7 +46,9 @@ export const useAuthStore = defineStore(
 
     const hasRole = (roles: Role[]) => roles.includes(user.role)
 
-    return { user, signIn, logout, setAuthUser, setHasNotifications, hasRole }
+    const homePath = hasRole(['admin']) ? '/admin/dashboard' : '/dashboard'
+
+    return { user, signIn, logout, setAuthUser, setHasNotifications, hasRole, homePath }
   },
   { persist: true },
 )

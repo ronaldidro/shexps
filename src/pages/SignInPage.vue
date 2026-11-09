@@ -105,7 +105,6 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import { authResolver } from '@/resolvers/auth.resolver'
-import { useRouter } from 'vue-router'
 import { useAuthStore } from '@/stores/auth.store'
 import type { FormSubmitEvent } from '@primevue/forms'
 import type { SignInPayload } from '@/types/auth'
@@ -114,7 +113,6 @@ import { useNotification } from '@/composables/useNotification'
 import { useConfig } from '@/composables/useConfig'
 import { getErrorMessage } from '@/services/axios'
 
-const router = useRouter()
 const { signIn } = useAuthStore()
 const { showToast } = useNotification()
 const { appName } = useConfig()
@@ -128,13 +126,8 @@ const onSubmit = async (form: FormSubmitEvent) => {
 
   try {
     await signIn(form.values as SignInPayload)
-    router.push({ name: 'dashboard' })
   } catch (err) {
-    showToast({
-      severity: 'error',
-      summary: 'Error',
-      detail: getErrorMessage(err),
-    })
+    showToast({ severity: 'error', summary: 'Error', detail: getErrorMessage(err) })
   } finally {
     loading.value = false
   }
