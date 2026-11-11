@@ -8,7 +8,6 @@ import { membershipsService } from '@/services/memberships.service'
 
 export const useGroupQuery = () => {
   const mutation = useQueryMutation()
-
   const queryKey = ['groups']
 
   const findAll = (params?: Ref<{ search: string }>) =>

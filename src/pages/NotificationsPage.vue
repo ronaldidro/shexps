@@ -21,51 +21,58 @@
     />
   </div>
   <div class="card p-2!">
-    <div ref="el" class="overflow-y-auto h-dvh">
-      <div
-        v-for="(notification, index) in notifications"
-        :key="notification.id"
-        class="p-3 rounded-md"
-        :class="{ 'mt-2': index !== 0, 'bg-gray-100 dark:bg-gray-700': !notification.isRead }"
-      >
-        <NotificationItem :notification @toggle="toggleMenuItem" />
-      </div>
-      <p v-if="loading" class="text-center pt-5">
-        <ProgressSpinner style="width: 50px; height: 50px" />
-      </p>
-      <p v-else-if="!notifications.length" class="text-center text-lg pt-5">
-        <i class="pi pi-info-circle pr-2" />
-        No se encontraron notificaciones
-      </p>
-      <ScrollTop
-        target="parent"
-        icon="pi pi-arrow-up"
-        :buttonProps="{ severity: 'contrast', raised: true, rounded: true }"
-      />
+    <div
+      v-for="(notification, index) in data?.items"
+      :key="notification.id"
+      class="p-3 rounded-md"
+      :class="{ 'mt-2': index !== 0, 'bg-gray-100 dark:bg-gray-700': !notification.isRead }"
+    >
+      <NotificationItem :notification @toggle="toggleMenuItem" />
     </div>
+    <p v-if="isLoading" class="text-center pt-5">
+      <ProgressSpinner style="width: 50px; height: 50px" />
+    </p>
+    <p v-else-if="!data?.items.length" class="text-center text-lg pt-5">
+      <i class="pi pi-info-circle pr-2" />
+      No se encontraron notificaciones
+    </p>
+    <ScrollTop
+      icon="pi pi-arrow-up"
+      :buttonProps="{ severity: 'contrast', raised: true, rounded: true, class: 'mb-20 md:mb-0' }"
+    />
+    <div ref="sentinel"></div>
   </div>
   <Menu ref="menu" id="overlay_menu" :model="items" :popup="true" />
 </template>
 
 <script setup lang="ts">
-import { computed, ref, useTemplateRef, watch } from 'vue'
+import { computed, ref, watch } from 'vue'
+import { useIntersectionObserver } from '@vueuse/core'
 import type { Notification } from '@/types/notification'
+import type { QueryParams } from '@/types/pagination'
 import AppBreadcrumb from '@/layout/AppBreadcrumb.vue'
 import { useNotification } from '@/composables/useNotification'
-import { useScrollPagination } from '@/composables/useScrollPagination'
-import { notificationsService } from '@/services/notifications.service'
+import { useNotificationQuery } from '@/composables/query/useNotificationQuery'
 import NotificationItem from '@/components/notifications/NotificationItem.vue'
-import { getErrorMessage } from '@/services/axios'
 import { useAuthStore } from '@/stores/auth.store'
-
-const el = useTemplateRef('el')
 
 const { showToast } = useNotification()
 const { user, setHasNotifications } = useAuthStore()
+const { findAll, update, updateAll, remove } = useNotificationQuery()
 
 const menu = ref()
+const sentinel = ref(null)
 const option = ref<'read' | 'unread' | 'all'>('all')
 const selected = ref<Notification | null>(null)
+
+const filters = computed<Partial<QueryParams>>(() =>
+  option.value === 'all' ? { status: undefined } : { status: option.value },
+)
+
+const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading } = findAll(filters)
+const { mutate: updateNotification } = update()
+const { mutate: updateAllNotifications } = updateAll()
+const { mutate: removeNotification } = remove()
 
 const items = computed(() => {
   const notification = selected.value
@@ -94,28 +101,16 @@ const items = computed(() => {
   ]
 })
 
-const {
-  items: notifications,
-  meta,
-  loading,
-  reload,
-  setFilters,
-} = useScrollPagination<Notification>({
-  el,
-  fetcher: notificationsService.getAll,
-})
-
 watch(
-  () => meta.value?.unread,
+  () => data.value?.meta?.unread,
   (unread) => {
     if (typeof unread !== 'number') return
     setHasNotifications(unread > 0)
   },
 )
 
-watch(option, async (optionValue) => {
-  const filter = optionValue === 'all' ? { status: undefined } : { status: optionValue }
-  await setFilters(filter)
+useIntersectionObserver(sentinel, ([entry]) => {
+  if (entry?.isIntersecting && hasNextPage.value && !isFetchingNextPage.value) fetchNextPage()
 })
 
 const toggleMenuItem = (event: Event, notification: Notification) => {
@@ -128,47 +123,36 @@ const toggleTopMenu = (event: Event) => {
   menu.value.toggle(event)
 }
 
-const handleChangeStatus = async ({ id, isRead }: Notification) => {
-  try {
-    await notificationsService.update(id, { isRead: !isRead })
+const handleChangeStatus = ({ id, isRead }: Notification) =>
+  updateNotification(
+    { id, payload: { isRead: !isRead } },
+    {
+      onSuccess: () => {
+        showToast({
+          severity: 'success',
+          summary: `Notificación marcada como ${isRead ? 'no leída' : 'leída'}`,
+        })
+        option.value = 'all'
+      },
+    },
+  )
 
-    const readStatus = isRead ? 'no leída' : 'leída'
+const handleReadAll = () =>
+  updateAllNotifications(
+    { payload: { isRead: true } },
+    {
+      onSuccess: () => {
+        showToast({ severity: 'success', summary: `Notificaciones marcadas como leídas` })
+        option.value = 'all'
+      },
+    },
+  )
 
-    showToast({ severity: 'success', summary: `Notificación marcada como ${readStatus}` })
-
-    await reload()
-
-    option.value = 'all'
-  } catch (err) {
-    showToast({ severity: 'error', summary: 'Error', detail: getErrorMessage(err) })
-  }
-}
-
-const handleReadAll = async () => {
-  try {
-    await notificationsService.updateAll({ isRead: true })
-
-    showToast({ severity: 'success', summary: `Notificaciones marcadas como leídas` })
-
-    await reload()
-
-    option.value = 'all'
-  } catch (err) {
-    showToast({ severity: 'error', summary: 'Error', detail: getErrorMessage(err) })
-  }
-}
-
-const handleDelete = async (id: string) => {
-  try {
-    await notificationsService.remove(id)
-
-    showToast({ severity: 'success', summary: 'Notificación eliminada correctamente' })
-
-    await reload()
-
-    option.value = 'all'
-  } catch (err) {
-    showToast({ severity: 'error', summary: 'Error', detail: getErrorMessage(err) })
-  }
-}
+const handleDelete = (id: string) =>
+  removeNotification(id, {
+    onSuccess: () => {
+      showToast({ severity: 'success', summary: 'Notificación eliminada correctamente' })
+      option.value = 'all'
+    },
+  })
 </script>

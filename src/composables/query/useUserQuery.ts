@@ -5,7 +5,6 @@ import { useQueryMutation } from '@/composables/query/useQueryMutation'
 
 export const useUserQuery = () => {
   const mutation = useQueryMutation()
-
   const queryKey = ['users']
 
   const findAll = (params?: UserQueryParams) =>
