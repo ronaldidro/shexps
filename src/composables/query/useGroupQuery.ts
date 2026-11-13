@@ -5,12 +5,13 @@ import type { Membership, MembershipPayload } from '@/types/membership'
 import { groupsService } from '@/services/groups.service'
 import { useQueryMutation } from '@/composables/query/useQueryMutation'
 import { membershipsService } from '@/services/memberships.service'
+import type { QueryParams } from '@/types/pagination'
 
 export const useGroupQuery = () => {
   const mutation = useQueryMutation()
   const queryKey = ['groups']
 
-  const findAll = (params?: Ref<{ search: string }>) =>
+  const findAll = (params?: Ref<Partial<QueryParams>>) =>
     useQuery({
       queryKey: [...queryKey, params],
       queryFn: () => groupsService.getAll(params?.value),

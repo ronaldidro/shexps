@@ -34,6 +34,7 @@ import { computed, reactive, ref } from 'vue'
 import { useConfirm } from 'primevue'
 import type { Group, GroupPayload } from '@/types/group'
 import type { Membership, MembershipPayload } from '@/types/membership'
+import type { QueryParams } from '@/types/pagination'
 import GroupItem from '@/components/groups/GroupItem.vue'
 import GroupDialog from '@/components/groups/GroupDialog.vue'
 import MembershipDialog from '@/components/groups/MembershipDialog.vue'
@@ -52,7 +53,7 @@ const { findAll, create, updateMembership, remove } = useGroupQuery()
 const group = ref<Group | null>(null)
 const menu = ref()
 const search = ref('')
-const params = ref({ search: '' })
+const params = ref<Partial<QueryParams>>({})
 
 const { data: groups, isLoading: fetching } = findAll(params)
 const { mutate: createGroup, isPending: creating } = create()

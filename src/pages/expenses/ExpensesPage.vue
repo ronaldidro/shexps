@@ -19,35 +19,33 @@
     @clear="handleClear"
     @delete="openDeleteFilterDialog"
     @report="handleReport"
-    :total="meta?.total"
+    :total="data?.meta?.total"
     :showReportButton="true"
     :reporting
     :showAuthUser="true"
     :showDeleteOption="true"
   />
   <div class="card p-1!">
-    <div ref="el" class="overflow-y-auto h-dvh">
-      <div
-        v-for="(expense, index) in expenses"
-        :key="expense.id"
-        class="mx-6 py-6"
-        :class="{ 'border-t border-surface': index !== 0 }"
-      >
-        <ExpenseItem :expense="expense" @toggle="toggleMenu" />
-      </div>
-      <p v-if="loading" class="text-center pt-5">
-        <ProgressSpinner style="width: 50px; height: 50px" />
-      </p>
-      <p v-else-if="!expenses.length" class="text-center text-lg pt-5">
-        <i class="pi pi-info-circle pr-2" />
-        No se encontraron gastos
-      </p>
-      <ScrollTop
-        target="parent"
-        icon="pi pi-arrow-up"
-        :buttonProps="{ severity: 'contrast', raised: true, rounded: true }"
-      />
+    <div
+      v-for="(expense, index) in data?.items"
+      :key="expense.id"
+      class="mx-6 py-6"
+      :class="{ 'border-t border-surface': index !== 0 }"
+    >
+      <ExpenseItem :expense="expense" @toggle="toggleMenu" />
     </div>
+    <p v-if="isLoading" class="text-center pt-5">
+      <ProgressSpinner style="width: 50px; height: 50px" />
+    </p>
+    <p v-else-if="!data?.items.length" class="text-center text-lg pt-5">
+      <i class="pi pi-info-circle pr-2" />
+      No se encontraron gastos
+    </p>
+    <ScrollTop
+      icon="pi pi-arrow-up"
+      :buttonProps="{ severity: 'contrast', raised: true, rounded: true, class: 'mb-20 md:mb-0' }"
+    />
+    <div ref="sentinel"></div>
   </div>
   <Menu ref="menu" id="overlay_menu" :model="items" :popup="true" />
   <ExpenseDrawer v-model:visible="show.drawer" :expense />
@@ -59,45 +57,48 @@
 </template>
 
 <script setup lang="ts">
-import { computed, nextTick, reactive, ref, useTemplateRef, watch } from 'vue'
+import { computed, nextTick, reactive, ref, watch } from 'vue'
+import { useIntersectionObserver } from '@vueuse/core'
 import { useRoute } from 'vue-router'
 import { useConfirm } from 'primevue'
-import { expensesService } from '@/services/expenses.service'
-import { getErrorMessage } from '@/services/axios'
 import type { Expense } from '@/types/expense'
 import type { QueryParams } from '@/types/pagination'
 import AppBreadcrumb from '@/layout/AppBreadcrumb.vue'
+import { expensesService } from '@/services/expenses.service'
+import { getErrorMessage } from '@/services/axios'
 import ExpenseFileDialog from '@/components/expenses/ExpenseFileDialog.vue'
 import ExpenseDrawer from '@/components/expenses/ExpenseDrawer.vue'
 import ExpenseItem from '@/components/expenses/ExpenseItem.vue'
 import SearchField from '@/components/SearchField.vue'
 import FilterPanel from '@/components/FilterPanel.vue'
-import { useScrollPagination } from '@/composables/useScrollPagination'
+import { useExpenseQuery } from '@/composables/query/useExpenseQuery'
 import { useNotification } from '@/composables/useNotification'
 import { useReport } from '@/composables/useReport'
 import { useAuthStore } from '@/stores/auth.store'
 import router from '@/router'
 
-const el = useTemplateRef('el')
+const sentinel = ref(null)
 const route = useRoute()
+const confirm = useConfirm()
+const { user } = useAuthStore()
+const { showToast } = useNotification()
+const { handleReport, reporting } = useReport(expensesService.getReport)
+const { findAll, findOne, remove, removeAll } = useExpenseQuery()
 
 const expense = ref<Expense | null>(null)
 const show = reactive({ drawer: false, dialog: false })
 const search = ref('')
 const menu = ref()
+const filters = ref<Partial<QueryParams>>({ search: undefined })
 
-const confirm = useConfirm()
-const { user } = useAuthStore()
-const { showToast } = useNotification()
-const { handleReport, reporting } = useReport(expensesService.getReport)
+const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading } = findAll(filters)
+const { mutate: findExpense } = findOne()
+const { mutate: removeExpense } = remove()
+const { mutate: removeExpenses } = removeAll()
 
-const {
-  items: expenses,
-  meta,
-  loading,
-  reload,
-  setFilters,
-} = useScrollPagination<Expense>({ el, fetcher: expensesService.getAll })
+useIntersectionObserver(sentinel, ([entry]) => {
+  if (entry?.isIntersecting && hasNextPage.value && !isFetchingNextPage.value) fetchNextPage()
+})
 
 const items = computed(() => {
   const selected = expense.value
@@ -108,7 +109,7 @@ const items = computed(() => {
     {
       label: 'Ver',
       icon: 'pi pi-fw pi-eye',
-      command: () => openDrawer(selected.id),
+      command: () => router.replace({ name: 'expenses', params: { id: selected.id } }),
     },
     {
       label: 'Eliminar',
@@ -124,27 +125,26 @@ const toggleMenu = (event: Event, selected: Expense) => {
   menu.value.toggle(event)
 }
 
-const openDrawer = async (id: string) => {
-  try {
-    expense.value = await expensesService.get(id)
+const openDrawer = (id: string) =>
+  findExpense(id, {
+    onSuccess: (data) => {
+      expense.value = data
+      show.drawer = true
+    },
+    onError: (err) => {
+      router.replace({ name: 'expenses' })
+      showToast({ severity: 'error', summary: 'Error', detail: getErrorMessage(err) })
+    },
+  })
 
-    if (route.params.id !== id) router.replace({ name: 'expenses', params: { id } })
-
-    show.drawer = true
-  } catch (err) {
-    router.replace({ name: 'expenses' })
-    showToast({ severity: 'error', summary: 'Error', detail: getErrorMessage(err) })
-  }
-}
-
-const handleSearch = async (value: string) => {
+const handleSearch = (value: string) => {
   search.value = value
-  await setFilters({ search: value })
+  filters.value = { search: search.value }
 }
 
-const handleFilters = async (values: QueryParams) => await setFilters({ ...values })
+const handleFilters = (values: QueryParams) => (filters.value = values)
 
-const handleClear = async () => await reload()
+const handleClear = () => (filters.value = {})
 
 const openDeleteDialog = (id: string) => {
   confirm.require({
@@ -167,29 +167,24 @@ const openDeleteFilterDialog = (values: QueryParams) =>
     accept: () => handleDeleteFilter(values),
   })
 
-const handleDelete = async (id: string) => {
-  try {
-    await expensesService.remove(id)
+const handleDelete = (id: string) =>
+  removeExpense(id, {
+    onSuccess: () => {
+      showToast({ severity: 'success', summary: 'Gasto eliminado correctamente' })
+      handleClear()
+    },
+  })
 
-    showToast({ severity: 'success', summary: 'Gasto eliminado correctamente' })
-
-    handleClear()
-  } catch (err) {
-    showToast({ severity: 'error', summary: 'Error', detail: getErrorMessage(err) })
-  }
-}
-
-const handleDeleteFilter = async (values: QueryParams) => {
-  try {
-    await expensesService.removeAll(values)
-
-    showToast({ severity: 'success', summary: 'Gastos eliminados correctamente' })
-
-    handleClear()
-  } catch (err) {
-    showToast({ severity: 'error', summary: 'Error', detail: getErrorMessage(err) })
-  }
-}
+const handleDeleteFilter = (values: QueryParams) =>
+  removeExpenses(
+    { payload: values },
+    {
+      onSuccess: () => {
+        showToast({ severity: 'success', summary: 'Gastos eliminados correctamente' })
+        handleClear()
+      },
+    },
+  )
 
 const handleUpload = (response: { description: string; amount: number }) =>
   router.push({ name: 'new-expense', query: response })

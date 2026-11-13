@@ -71,8 +71,12 @@ const filters = computed<Partial<QueryParams>>(() =>
 
 const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading } = findAll(filters)
 const { mutate: updateNotification } = update()
-const { mutate: updateAllNotifications } = updateAll()
+const { mutate: updateNotifications } = updateAll()
 const { mutate: removeNotification } = remove()
+
+useIntersectionObserver(sentinel, ([entry]) => {
+  if (entry?.isIntersecting && hasNextPage.value && !isFetchingNextPage.value) fetchNextPage()
+})
 
 const items = computed(() => {
   const notification = selected.value
@@ -109,10 +113,6 @@ watch(
   },
 )
 
-useIntersectionObserver(sentinel, ([entry]) => {
-  if (entry?.isIntersecting && hasNextPage.value && !isFetchingNextPage.value) fetchNextPage()
-})
-
 const toggleMenuItem = (event: Event, notification: Notification) => {
   selected.value = notification
   menu.value.toggle(event)
@@ -138,7 +138,7 @@ const handleChangeStatus = ({ id, isRead }: Notification) =>
   )
 
 const handleReadAll = () =>
-  updateAllNotifications(
+  updateNotifications(
     { payload: { isRead: true } },
     {
       onSuccess: () => {

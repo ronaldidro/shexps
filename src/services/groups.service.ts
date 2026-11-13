@@ -1,8 +1,9 @@
 import type { Group, GroupPayload } from '@/types/group'
 import api, { getErrorMessage } from '@/services/axios'
+import type { QueryParams } from '@/types/pagination'
 
 export const groupsService = {
-  async getAll(params?: { search: string }) {
+  async getAll(params?: Partial<QueryParams>) {
     try {
       const response = await api.get<Group[]>('/groups', { params })
       return response.data
