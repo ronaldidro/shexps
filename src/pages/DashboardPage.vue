@@ -9,6 +9,7 @@
             inputId="group"
             :options="groups"
             optionLabel="name"
+            :loading="isGroupsLoading"
             fluid
           />
           <label for="group">Grupo</label>
@@ -31,7 +32,7 @@
       </div>
     </Fieldset>
   </div>
-  <div v-if="loading" class="text-center pt-5">
+  <div v-if="isFetching || isGroupsLoading" class="text-center pt-5">
     <ProgressSpinner style="width: 50px; height: 50px" />
   </div>
   <div v-else-if="summary">
@@ -64,6 +65,10 @@
     <div class="card mt-8">
       <Chart type="bar" :data="chartData" :options="chartOptions" class="h-120" />
     </div>
+    <ScrollTop
+      icon="pi pi-arrow-up"
+      :buttonProps="{ severity: 'contrast', raised: true, rounded: true, class: 'mb-20 md:mb-0' }"
+    />
   </div>
   <p v-else class="text-center text-lg pt-5">
     <i class="pi pi-info-circle pr-2" />
@@ -74,21 +79,18 @@
 <script setup lang="ts">
 import { computed, reactive, ref, watch } from 'vue'
 import type { ChartData, ChartOptions } from 'chart.js'
-import type { ExpenseSummary } from '@/types/expense'
 import type { Group } from '@/types/group'
-import type { QueryParams } from '@/types/pagination'
 import AppBreadcrumb from '@/layout/AppBreadcrumb.vue'
-import { expensesService } from '@/services/expenses.service'
-import { groupsService } from '@/services/groups.service'
-import { getErrorMessage } from '@/services/axios'
-import { useNotification } from '@/composables/useNotification'
+import { useExpenseQuery } from '@/composables/query/useExpenseQuery'
+import { useGroupQuery } from '@/composables/query/useGroupQuery'
 import MembersCard from '@/components/dashboard/MembersCard.vue'
 import AmountCard from '@/components/dashboard/AmountCard.vue'
 import BudgetCard from '@/components/dashboard/BudgetCard.vue'
 
-const { showToast } = useNotification()
+const { findSummary } = useExpenseQuery()
+const { findAll: findGroups } = useGroupQuery()
 
-const groups = reactive<Group[]>(await groupsService.getAll())
+const { data: groups, isLoading: isGroupsLoading } = findGroups()
 
 const today = new Date()
 
@@ -97,39 +99,26 @@ const dateRange = ref<[Date | null, Date | null]>([
   today,
 ])
 
-const summary = ref<ExpenseSummary | undefined>()
-const currentGroup = ref<Group | undefined>(groups[0])
-const loading = ref(false)
-
-const getSummary = async (params: Partial<QueryParams>): Promise<ExpenseSummary | undefined> => {
-  loading.value = true
-  try {
-    return await expensesService.getSummary(params)
-  } catch (err) {
-    showToast({ severity: 'error', summary: 'Error', detail: getErrorMessage(err) })
-    return
-  } finally {
-    loading.value = false
-  }
-}
+const currentGroup = ref<Group | undefined>(groups.value?.[0])
 
 watch(
-  [currentGroup, dateRange],
-  async ([newGroup, newRange]) => {
-    if (!newGroup || !newRange) return
-
-    const [from, to] = newRange
-
-    if (!from || !to) return
-
-    summary.value = await getSummary({
-      group: newGroup.id,
-      startDate: from.toISOString(),
-      endDate: to.toISOString(),
-    })
+  groups,
+  (newGroups) => {
+    if (newGroups?.length && !currentGroup.value) currentGroup.value = newGroups[0]
   },
   { immediate: true },
 )
+
+const { data: summary, isFetching } = findSummary(() => {
+  const group = currentGroup.value
+  const [from, to] = dateRange.value
+
+  return {
+    group: group?.id,
+    startDate: from?.toISOString().split('T')[0],
+    endDate: to?.toISOString().split('T')[0],
+  }
+})
 
 const setChartOptions = (): ChartOptions<'bar'> => {
   const documentStyle = getComputedStyle(document.documentElement)
@@ -161,21 +150,23 @@ const chartData = computed<ChartData<'bar'>>(() => {
 
   if (!summary.value) return { labels: [], datasets: [] }
 
+  const { labels, debtsData, expensesData } = summary.value.chart
+
   return {
-    labels: summary.value.chart.labels,
+    labels: [...labels],
     datasets: [
       {
         type: 'bar',
         label: 'Asignado',
         backgroundColor: documentStyle.getPropertyValue('--p-cyan-500'),
-        data: summary.value.chart.debtsData,
+        data: [...debtsData],
         grouped: false,
       },
       {
         type: 'bar',
         label: 'Total',
         backgroundColor: documentStyle.getPropertyValue('--p-gray-500'),
-        data: summary.value.chart.expensesData,
+        data: [...expensesData],
       },
     ],
   }

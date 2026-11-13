@@ -1,5 +1,11 @@
-import type { Ref } from 'vue'
-import { useInfiniteQuery, useMutation, useQuery, useQueryClient } from '@tanstack/vue-query'
+import { computed, toValue, type MaybeRefOrGetter, type Ref } from 'vue'
+import {
+  keepPreviousData,
+  useInfiniteQuery,
+  useMutation,
+  useQuery,
+  useQueryClient,
+} from '@tanstack/vue-query'
 import type { Expense, ExpensePayload } from '@/types/expense'
 import type { QueryParams } from '@/types/pagination'
 import { useQueryMutation } from '@/composables/query/useQueryMutation'
@@ -30,11 +36,20 @@ export const useExpenseQuery = () => {
     })
   }
 
-  const findSummary = (params: Ref<Partial<QueryParams>>) =>
-    useQuery({
-      queryKey: [...queryKey, params],
-      queryFn: () => expensesService.getSummary(params.value),
+  const findSummary = (params: MaybeRefOrGetter<Partial<QueryParams>>) => {
+    const query = computed(() => toValue(params))
+
+    return useQuery({
+      queryKey: [...queryKey, 'summary', query],
+      queryFn: () => expensesService.getSummary(query.value),
+      enabled: () => {
+        const q = query.value
+        return !!(q.group && q.startDate && q.endDate)
+      },
+      placeholderData: keepPreviousData,
+      staleTime: 1000 * 30,
     })
+  }
 
   const create = () =>
     mutation<Expense, ExpensePayload>((payload) => expensesService.create(payload), queryKey)

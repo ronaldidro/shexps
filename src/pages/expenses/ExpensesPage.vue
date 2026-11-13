@@ -77,7 +77,6 @@ import { useReport } from '@/composables/useReport'
 import { useAuthStore } from '@/stores/auth.store'
 import router from '@/router'
 
-const sentinel = ref(null)
 const route = useRoute()
 const confirm = useConfirm()
 const { user } = useAuthStore()
@@ -85,11 +84,12 @@ const { showToast } = useNotification()
 const { handleReport, reporting } = useReport(expensesService.getReport)
 const { findAll, findOne, remove, removeAll } = useExpenseQuery()
 
+const sentinel = ref(null)
 const expense = ref<Expense | null>(null)
 const show = reactive({ drawer: false, dialog: false })
 const search = ref('')
 const menu = ref()
-const filters = ref<Partial<QueryParams>>({ search: undefined })
+const filters = ref<Partial<QueryParams>>({})
 
 const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading } = findAll(filters)
 const { mutate: findExpense } = findOne()
