@@ -14,6 +14,13 @@
     :total="data?.meta?.total"
     :showAuthUser="true"
   />
+  <p v-if="isLoading" class="text-center pt-5">
+    <ProgressSpinner style="width: 50px; height: 50px" />
+  </p>
+  <p v-else-if="!data?.items.length" class="text-center text-lg pt-5">
+    <i class="pi pi-info-circle pr-2" />
+    No se encontraron pagos
+  </p>
   <div class="card p-1!">
     <div
       v-for="(payment, index) in data?.items"
@@ -23,19 +30,12 @@
     >
       <PaymentItem :payment="payment" @toggle="toggleMenu" />
     </div>
-    <p v-if="isLoading" class="text-center pt-5">
-      <ProgressSpinner style="width: 50px; height: 50px" />
-    </p>
-    <p v-else-if="!data?.items.length" class="text-center text-lg pt-5">
-      <i class="pi pi-info-circle pr-2" />
-      No se encontraron pagos
-    </p>
-    <ScrollTop
-      icon="pi pi-arrow-up"
-      :buttonProps="{ severity: 'contrast', raised: true, rounded: true, class: 'mb-20 md:mb-0' }"
-    />
-    <div ref="sentinel"></div>
   </div>
+  <ScrollTop
+    icon="pi pi-arrow-up"
+    :buttonProps="{ severity: 'contrast', raised: true, rounded: true, class: 'mb-20 md:mb-0' }"
+  />
+  <div ref="sentinel"></div>
   <Menu ref="menu" id="overlay_menu" :model="items" :popup="true">
     <template #item="{ item, props }">
       <div @click.capture.stop="handleMenuClick($event, item)">

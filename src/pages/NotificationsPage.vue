@@ -20,7 +20,14 @@
       aria-controls="overlay_menu"
     />
   </div>
-  <div class="card p-2!">
+  <p v-if="isLoading" class="text-center pt-5">
+    <ProgressSpinner style="width: 50px; height: 50px" />
+  </p>
+  <p v-else-if="!data?.items.length" class="text-center text-lg pt-5">
+    <i class="pi pi-info-circle pr-2" />
+    No se encontraron notificaciones
+  </p>
+  <div v-else class="card p-2!">
     <div
       v-for="(notification, index) in data?.items"
       :key="notification.id"
@@ -29,19 +36,12 @@
     >
       <NotificationItem :notification @toggle="toggleMenuItem" />
     </div>
-    <p v-if="isLoading" class="text-center pt-5">
-      <ProgressSpinner style="width: 50px; height: 50px" />
-    </p>
-    <p v-else-if="!data?.items.length" class="text-center text-lg pt-5">
-      <i class="pi pi-info-circle pr-2" />
-      No se encontraron notificaciones
-    </p>
-    <ScrollTop
-      icon="pi pi-arrow-up"
-      :buttonProps="{ severity: 'contrast', raised: true, rounded: true, class: 'mb-20 md:mb-0' }"
-    />
-    <div ref="sentinel"></div>
   </div>
+  <ScrollTop
+    icon="pi pi-arrow-up"
+    :buttonProps="{ severity: 'contrast', raised: true, rounded: true, class: 'mb-20 md:mb-0' }"
+  />
+  <div ref="sentinel"></div>
   <Menu ref="menu" id="overlay_menu" :model="items" :popup="true" />
 </template>
 

@@ -25,7 +25,14 @@
     :showAuthUser="true"
     :showDeleteOption="true"
   />
-  <div class="card p-1!">
+  <p v-if="isLoading" class="text-center pt-5">
+    <ProgressSpinner style="width: 50px; height: 50px" />
+  </p>
+  <p v-else-if="!data?.items.length" class="text-center text-lg pt-5">
+    <i class="pi pi-info-circle pr-2" />
+    No se encontraron gastos
+  </p>
+  <div v-else class="card p-1!">
     <div
       v-for="(expense, index) in data?.items"
       :key="expense.id"
@@ -34,19 +41,12 @@
     >
       <ExpenseItem :expense="expense" @toggle="toggleMenu" />
     </div>
-    <p v-if="isLoading" class="text-center pt-5">
-      <ProgressSpinner style="width: 50px; height: 50px" />
-    </p>
-    <p v-else-if="!data?.items.length" class="text-center text-lg pt-5">
-      <i class="pi pi-info-circle pr-2" />
-      No se encontraron gastos
-    </p>
-    <ScrollTop
-      icon="pi pi-arrow-up"
-      :buttonProps="{ severity: 'contrast', raised: true, rounded: true, class: 'mb-20 md:mb-0' }"
-    />
-    <div ref="sentinel"></div>
   </div>
+  <ScrollTop
+    icon="pi pi-arrow-up"
+    :buttonProps="{ severity: 'contrast', raised: true, rounded: true, class: 'mb-20 md:mb-0' }"
+  />
+  <div ref="sentinel"></div>
   <Menu ref="menu" id="overlay_menu" :model="items" :popup="true" />
   <ExpenseDrawer v-model:visible="show.drawer" :expense />
   <ExpenseFileDialog
