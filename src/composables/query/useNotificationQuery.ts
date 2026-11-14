@@ -1,5 +1,5 @@
 import type { Ref } from 'vue'
-import { useInfiniteQuery } from '@tanstack/vue-query'
+import { useInfiniteQuery, useQueryClient } from '@tanstack/vue-query'
 import type { QueryParams } from '@/types/pagination'
 import type { Notification, NotificationPayload } from '@/types/notification'
 import { useQueryMutation } from '@/composables/query/useQueryMutation'
@@ -7,6 +7,7 @@ import { notificationsService } from '@/services/notifications.service'
 
 export const useNotificationQuery = () => {
   const mutation = useQueryMutation()
+  const queryClient = useQueryClient()
   const queryKey = ['notifications']
 
   const findAll = (params?: Ref<Partial<QueryParams>>) =>
@@ -38,5 +39,7 @@ export const useNotificationQuery = () => {
   const remove = () =>
     mutation<Notification, string>((id) => notificationsService.remove(id), queryKey)
 
-  return { findAll, update, updateAll, remove }
+  const updateQueryList = () => queryClient.invalidateQueries({ queryKey })
+
+  return { findAll, update, updateAll, remove, updateQueryList }
 }

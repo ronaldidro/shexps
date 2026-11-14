@@ -5,17 +5,19 @@ import { useLayout } from '@/layout/composables/layout'
 import AppTabMenu from '@/layout/AppTabMenu.vue'
 import ErrorPage from '@/pages/ErrorPage.vue'
 import { useNotification } from '@/composables/useNotification.ts'
+import { useNotificationQuery } from '@/composables/query/useNotificationQuery.ts'
 import CardSkeleton from '@/components/CardSkeleton.vue'
 import { useAuthStore } from '@/stores/auth.store.ts'
 import { API_URL, IS_DEV_ENV } from '@/utils/vite.ts'
-import AppTopbar from './AppTopbar.vue'
-import AppSidebar from './AppSidebar.vue'
-import AppFooter from './AppFooter.vue'
+import AppTopbar from '@/layout/AppTopbar.vue'
+import AppSidebar from '@/layout/AppSidebar.vue'
+import AppFooter from '@/layout/AppFooter.vue'
 
 const SSE_URL = `${API_URL}/notifications/stream`
 
 const { layoutConfig, layoutState, hideMobileMenu } = useLayout()
 const { showToast } = useNotification()
+const { updateQueryList } = useNotificationQuery()
 const { user, setHasNotifications } = useAuthStore()
 const { data, event } = useEventSource(`${SSE_URL}?token=${user.token}`, ['info', 'error'])
 
@@ -45,6 +47,7 @@ watch(data, (newData) => {
   const { title, description } = JSON.parse(newData)
 
   setHasNotifications(true)
+  updateQueryList()
 
   showToast({ severity: event.value, summary: title, detail: description, life: 0 })
 })
