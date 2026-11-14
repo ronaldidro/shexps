@@ -41,11 +41,11 @@ const onSubmit = (payload: ExpensePayload, preview: ExpensePayload) =>
 
 const add = async (payload: ExpensePayload) => {
   await createExpense(payload, {
-    onSuccess: () => {
-      showToast({ severity: 'success', summary: 'Gasto registrado correctamente' })
-      router.push({ name: 'expenses' })
-    },
+    onSuccess: () => showToast({ severity: 'success', summary: 'Gasto registrado correctamente' }),
   })
+
+  router.push({ name: 'expenses' })
+
   return true
 }
 </script>

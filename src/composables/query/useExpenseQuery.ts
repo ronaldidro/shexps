@@ -23,6 +23,7 @@ export const useExpenseQuery = () => {
         expensesService.getAll({ ...params?.value, page: pageParam, limit: 10 }),
       initialPageParam: 1,
       getNextPageParam: ({ meta }) => (meta.page < meta.lastPage ? meta.page + 1 : undefined),
+      staleTime: 1000 * 30,
       select: (data) => ({
         items: data.pages.flatMap((page) => page.data),
         meta: data.pages[data.pages.length - 1]?.meta,

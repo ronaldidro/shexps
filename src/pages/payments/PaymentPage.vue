@@ -6,10 +6,9 @@
 <script setup lang="ts">
 import AppBreadcrumb from '@/layout/AppBreadcrumb.vue'
 import PaymentForm from '@/components/payments/PaymentForm.vue'
-import { getErrorMessage } from '@/services/axios'
-import { paymentsService } from '@/services/payments.service'
 import { useNotification } from '@/composables/useNotification'
 import { usePreviewDialog } from '@/composables/usePreviewDialog'
+import { usePaymentQuery } from '@/composables/query/usePaymentQuery'
 import type { PaymentPayload } from '@/types/payment'
 import { useAuthStore } from '@/stores/auth.store'
 import router from '@/router'
@@ -17,6 +16,9 @@ import router from '@/router'
 const { showToast } = useNotification()
 const { openPreview } = usePreviewDialog()
 const { user } = useAuthStore()
+const { create } = usePaymentQuery()
+
+const { mutateAsync: createPayment } = create()
 
 const onSubmit = (payload: PaymentPayload, preview: PaymentPayload) => {
   const remaining = payload.debt - payload.amount
@@ -24,22 +26,17 @@ const onSubmit = (payload: PaymentPayload, preview: PaymentPayload) => {
   openPreview({
     title: 'Nuevo pago',
     data: { ...preview, remaining, user, type: 'payment' },
-    handleSave: () => create({ ...payload, remaining }),
+    handleSave: () => add({ ...payload, remaining }),
   })
 }
 
-const create = async (values: PaymentPayload) => {
-  try {
-    await paymentsService.create(values)
+const add = async (values: PaymentPayload) => {
+  await createPayment(values, {
+    onSuccess: () => showToast({ severity: 'success', summary: 'Pago registrado correctamente' }),
+  })
 
-    showToast({ severity: 'success', summary: 'Pago registrado correctamente' })
+  router.push({ name: 'payments' })
 
-    router.push({ name: 'payments' })
-
-    return true
-  } catch (err) {
-    showToast({ severity: 'error', summary: 'Error', detail: getErrorMessage(err) })
-    return false
-  }
+  return true
 }
 </script>

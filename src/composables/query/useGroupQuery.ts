@@ -15,6 +15,7 @@ export const useGroupQuery = () => {
     useQuery({
       queryKey: [...queryKey, params],
       queryFn: () => groupsService.getAll(params?.value),
+      staleTime: 1000 * 30,
     })
 
   const findOne = (id: string) =>

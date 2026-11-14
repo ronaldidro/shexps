@@ -11,32 +11,30 @@
   <FilterPanel
     @submit="handleFilters"
     @clear="handleClear"
-    :total="meta?.total"
+    :total="data?.meta?.total"
     :showAuthUser="true"
   />
   <div class="card p-1!">
-    <div ref="el" class="overflow-y-auto h-dvh">
-      <div
-        v-for="(payment, index) in payments"
-        :key="payment.id"
-        class="mx-6 py-6"
-        :class="{ 'border-t border-surface': index !== 0 }"
-      >
-        <PaymentItem :payment="payment" @toggle="toggleMenu" />
-      </div>
-      <p v-if="loading" class="text-center pt-5">
-        <ProgressSpinner style="width: 50px; height: 50px" />
-      </p>
-      <p v-else-if="!payments.length" class="text-center text-lg pt-5">
-        <i class="pi pi-info-circle pr-2" />
-        No se encontraron pagos
-      </p>
-      <ScrollTop
-        target="parent"
-        icon="pi pi-arrow-up"
-        :buttonProps="{ severity: 'contrast', raised: true, rounded: true }"
-      />
+    <div
+      v-for="(payment, index) in data?.items"
+      :key="payment.id"
+      class="mx-6 py-6"
+      :class="{ 'border-t border-surface': index !== 0 }"
+    >
+      <PaymentItem :payment="payment" @toggle="toggleMenu" />
     </div>
+    <p v-if="isLoading" class="text-center pt-5">
+      <ProgressSpinner style="width: 50px; height: 50px" />
+    </p>
+    <p v-else-if="!data?.items.length" class="text-center text-lg pt-5">
+      <i class="pi pi-info-circle pr-2" />
+      No se encontraron pagos
+    </p>
+    <ScrollTop
+      icon="pi pi-arrow-up"
+      :buttonProps="{ severity: 'contrast', raised: true, rounded: true, class: 'mb-20 md:mb-0' }"
+    />
+    <div ref="sentinel"></div>
   </div>
   <Menu ref="menu" id="overlay_menu" :model="items" :popup="true">
     <template #item="{ item, props }">
@@ -52,7 +50,8 @@
 </template>
 
 <script setup lang="ts">
-import { computed, nextTick, ref, useTemplateRef, watch } from 'vue'
+import { computed, nextTick, ref, watch } from 'vue'
+import { useIntersectionObserver } from '@vueuse/core'
 import { useRoute } from 'vue-router'
 import { useConfirm } from 'primevue'
 import type { MenuItem } from 'primevue/menuitem'
@@ -62,35 +61,35 @@ import AppBreadcrumb from '@/layout/AppBreadcrumb.vue'
 import PaymentDrawer from '@/components/payments/PaymentDrawer.vue'
 import PaymentItem from '@/components/payments/PaymentItem.vue'
 import SearchField from '@/components/SearchField.vue'
-import { useScrollPagination } from '@/composables/useScrollPagination'
+import { usePaymentQuery } from '@/composables/query/usePaymentQuery'
 import { useNotification } from '@/composables/useNotification'
 import { useReport } from '@/composables/useReport'
 import { paymentsService } from '@/services/payments.service'
-import { getError, getErrorMessage } from '@/services/axios'
+import { getErrorMessage } from '@/services/axios'
 import { useAuthStore } from '@/stores/auth.store'
-import { HTTP_STATUS_CODE } from '@/utils'
 import router from '@/router'
 
-const el = useTemplateRef('el')
 const route = useRoute()
-
-const payment = ref<Payment | null>(null)
-const showDrawer = ref(false)
-const search = ref('')
-const menu = ref()
-
 const confirm = useConfirm()
 const { user } = useAuthStore()
 const { showToast } = useNotification()
 const { handleReport, reporting } = useReport(paymentsService.getReport)
+const { findAll, findOne, remove } = usePaymentQuery()
 
-const {
-  items: payments,
-  meta,
-  loading,
-  reload,
-  setFilters,
-} = useScrollPagination<Payment>({ el, fetcher: paymentsService.getAll })
+const sentinel = ref(null)
+const payment = ref<Payment | null>(null)
+const showDrawer = ref(false)
+const search = ref('')
+const menu = ref()
+const filters = ref<Partial<QueryParams>>({})
+
+const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading } = findAll(filters)
+const { mutate: findPayment } = findOne()
+const { mutate: removePayment } = remove()
+
+useIntersectionObserver(sentinel, ([entry]) => {
+  if (entry?.isIntersecting && hasNextPage.value && !isFetchingNextPage.value) fetchNextPage()
+})
 
 const items = computed(() => {
   const selected = payment.value
@@ -129,35 +128,26 @@ const handleMenuClick = async (event: Event, item: MenuItem) => {
   menu.value?.hide()
 }
 
-const openDrawer = async (id: string) => {
-  try {
-    payment.value = await paymentsService.get(id)
+const openDrawer = (id: string) =>
+  findPayment(id, {
+    onSuccess: (data) => {
+      payment.value = data
+      showDrawer.value = true
+    },
+    onError: (err) => {
+      router.replace({ name: 'payments' })
+      showToast({ severity: 'error', summary: 'Error', detail: getErrorMessage(err) })
+    },
+  })
 
-    if (route.params.id !== id) router.replace({ name: 'payments', params: { id } })
-
-    showDrawer.value = true
-  } catch (err) {
-    router.replace({ name: 'payments' })
-
-    const error = getError(err)
-
-    if (error && error.status === HTTP_STATUS_CODE.NOT_FOUND) {
-      showToast({ severity: 'warn', summary: 'Pago no encontrado' })
-      return
-    }
-
-    showToast({ severity: 'error', summary: 'Error', detail: getErrorMessage(err) })
-  }
-}
-
-const handleSearch = async (value: string) => {
+const handleSearch = (value: string) => {
   search.value = value
-  await setFilters({ search: value })
+  filters.value = { search: search.value }
 }
 
-const handleFilters = async (values: QueryParams) => await setFilters({ ...values })
+const handleFilters = (values: QueryParams) => (filters.value = values)
 
-const handleClear = async () => await reload()
+const handleClear = () => (filters.value = {})
 
 const openDeleteDialog = (id: string) => {
   confirm.require({
@@ -170,17 +160,13 @@ const openDeleteDialog = (id: string) => {
   })
 }
 
-const handleDelete = async (id: string) => {
-  try {
-    await paymentsService.remove(id)
-
-    showToast({ severity: 'success', summary: 'Pago eliminado correctamente' })
-
-    handleClear()
-  } catch (err) {
-    showToast({ severity: 'error', summary: 'Error', detail: getErrorMessage(err) })
-  }
-}
+const handleDelete = (id: string) =>
+  removePayment(id, {
+    onSuccess: () => {
+      showToast({ severity: 'success', summary: 'Pago eliminado correctamente' })
+      handleClear()
+    },
+  })
 
 watch(
   () => route.params.id,
