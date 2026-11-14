@@ -14,14 +14,7 @@
     :total="data?.meta?.total"
     :showAuthUser="true"
   />
-  <p v-if="isLoading" class="text-center pt-5">
-    <ProgressSpinner style="width: 50px; height: 50px" />
-  </p>
-  <p v-else-if="!data?.items.length" class="text-center text-lg pt-5">
-    <i class="pi pi-info-circle pr-2" />
-    No se encontraron pagos
-  </p>
-  <div class="card p-1!">
+  <div v-if="data?.items.length" class="card p-1!">
     <div
       v-for="(payment, index) in data?.items"
       :key="payment.id"
@@ -31,6 +24,13 @@
       <PaymentItem :payment="payment" @toggle="toggleMenu" />
     </div>
   </div>
+  <p v-if="!isLoading && !data?.items.length" class="text-center text-lg">
+    <i class="pi pi-info-circle pr-2" />
+    No se encontraron pagos
+  </p>
+  <p v-if="isLoading || isFetchingNextPage" class="text-center">
+    <ProgressSpinner style="width: 50px; height: 50px" />
+  </p>
   <ScrollTop
     icon="pi pi-arrow-up"
     :buttonProps="{ severity: 'contrast', raised: true, rounded: true, class: 'mb-20 md:mb-0' }"

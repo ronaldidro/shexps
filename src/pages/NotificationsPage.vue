@@ -1,42 +1,44 @@
 <template>
   <AppBreadcrumb :items="[{ label: 'Notificaciones' }]" />
-  <div class="flex justify-between mb-2">
-    <SelectButton
-      v-model="option"
-      :options="[
-        { label: 'Todas', value: 'all' },
-        { label: 'Leídas', value: 'read' },
-        { label: 'No leídas', value: 'unread' },
-      ]"
-      optionLabel="label"
-      optionValue="value"
-    />
-    <Button
-      type="button"
-      icon="pi pi-ellipsis-v"
-      @click="toggleTopMenu"
-      class="p-button-text p-button-plain w-5!"
-      aria-haspopup="true"
-      aria-controls="overlay_menu"
-    />
+  <div v-if="data?.items.length">
+    <div class="flex justify-between mb-2">
+      <SelectButton
+        v-model="option"
+        :options="[
+          { label: 'Todas', value: 'all' },
+          { label: 'Leídas', value: 'read' },
+          { label: 'No leídas', value: 'unread' },
+        ]"
+        optionLabel="label"
+        optionValue="value"
+      />
+      <Button
+        type="button"
+        icon="pi pi-ellipsis-v"
+        @click="toggleTopMenu"
+        class="p-button-text p-button-plain w-5!"
+        aria-haspopup="true"
+        aria-controls="overlay_menu"
+      />
+    </div>
+    <div class="card p-2!">
+      <div
+        v-for="(notification, index) in data?.items"
+        :key="notification.id"
+        class="p-3 rounded-md"
+        :class="{ 'mt-2': index !== 0, 'bg-gray-100 dark:bg-gray-700': !notification.isRead }"
+      >
+        <NotificationItem :notification @toggle="toggleMenuItem" />
+      </div>
+    </div>
   </div>
-  <p v-if="isLoading" class="text-center pt-5">
-    <ProgressSpinner style="width: 50px; height: 50px" />
-  </p>
-  <p v-else-if="!data?.items.length" class="text-center text-lg pt-5">
+  <p v-if="!isLoading && !data?.items.length" class="text-center text-lg pt-5">
     <i class="pi pi-info-circle pr-2" />
     No se encontraron notificaciones
   </p>
-  <div v-else class="card p-2!">
-    <div
-      v-for="(notification, index) in data?.items"
-      :key="notification.id"
-      class="p-3 rounded-md"
-      :class="{ 'mt-2': index !== 0, 'bg-gray-100 dark:bg-gray-700': !notification.isRead }"
-    >
-      <NotificationItem :notification @toggle="toggleMenuItem" />
-    </div>
-  </div>
+  <p v-if="isLoading || isFetchingNextPage" class="text-center pt-5">
+    <ProgressSpinner style="width: 50px; height: 50px" />
+  </p>
   <ScrollTop
     icon="pi pi-arrow-up"
     :buttonProps="{ severity: 'contrast', raised: true, rounded: true, class: 'mb-20 md:mb-0' }"
