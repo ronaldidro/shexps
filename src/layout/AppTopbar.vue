@@ -73,14 +73,15 @@ const { user } = useAuthStore()
           </button>
           <AppConfigurator />
         </div>
-        <OverlayBadge
-          severity="danger"
-          :pt="{ pcBadge: { root: { class: { '!hidden': !user.hasNotifications } } } }"
-        >
+        <div class="relative">
+          <span
+            :class="{ 'hidden!': !user.hasNotifications }"
+            class="absolute right-0 h-1.5 w-1.5 rounded-full animate-ping bg-red-400"
+          ></span>
           <router-link to="/notifications" class="layout-topbar-action">
             <i class="pi pi-bell" style="font-size: 1.5rem" />
           </router-link>
-        </OverlayBadge>
+        </div>
         <AppUserMenu />
       </div>
     </div>
