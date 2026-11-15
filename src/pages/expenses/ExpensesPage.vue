@@ -2,7 +2,7 @@
   <AppBreadcrumb :items="[{ label: 'Gastos' }]" />
   <Toolbar class="mb-5">
     <template #start>
-      <SearchField v-model="search" @search="handleSearch" />
+      <SearchField @search="handleSearch" />
     </template>
     <template #end>
       <SplitButton
@@ -87,7 +87,6 @@ const { findAll, findOne, remove, removeAll } = useExpenseQuery()
 const sentinel = ref(null)
 const expense = ref<Expense | null>(null)
 const show = reactive({ drawer: false, dialog: false })
-const search = ref('')
 const menu = ref()
 const filters = ref<Partial<QueryParams>>({})
 
@@ -137,10 +136,7 @@ const openDrawer = (id: string) =>
     },
   })
 
-const handleSearch = (value: string) => {
-  search.value = value
-  filters.value = { search: search.value }
-}
+const handleSearch = (value?: string) => (filters.value = { search: value })
 
 const handleFilters = (values: QueryParams) => (filters.value = values)
 

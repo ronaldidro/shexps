@@ -2,7 +2,7 @@
   <AppBreadcrumb :items="[{ label: 'Pagos' }]" />
   <Toolbar class="mb-7">
     <template #start>
-      <SearchField v-model="search" @search="handleSearch" />
+      <SearchField @search="handleSearch" />
     </template>
     <template #end>
       <Button label="Nuevo" icon="pi pi-plus" @click="router.push({ name: 'new-payment' })" />
@@ -79,7 +79,6 @@ const { findAll, findOne, remove } = usePaymentQuery()
 const sentinel = ref(null)
 const payment = ref<Payment | null>(null)
 const showDrawer = ref(false)
-const search = ref('')
 const menu = ref()
 const filters = ref<Partial<QueryParams>>({})
 
@@ -140,10 +139,7 @@ const openDrawer = (id: string) =>
     },
   })
 
-const handleSearch = (value: string) => {
-  search.value = value
-  filters.value = { search: search.value }
-}
+const handleSearch = (value?: string) => (filters.value = { search: value })
 
 const handleFilters = (values: QueryParams) => (filters.value = values)
 

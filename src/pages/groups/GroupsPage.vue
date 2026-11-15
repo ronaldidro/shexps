@@ -2,7 +2,7 @@
   <AppBreadcrumb :items="[{ label: 'Grupos' }]" />
   <Toolbar class="mb-7">
     <template #start>
-      <SearchField v-model="search" @search="handleSearch" />
+      <SearchField @search="handleSearch" />
     </template>
     <template #end>
       <Button label="Nuevo" icon="pi pi-plus" @click="showDialog.group = true" />
@@ -52,10 +52,9 @@ const { findAll, create, updateMembership, remove } = useGroupQuery()
 
 const group = ref<Group | null>(null)
 const menu = ref()
-const search = ref('')
-const params = ref<Partial<QueryParams>>({})
+const filters = ref<Partial<QueryParams>>({})
 
-const { data: groups, isLoading: fetching } = findAll(params)
+const { data: groups, isLoading: fetching } = findAll(filters)
 const { mutate: createGroup, isPending: creating } = create()
 const { mutate: removeGroup } = remove()
 const { mutate: editMembership } = updateMembership()
@@ -116,12 +115,9 @@ const openMembershipDialog = (memberships: Membership[]) => {
   showDialog.membership = true
 }
 
-const handleSearch = async (value: string) => {
-  search.value = value
-  params.value = { search: value }
-}
+const handleSearch = (value?: string) => (filters.value = { search: value })
 
-const handleUpdateMembership = async (values: MembershipPayload) => {
+const handleUpdateMembership = (values: MembershipPayload) => {
   const membershipId = membershipSelected.id
 
   if (!membershipId) return
@@ -135,7 +131,7 @@ const handleUpdateMembership = async (values: MembershipPayload) => {
   )
 }
 
-const handleCreate = async (values: GroupPayload) =>
+const handleCreate = (values: GroupPayload) =>
   createGroup(values, {
     onSuccess: () => {
       showToast({ severity: 'success', summary: 'Grupo registrado correctamente' })
@@ -143,7 +139,7 @@ const handleCreate = async (values: GroupPayload) =>
     },
   })
 
-const handleDelete = async (id: string) =>
+const handleDelete = (id: string) =>
   removeGroup(id, {
     onSuccess: () => showToast({ severity: 'success', summary: 'Grupo eliminado correctamente' }),
   })

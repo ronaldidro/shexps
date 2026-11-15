@@ -2,7 +2,7 @@
   <InputGroup class="max-w-50 md:max-w-full">
     <IconField>
       <InputText v-model="search" placeholder="Buscar" />
-      <InputIcon v-if="search" class="pi pi-times cursor-pointer" @click="$emit('search', '')" />
+      <InputIcon v-if="search" class="pi pi-times cursor-pointer" @click="clear" />
     </IconField>
     <Button icon="pi pi-search" @click="$emit('search', search)" />
   </InputGroup>
@@ -10,5 +10,11 @@
 
 <script setup lang="ts">
 const search = defineModel<string>({ default: '' })
-defineEmits<{ (e: 'search', value: string): void }>()
+
+const emit = defineEmits<{ search: [value?: string] }>()
+
+const clear = () => {
+  search.value = ''
+  emit('search', undefined)
+}
 </script>
