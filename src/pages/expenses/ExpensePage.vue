@@ -19,7 +19,7 @@
               icon="pi pi-arrow-left"
               @click="activateCallback('1')"
             />
-            <Button label="Guardar" icon="pi pi-check" @click="save" />
+            <Button label="Guardar" icon="pi pi-check" :loading="isPending" @click="save" />
           </div>
         </StepPanel>
       </StepPanels>
@@ -45,7 +45,7 @@ const { user } = useAuthStore()
 const { create } = useExpenseQuery()
 const route = useRoute()
 
-const { mutate: createExpense } = create()
+const { mutate: createExpense, isPending } = create()
 
 const activeStep = ref('1')
 const expense = ref<{ payload: ExpensePayload; preview: ExpensePayload & { user: AuthUser } }>()
