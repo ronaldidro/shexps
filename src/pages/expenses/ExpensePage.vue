@@ -1,29 +1,54 @@
 <template>
   <AppBreadcrumb :items="[{ label: 'Gastos', route: '/expenses' }, { label: 'Nuevo' }]" />
   <div class="card p-5! md:max-w-sm">
-    <ExpenseForm @submit="onSubmit" :initialData="queryValues" />
+    <Stepper v-model:value="activeStep" linear class="basis-200">
+      <StepList>
+        <Step value="1">Datos</Step>
+        <Step value="2">Resumen</Step>
+      </StepList>
+      <StepPanels>
+        <StepPanel value="1">
+          <ExpenseForm @submit="onSubmit" :initialData="queryValues" />
+        </StepPanel>
+        <StepPanel v-slot="{ activateCallback }" value="2">
+          <ExpensePreview v-if="expense" :expense="expense.preview" />
+          <div class="flex pt-5 justify-between">
+            <Button
+              label="Regresar"
+              severity="secondary"
+              icon="pi pi-arrow-left"
+              @click="activateCallback('1')"
+            />
+            <Button label="Guardar" icon="pi pi-check" @click="save" />
+          </div>
+        </StepPanel>
+      </StepPanels>
+    </Stepper>
   </div>
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue'
+import { computed, ref } from 'vue'
 import { useRoute } from 'vue-router'
+import type { AuthUser } from '@/types/auth'
+import type { ExpensePayload } from '@/types/expense'
 import AppBreadcrumb from '@/layout/AppBreadcrumb.vue'
 import ExpenseForm from '@/components/expenses/ExpenseForm.vue'
-import type { ExpensePayload } from '@/types/expense'
+import ExpensePreview from '@/components/previews/ExpensePreview.vue'
 import { useNotification } from '@/composables/useNotification'
-import { usePreviewDialog } from '@/composables/usePreviewDialog'
 import { useExpenseQuery } from '@/composables/query/useExpenseQuery'
 import { useAuthStore } from '@/stores/auth.store'
 import router from '@/router'
 
 const { showToast } = useNotification()
-const { openPreview } = usePreviewDialog()
 const { user } = useAuthStore()
 const { create } = useExpenseQuery()
 const route = useRoute()
 
-const { mutateAsync: createExpense } = create()
+const { mutate: createExpense } = create()
+
+const activeStep = ref('1')
+const expense = ref<{ payload: ExpensePayload; preview: ExpensePayload & { user: AuthUser } }>()
 
 const queryValues = computed(() => {
   return {
@@ -32,20 +57,19 @@ const queryValues = computed(() => {
   }
 })
 
-const onSubmit = (payload: ExpensePayload, preview: ExpensePayload) =>
-  openPreview({
-    title: 'Nuevo gasto',
-    data: { ...preview, user, type: 'expense' },
-    handleSave: () => add(payload),
+const onSubmit = (payload: ExpensePayload, preview: ExpensePayload) => {
+  expense.value = { payload, preview: { ...preview, user } }
+  activeStep.value = '2'
+}
+
+const save = async () => {
+  if (!expense.value) return
+
+  createExpense(expense.value.payload, {
+    onSuccess: () => {
+      showToast({ severity: 'success', summary: 'Gasto registrado correctamente' })
+      router.push({ name: 'expenses' })
+    },
   })
-
-const add = async (payload: ExpensePayload) => {
-  await createExpense(payload, {
-    onSuccess: () => showToast({ severity: 'success', summary: 'Gasto registrado correctamente' }),
-  })
-
-  router.push({ name: 'expenses' })
-
-  return true
 }
 </script>

@@ -80,14 +80,15 @@
     <div class="flex flex-col gap-2">
       <ExpenseDetail :members :errors />
     </div>
-    <div class="flex items-center justify-between">
+    <div class="flex items-center justify-between pt-5">
       <Button
         type="button"
         label="Regresar"
         severity="secondary"
+        icon="pi pi-arrow-left"
         @click="router.push({ name: 'expenses' })"
       />
-      <Button type="submit" label="Verificar" icon="pi pi-arrow-up-right" iconPos="right" />
+      <Button type="submit" label="Siguiente" icon="pi pi-arrow-right" iconPos="right" />
     </div>
   </form>
 </template>

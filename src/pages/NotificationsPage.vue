@@ -1,26 +1,26 @@
 <template>
   <AppBreadcrumb :items="[{ label: 'Notificaciones' }]" />
+  <div class="flex justify-between mb-2">
+    <SelectButton
+      v-model="option"
+      :options="[
+        { label: 'Todas', value: 'all' },
+        { label: 'Leídas', value: 'read' },
+        { label: 'No leídas', value: 'unread' },
+      ]"
+      optionLabel="label"
+      optionValue="value"
+    />
+    <Button
+      type="button"
+      icon="pi pi-ellipsis-v"
+      @click="toggleTopMenu"
+      class="p-button-text p-button-plain w-5!"
+      aria-haspopup="true"
+      aria-controls="overlay_menu"
+    />
+  </div>
   <div v-if="data?.items.length">
-    <div class="flex justify-between mb-2">
-      <SelectButton
-        v-model="option"
-        :options="[
-          { label: 'Todas', value: 'all' },
-          { label: 'Leídas', value: 'read' },
-          { label: 'No leídas', value: 'unread' },
-        ]"
-        optionLabel="label"
-        optionValue="value"
-      />
-      <Button
-        type="button"
-        icon="pi pi-ellipsis-v"
-        @click="toggleTopMenu"
-        class="p-button-text p-button-plain w-5!"
-        aria-haspopup="true"
-        aria-controls="overlay_menu"
-      />
-    </div>
     <div class="card p-2!">
       <div
         v-for="(notification, index) in data?.items"

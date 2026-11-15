@@ -10,31 +10,25 @@
     />
   </div>
   <div v-for="(detail, index) in fields" :key="detail.key" class="flex items-start gap-2">
-    <Button
-      type="button"
-      icon="pi pi-times"
-      severity="danger"
-      size="small"
-      rounded
-      class="mt-0.5"
-      @click="remove(index)"
-    />
-    <div class="flex flex-col gap-2 min-w-44">
+    <div class="flex flex-col gap-2 min-w-49">
       <Field :name="`details.${index}.user`" v-slot="{ field, errorMessage }">
-        <Select
-          :modelValue="field.value"
-          @update:modelValue="field.onChange"
-          :options="members"
-          optionLabel="firstName"
-          optionValue="id"
-          placeholder="Miembro"
-        />
+        <InputGroup>
+          <Button type="button" icon="pi pi-times" severity="danger" @click="remove(index)" />
+          <Select
+            :modelValue="field.value"
+            @update:modelValue="field.onChange"
+            :options="members"
+            optionLabel="firstName"
+            optionValue="id"
+            placeholder="Miembro"
+          />
+        </InputGroup>
         <Message v-if="errorMessage" severity="error" variant="simple">
           {{ errorMessage }}
         </Message>
       </Field>
     </div>
-    <div class="flex flex-col gap-2 max-w-30">
+    <div class="flex flex-col gap-2">
       <Field :name="`details.${index}.amount`" v-slot="{ field, errorMessage }">
         <InputGroup>
           <InputGroupAddon>S/</InputGroupAddon>
