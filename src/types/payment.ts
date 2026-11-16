@@ -1,5 +1,6 @@
-import type { Group } from './group'
-import type { User } from './user'
+import type { AuthUser } from '@/types/auth'
+import type { Group } from '@/types/group'
+import type { User } from '@/types/user'
 
 type PayMethod = 'transfer' | 'cash' | 'yape'
 
@@ -27,3 +28,5 @@ export interface PaymentPayload {
   payer: string
   closedAt: string
 }
+
+export type PaymentPreview = PaymentPayload & { remaining: number } & { user: AuthUser }

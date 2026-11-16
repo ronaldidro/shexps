@@ -56,9 +56,8 @@
 </template>
 
 <script setup lang="ts">
-import type { AuthUser } from '@/types/auth'
-import type { ExpensePayload } from '@/types/expense'
+import type { ExpensePreview } from '@/types/expense'
 import { formatCurrency } from '@/utils'
 
-defineProps<{ expense: ExpensePayload & { user: AuthUser } }>()
+defineProps<{ expense: ExpensePreview }>()
 </script>

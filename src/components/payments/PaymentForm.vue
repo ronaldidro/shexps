@@ -15,7 +15,7 @@
     @submit="onSubmit"
     class="md:max-w-sm"
   >
-    <div class="card p-5! flex flex-col gap-4 mb-4!">
+    <div class="flex flex-col gap-4">
       <div class="flex flex-col gap-2">
         <label for="group">Grupo</label>
         <Select
@@ -85,7 +85,7 @@
         <Button type="button" label="Buscar" icon="pi pi-search" @click="handleSearch" />
       </div>
     </div>
-    <div v-show="showMore" class="card p-5! flex flex-col gap-4">
+    <div v-show="showMore" class="flex flex-col gap-4 border-t border-dashed mt-4 pt-4">
       <div class="flex gap-3">
         <div class="flex flex-col gap-2">
           <label for="debt">Deuda</label>
@@ -154,9 +154,10 @@
           type="button"
           label="Regresar"
           severity="secondary"
+          icon="pi pi-arrow-left"
           @click="router.push({ name: 'payments' })"
         />
-        <Button type="submit" label="Verificar" icon="pi pi-arrow-up-right" iconPos="right" />
+        <Button type="submit" label="Siguiente" icon="pi pi-arrow-right" iconPos="right" />
       </div>
     </div>
   </Form>
@@ -175,9 +176,7 @@ import { useNotification } from '@/composables/useNotification'
 import { payMethods } from '@/utils'
 import router from '@/router'
 
-const emit = defineEmits<{
-  (e: 'submit', values: PaymentPayload, preview: PaymentPayload): void
-}>()
+const emit = defineEmits<{ submit: [values: PaymentPayload, preview: PaymentPayload] }>()
 
 const showMore = ref(false)
 const formRef = ref<FormInstance | null>(null)

@@ -1,5 +1,6 @@
-import type { Group } from './group'
-import type { User } from './user'
+import type { AuthUser } from '@/types/auth'
+import type { Group } from '@/types/group'
+import type { User } from '@/types/user'
 
 export interface ExpenseDetail {
   id: string
@@ -56,3 +57,5 @@ export interface ExpenseSummary {
   total: number
   percent: number
 }
+
+export type ExpensePreview = ExpensePayload & { user: AuthUser }

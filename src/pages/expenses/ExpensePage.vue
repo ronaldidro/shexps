@@ -30,8 +30,7 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue'
 import { useRoute } from 'vue-router'
-import type { AuthUser } from '@/types/auth'
-import type { ExpensePayload } from '@/types/expense'
+import type { ExpensePayload, ExpensePreview as ExpensePreviewType } from '@/types/expense'
 import AppBreadcrumb from '@/layout/AppBreadcrumb.vue'
 import ExpenseForm from '@/components/expenses/ExpenseForm.vue'
 import ExpensePreview from '@/components/previews/ExpensePreview.vue'
@@ -48,7 +47,7 @@ const route = useRoute()
 const { mutate: createExpense, isPending } = create()
 
 const activeStep = ref('1')
-const expense = ref<{ payload: ExpensePayload; preview: ExpensePayload & { user: AuthUser } }>()
+const expense = ref<{ payload: ExpensePayload; preview: ExpensePreviewType }>()
 
 const queryValues = computed(() => {
   return {
