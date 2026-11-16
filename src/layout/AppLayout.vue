@@ -2,16 +2,16 @@
 import { computed, onErrorCaptured, reactive, watch } from 'vue'
 import { useEventSource } from '@vueuse/core'
 import { useLayout } from '@/layout/composables/layout'
+import AppFooter from '@/layout/AppFooter.vue'
+import AppSidebar from '@/layout/AppSidebar.vue'
 import AppTabMenu from '@/layout/AppTabMenu.vue'
+import AppTopbar from '@/layout/AppTopbar.vue'
 import ErrorPage from '@/pages/ErrorPage.vue'
 import { useNotification } from '@/composables/useNotification.ts'
 import { useNotificationQuery } from '@/composables/query/useNotificationQuery.ts'
 import CardSkeleton from '@/components/CardSkeleton.vue'
 import { useAuthStore } from '@/stores/auth.store.ts'
 import { API_URL, IS_DEV_ENV } from '@/utils/vite.ts'
-import AppTopbar from '@/layout/AppTopbar.vue'
-import AppSidebar from '@/layout/AppSidebar.vue'
-import AppFooter from '@/layout/AppFooter.vue'
 
 const SSE_URL = `${API_URL}/notifications/stream`
 

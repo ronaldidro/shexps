@@ -1,8 +1,8 @@
+import { computed, reactive } from 'vue'
 import { defineStore } from 'pinia'
-import { reactive } from 'vue'
-import { authService } from '@/services/auth.service'
 import type { Role, User } from '@/types/user'
 import type { SignInPayload, AuthUser } from '@/types/auth'
+import { authService } from '@/services/auth.service'
 import router from '@/router'
 
 export const useAuthStore = defineStore(
@@ -46,7 +46,7 @@ export const useAuthStore = defineStore(
 
     const hasRole = (roles: Role[]) => roles.includes(user.role)
 
-    const homePath = hasRole(['admin']) ? '/admin/dashboard' : '/dashboard'
+    const homePath = computed(() => (hasRole(['admin']) ? '/admin/dashboard' : '/dashboard'))
 
     return { user, signIn, logout, setAuthUser, setHasNotifications, hasRole, homePath }
   },

@@ -1,6 +1,6 @@
 <template>
   <AppBreadcrumb :items="[{ label: 'Pagos' }]" />
-  <Toolbar class="mb-7">
+  <Toolbar class="mb-5">
     <template #start>
       <SearchField @search="handleSearch" />
     </template>

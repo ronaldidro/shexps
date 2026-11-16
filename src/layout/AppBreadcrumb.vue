@@ -20,8 +20,11 @@
 
 <script setup lang="ts">
 import { ref } from 'vue'
+import { useAuthStore } from '@/stores/auth.store'
+
+const { homePath } = useAuthStore()
 
 defineProps<{ items: { label: string; route?: string }[] }>()
 
-const home = ref({ icon: 'pi pi-home', route: '/dashboard' })
+const home = ref({ icon: 'pi pi-home', route: homePath })
 </script>

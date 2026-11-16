@@ -4,10 +4,10 @@ import { useAuthStore } from '@/stores/auth.store'
 
 export const useNavItems = () => {
   const route = useRoute()
-  const { hasRole } = useAuthStore()
+  const { hasRole, homePath } = useAuthStore()
   const basePath = hasRole(['admin']) ? '/admin' : ''
 
-  let items = [{ label: 'Resumen', icon: 'pi pi-fw pi-chart-bar', to: `${basePath}/dashboard` }]
+  let items = [{ label: 'Resumen', icon: 'pi pi-fw pi-chart-bar', to: homePath }]
 
   if (hasRole(['admin']))
     items = [...items, { label: 'Usuarios', icon: 'pi pi-fw pi-users', to: '/admin/users' }]
