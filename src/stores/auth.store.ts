@@ -3,6 +3,7 @@ import { defineStore } from 'pinia'
 import type { Role, User } from '@/types/user'
 import type { SignInPayload, AuthUser } from '@/types/auth'
 import { authService } from '@/services/auth.service'
+import { queryClient } from '@/main'
 import router from '@/router'
 
 export const useAuthStore = defineStore(
@@ -33,6 +34,8 @@ export const useAuthStore = defineStore(
       user.id = null
       user.name = null
       user.token = null
+
+      queryClient.clear()
 
       router.push({ name: 'sign-in' })
     }

@@ -1,7 +1,7 @@
 import { createApp } from 'vue'
 import { createPinia } from 'pinia'
 import piniaPluginPersistedstate from 'pinia-plugin-persistedstate'
-import { VueQueryPlugin } from '@tanstack/vue-query'
+import { QueryClient, VueQueryPlugin } from '@tanstack/vue-query'
 import PrimeVue from 'primevue/config'
 import ToastService from 'primevue/toastservice'
 import ConfirmationService from 'primevue/confirmationservice'
@@ -13,6 +13,8 @@ import App from '@/App.vue'
 
 import '@/assets/tailwind.css'
 import '@/assets/styles.scss'
+
+export const queryClient = new QueryClient()
 
 const app = createApp(App)
 const pinia = createPinia()
@@ -34,6 +36,6 @@ app.use(PrimeVue, {
 app.use(ToastService)
 app.use(ConfirmationService)
 app.use(DialogService)
-app.use(VueQueryPlugin)
+app.use(VueQueryPlugin, { queryClient })
 
 app.mount('#app')
