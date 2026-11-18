@@ -75,5 +75,9 @@ watch(data, (newData) => {
     </div>
     <div class="layout-mask animate-fadein" @click="hideMobileMenu" />
     <AppTabMenu />
+    <ScrollTop
+      icon="pi pi-arrow-up"
+      :buttonProps="{ severity: 'contrast', raised: true, rounded: true, class: 'mb-20 md:mb-0' }"
+    />
   </div>
 </template>

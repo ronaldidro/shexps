@@ -39,10 +39,6 @@
   <p v-if="isLoading || isFetchingNextPage" class="text-center pt-5">
     <ProgressSpinner style="width: 50px; height: 50px" />
   </p>
-  <ScrollTop
-    icon="pi pi-arrow-up"
-    :buttonProps="{ severity: 'contrast', raised: true, rounded: true, class: 'mb-20 md:mb-0' }"
-  />
   <div ref="sentinel"></div>
   <Menu ref="menu" id="overlay_menu" :model="items" :popup="true" />
 </template>

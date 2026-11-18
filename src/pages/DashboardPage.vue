@@ -65,10 +65,6 @@
     <div class="card mt-8">
       <Chart type="bar" :data="chartData" :options="chartOptions" class="h-120" />
     </div>
-    <ScrollTop
-      icon="pi pi-arrow-up"
-      :buttonProps="{ severity: 'contrast', raised: true, rounded: true, class: 'mb-20 md:mb-0' }"
-    />
   </div>
   <p v-else class="text-center text-lg pt-5">
     <i class="pi pi-info-circle pr-2" />
