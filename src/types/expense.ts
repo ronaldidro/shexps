@@ -53,9 +53,11 @@ export interface ExpenseSummary {
   debtors: ExpenseSummaryDetail[]
   creditors: ExpenseSummaryDetail[]
   chart: ChartData
-  budget: number
-  total: number
-  percent: number
+  membership: {
+    budget: number
+    total: number
+    percent: number
+  }
 }
 
 export type ExpensePreview = ExpensePayload & { user: AuthUser }

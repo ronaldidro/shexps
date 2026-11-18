@@ -45,7 +45,7 @@
         :amount="summary.amount"
         :firstName="summary.firstName"
       />
-      <BudgetCard :budget="summary.budget" :total="summary.total" :percent="summary.percent" />
+      <BudgetCard :membership="summary.membership" />
       <MembersCard
         v-if="summary.debtors.length"
         title="Te deben"
