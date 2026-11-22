@@ -55,6 +55,7 @@
           {{ USER_ROLE[slotProps.data.role as Role] }}
         </template>
       </Column>
+      <Column field="status" header="Estado" sortable />
       <Column field="createdAt" header="Fecha creación" sortable />
       <Column header="Acciones" :exportable="false">
         <template #body="slotProps">

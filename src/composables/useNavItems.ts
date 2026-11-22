@@ -17,7 +17,7 @@ export const useNavItems = () => {
     { label: 'Gastos', icon: 'pi pi-fw pi-dollar', to: `${basePath}/expenses` },
     { label: 'Pagos', icon: 'pi pi-fw pi-wallet', to: `${basePath}/payments` },
     { label: 'Grupos', icon: 'pi pi-fw pi-objects-column', to: `${basePath}/groups` },
-    { label: 'Perfil', icon: 'pi pi-fw pi-user', to: `${basePath}/account` },
+    { label: 'Perfil', icon: 'pi pi-fw pi-user', to: '/account' },
   ]
 
   const getActivePath = (path: string) => {

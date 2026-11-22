@@ -7,6 +7,7 @@ export interface User {
   fullName: string
   email: string
   role: Role
+  status: string
   notificationsCount: number
 }
 
