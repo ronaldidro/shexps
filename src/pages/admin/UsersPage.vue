@@ -51,26 +51,37 @@
       <Column field="lastName" header="Apellidos" sortable />
       <Column field="email" header="Correo" sortable />
       <Column field="role" header="Rol" sortable>
-        <template #body="slotProps">
-          {{ USER_ROLE[slotProps.data.role as Role] }}
+        <template #body="{ data: user }">
+          {{ USER_ROLE[user.role as Role] }}
         </template>
       </Column>
-      <Column field="status" header="Estado" sortable />
+      <Column field="status" header="Estado" sortable>
+        <template #body="{ data: user }">
+          <Tag
+            :severity="`${user.deletedAt ? 'danger' : 'success'}`"
+            :value="user.status"
+            rounded
+          />
+        </template>
+      </Column>
       <Column field="createdAt" header="Fecha creación" sortable />
       <Column header="Acciones" :exportable="false">
-        <template #body="slotProps">
-          <Button
-            icon="pi pi-pencil"
-            variant="outlined"
-            class="mr-2"
-            @click="editUser(slotProps.data)"
-          />
-          <Button
-            icon="pi pi-trash"
-            variant="outlined"
-            severity="danger"
-            @click="openDeleteDialog(slotProps.data?.id)"
-          />
+        <template #body="{ data: user }">
+          <div class="flex gap-2">
+            <Button icon="pi pi-pencil" variant="outlined" @click="editUser(user)" />
+            <Button
+              icon="pi pi-refresh"
+              variant="outlined"
+              severity="secondary"
+              @click="openRestoreDialog(user.id)"
+            />
+            <Button
+              icon="pi pi-trash"
+              variant="outlined"
+              severity="danger"
+              @click="openDeleteDialog(user.id)"
+            />
+          </div>
         </template>
       </Column>
     </DataTable>
@@ -105,12 +116,13 @@ const emptyUser: UserPayload = {
 
 const confirm = useConfirm()
 const { showToast } = useNotification()
-const { findAll, create, update, remove } = useUserQuery()
+const { findAll, create, update, remove, restore } = useUserQuery()
 
 const { data: users, isLoading: fetching } = findAll()
 const { mutate: createUser, isPending: creating } = create()
 const { mutate: updateUser, isPending: updating } = update()
 const { mutate: removeUser } = remove()
+const { mutate: restoreUser } = restore()
 
 const dt = ref()
 const selectedUsers = ref<User[]>([])
@@ -167,6 +179,23 @@ const openDeleteDialog = (id: string) => {
 const handleDelete = async (id: string) =>
   removeUser(id, {
     onSuccess: () => showToast({ severity: 'success', summary: 'Usuario eliminado correctamente' }),
+  })
+
+const openRestoreDialog = (id: string) => {
+  confirm.require({
+    header: 'Restaurar usuario',
+    message: '¿Está seguro de que desea continuar?',
+    icon: 'pi pi-exclamation-triangle',
+    rejectProps: { label: 'No', severity: 'secondary', icon: 'pi pi-times', text: true },
+    acceptProps: { label: 'Sí', severity: 'danger', icon: 'pi pi-check', outlined: true },
+    accept: () => handleRestore(id),
+  })
+}
+
+const handleRestore = async (id: string) =>
+  restoreUser(id, {
+    onSuccess: () =>
+      showToast({ severity: 'success', summary: 'Usuario restaurado correctamente' }),
   })
 
 const openDeleteManyDialog = () => {

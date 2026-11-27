@@ -39,4 +39,9 @@ export const usersService = {
     const { data } = await api.delete<User>(`/users/${id}`)
     return data
   },
+
+  async restore(id: string) {
+    const { data } = await api.patch<User>(`/users/${id}/restore`)
+    return data
+  },
 }

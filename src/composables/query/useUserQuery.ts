@@ -29,5 +29,7 @@ export const useUserQuery = () => {
 
   const remove = () => mutation<User, string>((id) => usersService.remove(id), queryKey)
 
-  return { findAll, findOne, create, update, updatePassword, remove }
+  const restore = () => mutation<User, string>((id) => usersService.restore(id), queryKey)
+
+  return { findAll, findOne, create, update, updatePassword, remove, restore }
 }
